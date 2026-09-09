@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decision Space | Technical & Strategic Architecture Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            dark: {
+              900: '#0B0D11',
+              800: '#12161D',
+              700: '#181E27',
+              600: '#232B38',
+              500: '#323E50',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0B0D11; }
+    ::-webkit-scrollbar-thumb { background: #232B38; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #323E50; }
+    .badge-collected { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .badge-math { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
+    .badge-synthetic { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
+    .badge-deterministic { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.25); }
+  </style>
+</head>
+<body class="bg-dark-900 text-slate-300 font-sans antialiased min-h-screen selection:bg-indigo-600 selection:text-white flex flex-col">
+
+  <!-- Top Sticky Header -->
+  <header class="sticky top-0 z-40 bg-dark-800/90 backdrop-blur-md border-b border-dark-600 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-sm shadow-indigo-500/20">
+        D
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="font-bold text-white text-sm tracking-wide">DECISION SPACE</span>
+          <span class="text-xs text-indigo-400 font-mono font-medium px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">DOCS v1.1</span>
+        </div>
+        <p class="text-[11px] text-slate-400">Technical & Strategic Architecture Reference</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-dark-700 hover:bg-dark-600 text-slate-200 border border-dark-600 transition flex items-center gap-1.5">
+        <span>← Back to Platform</span>
+      </a>
+      <span class="text-xs text-slate-500 font-mono hidden md:inline">Node.js • React 18 • TypeScript</span>
+    </div>
+  </header>
+
+  <!-- Layout Container -->
+  <div class="flex-1 flex max-w-[1440px] w-full mx-auto">
+    
+    <!-- Sidebar Navigation / Index -->
+    <aside class="w-72 hidden lg:block sticky top-[61px] h-[calc(100vh-61px)] overflow-y-auto p-5 border-r border-dark-600 bg-dark-800/40">
+      <div class="mb-4">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Documentation Index</h3>
+        <input type="text" id="docSearch" placeholder="Filter sections..." class="w-full px-3 py-1.5 rounded bg-dark-700 border border-dark-600 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500" />
+      </div>
+
+      <nav class="space-y-1 text-xs" id="navLinks">
+        <a href="#section-1" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">1. Architecture & System Overview</a>
+        <a href="#section-2" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">2. Data Provenance & Ingestion Matrix</a>
+        <a href="#section-3" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">3. Hypotheses & Strategic Assumptions</a>
+        <a href="#section-4" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">4. Geospatial & Math Methodologies</a>
+        <a href="#section-5" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">5. Deterministic Scoring Engine</a>
+        <a href="#section-6" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">6. AI Advisory & Board Memorandum</a>
+        <a href="#section-7" class="block px-2.5 py-1.5 rounded text-slate-300 hover:bg-dark-700 hover:text-white font-medium transition">7. Developer & Code Reference</a>
+        <a href="#section-8" class="block px-2.5 py-1.5 rounded text-indigo-400 hover:bg-indigo-950/40 font-medium transition">8. Documentation Agent Protocol</a>
+      </nav>
+
+      <div class="mt-8 pt-4 border-t border-dark-600">
+        <div class="text-[11px] text-slate-400 space-y-2">
+          <p class="font-semibold text-slate-300">Quick Navigation</p>
+          <div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+            <span class="px-2 py-0.5 rounded bg-dark-700 border border-dark-600">PROTECT / HOLD / SHRINK</span>
+            <span class="px-2 py-0.5 rounded bg-dark-700 border border-dark-600">Haversine 4.0km</span>
+            <span class="px-2 py-0.5 rounded bg-dark-700 border border-dark-600">Gemini 3.8 Flash</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-10 max-w-5xl space-y-16">
+
+      <!-- Hero Header -->
+      <section class="border-b border-dark-600 pb-8">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20 uppercase tracking-wider">Whitepaper & Blueprint</span>
+          <span class="text-xs text-slate-500">•</span>
+          <span class="text-xs text-slate-400 font-mono">Target: Bedashing UAE Network (24 Branches)</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+          Decision Space Platform Documentation
+        </h1>
+        <p class="text-sm text-slate-400 leading-relaxed max-w-3xl">
+          Architectural specification, mathematical models, empirical hypotheses, and data governance policies behind the Decision Space geospatial intelligence application.
+        </p>
+      </section>
+
+      <!-- Section 1 -->
+      <section id="section-1" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">01.</span> Architecture & System Overview
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">SPA + Express API</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Client-Side SPA</h4>
+            <p class="text-slate-400 leading-normal">
+              Built on <strong>React 18 + Vite + Tailwind CSS</strong>. Computes real-time sensitivity re-weighting directly in-browser using memoized hooks (<code class="text-indigo-300">useMemo</code>) for instant responsiveness.
+            </p>
+          </div>
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Express Service Layer</h4>
+            <p class="text-slate-400 leading-normal">
+              Self-contained <strong>Express server (<code class="text-indigo-300">server.ts</code>)</strong> hosting Google Gemini 3.8 Flash integrations, deterministic fallback synthesis, and Google Drive syncing proxies.
+            </p>
+          </div>
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Geospatial Vector Map</h4>
+            <p class="text-slate-400 leading-normal">
+              Interactive Leaflet / CartoDB dark-matter canvas rendering the 24 active UAE lounges, 10 candidate growth centroids, and dynamic 3km trade-area buffers.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-dark-700/50 border border-dark-600 text-xs space-y-2">
+          <h4 class="font-semibold text-slate-200">Key Modular Components</h4>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
+            <li>• <strong class="text-slate-300">GeospatialMap.tsx</strong>: Interactive Leaflet layer with custom SVG markers and radius overlays.</li>
+            <li>• <strong class="text-slate-300">scoringEngine.ts</strong>: Pure deterministic calculations without external I/O dependencies.</li>
+            <li>• <strong class="text-slate-300">AiAdvisor.tsx</strong>: Context-grounded executive conversational interface.</li>
+            <li>• <strong class="text-slate-300">BoardMemoModal.tsx</strong>: Generates formal Board of Directors strategic memorandum.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 2 -->
+      <section id="section-2" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">02.</span> Data Provenance & Ingestion Matrix
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">Full Audit Trail</span>
+        </div>
+
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Every dimension used in Decision Space is classified into <strong>Collected / Fetched</strong> (real-world API/public records), <strong>Generated Math</strong> (deterministic algorithms), or <strong>Synthetic / Modeled</strong> (calibrated proxies).
+        </p>
+
+        <!-- Provenance Table -->
+        <div class="overflow-x-auto border border-dark-600 rounded-lg">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-dark-800 text-slate-400 font-semibold uppercase tracking-wider text-[10px] border-b border-dark-600">
+              <tr>
+                <th class="p-3">Data Dimension</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Exact Source / URL / Origin</th>
+                <th class="p-3">Implementation File / Function</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-600 font-mono text-[11px]">
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">24 Bedashing Store Names & Emirates</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">Bedashing Directory: <a href="https://www.bedashingbeauty.com/locations/" target="_blank" class="text-indigo-400 hover:underline">bedashingbeauty.com/locations</a></td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Branch Physical Addresses</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">Mall directories & Google Places (e.g. Yas Mall, Al Maqta)</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">GPS Coordinates (Lat, Lng)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">Google Geocoding API: maps.googleapis.com</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Google Star Ratings (4.1 – 4.8★)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">Google Maps Places Public Reviews</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Google Review Counts (280 – 1,420)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">Google Maps Places Review Volume</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Nearest Sister Distance (km)</td>
+                <td class="p-3"><span class="badge-math px-2 py-0.5 rounded text-[10px] font-sans font-bold">Real Math</span></td>
+                <td class="p-3 text-slate-400">Spherical Haversine great-circle formula (R=6,371 km)</td>
+                <td class="p-3 text-indigo-300">/src/services/scoringEngine.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Competitor Density (3km Buffer)</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
+                <td class="p-3 text-slate-400">Google Places POI density baseline (2 to 26 competitors)</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Catchment Affluence Index (0–100)</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
+                <td class="p-3 text-slate-400">UAE Federal FCSC stats & residential rental brackets</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Chair Count & Monthly Visitors</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
+                <td class="p-3 text-slate-400">Operational salon floorplate simulation (POS is confidential)</td>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">10 Candidate Centroids (Lat/Lng)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">Emaar / Aldar Master Developers (Dubai Hills, Saadiyat)</td>
+                <td class="p-3 text-indigo-300">/src/data/candidates.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Unmet Demand Index (0–100)</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
+                <td class="p-3 text-slate-400">Target female population growth vs. current luxury chair deficit</td>
+                <td class="p-3 text-indigo-300">/src/data/candidates.ts</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Geospatial Vector Map Tiles</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3 text-slate-400">CartoDB Dark Matter: basemaps.cartocdn.com</td>
+                <td class="p-3 text-indigo-300">/src/components/GeospatialMap.tsx</td>
+              </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Branch Scores & Classifications</td>
+                <td class="p-3"><span class="badge-deterministic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Deterministic</span></td>
+                <td class="p-3 text-slate-400">Mathematical scoring engine calibrated with user weights</td>
+                <td class="p-3 text-indigo-300">/src/services/scoringEngine.ts</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section id="section-3" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">03.</span> Hypotheses & Strategic Assumptions
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">Spatial & Economic Rules</span>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600">
+            <h4 class="font-bold text-white text-sm mb-1">Assumption 1: 3-Kilometer Primary Catchment Buffer</h4>
+            <p class="text-slate-400 leading-normal">
+              In urban UAE (Dubai and Abu Dhabi), retail convenience for express salon services corresponds to an immediate 5-to-10 minute transit radius. Beyond 3 km, consumer retention decays significantly in favor of closer alternative salons.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600">
+            <h4 class="font-bold text-white text-sm mb-1">Assumption 2: 4.0km Critical Sister Cannibalization Radius</h4>
+            <p class="text-slate-400 leading-normal">
+              When two Bedashing branches operate within &lt; 4.0 km of each other (e.g., Al Wasl Jumeirah and City Walk at 3.9 km), they divide the same local customer base without expanding the total brand revenue, diluting unit-level EBITDA.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600">
+            <h4 class="font-bold text-white text-sm mb-1">Assumption 3: Target Consumer Demographics</h4>
+            <p class="text-slate-400 leading-normal">
+              Bedashing targets high-discretionary-income Emirati and expatriate women seeking premium nail, hair, lash, and beauty treatments. Thus, catchment affluence carries heavy weight in predicting lifetime customer value.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600">
+            <h4 class="font-bold text-white text-sm mb-1">Assumption 4: Operational Proxies (Confidential POS Data Protection)</h4>
+            <p class="text-slate-400 leading-normal">
+              Because internal transaction records and P&amp;L ledgers are strictly confidential, chair counts and monthly visitor counts are modeled proportionally based on venue square footage and public foot-traffic tiers.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section id="section-4" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">04.</span> Geospatial & Math Methodologies
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">Algorithms & Formulas</span>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">A. Spherical Haversine Geodesic Distance</h4>
+            <p class="text-slate-400">
+              Calculates the great-circle separation between coordinates $(lat_1, lon_1)$ and $(lat_2, lon_2)$ over a spherical earth of radius $R = 6,371 \text{ km}$:
+            </p>
+            <div class="p-3 bg-dark-900 rounded font-mono text-slate-300 text-[11px] leading-relaxed">
+              a = sin²(Δlat / 2) + cos(lat₁) · cos(lat₂) · sin²(Δlon / 2)<br />
+              c = 2 · atan2(√a, √(1 - a))<br />
+              d = R · c
+            </div>
+            <p class="text-slate-500 text-[11px]">Implemented in <code class="text-indigo-300">scoringEngine.ts:calculateHaversineDistance</code></p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">B. Spatial Cannibalization Penalty Curve</h4>
+            <p class="text-slate-400">
+              Transforms sister distance into a 0–100 protection score:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 space-y-1">
+              <li>Distance &lt; 2.0 km: Fixed severe penalty of <strong>25 / 100</strong>.</li>
+              <li>Distance 2.0 km – 5.0 km: Linear interpolation: <code class="text-slate-300">25 + ((distance - 2.0) / 3.0) × 75</code>.</li>
+              <li>Distance &gt; 5.0 km: Full protection of <strong>100 / 100</strong> (Zero sister interference).</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">C. Competitor Saturation Normalization</h4>
+            <p class="text-slate-400">
+              Converts 3km competitor salon count into a resilience score:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 space-y-1">
+              <li>≤ 3 Salons: <strong>100 / 100</strong> (Protected trade area / local monopoly).</li>
+              <li>≥ 25 Salons: <strong>30 / 100</strong> (Severe hyper-saturation, e.g. Jumeirah Beach corridor).</li>
+              <li>Between 3 and 25: Linear decay: <code class="text-slate-300">100 - ((competitors - 3) / 22) × 70</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5 -->
+      <section id="section-5" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">05.</span> Deterministic Scoring Engine
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">Classification Rules</span>
+        </div>
+
+        <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-3 text-xs">
+          <h4 class="font-bold text-white text-sm">Branch Health Index Formula</h4>
+          <p class="text-slate-400">
+            Calculated as a calibrated weighted sum across 4 dimensions:
+          </p>
+          <div class="p-3 bg-dark-900 rounded font-mono text-indigo-300 text-xs">
+            Final Score = (Reputation × W_rep + Affluence × W_aff + Distance × W_dist + Competition × W_comp) / TotalWeight
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+              <span class="font-bold text-emerald-400 block text-sm">PROTECT (Score ≥ 85)</span>
+              <span class="text-slate-400 text-[11px]">Crown-jewel flagships with strong moats and high ratings. Defend with priority CapEx.</span>
+            </div>
+            <div class="p-3 rounded bg-amber-500/10 border border-amber-500/20">
+              <span class="font-bold text-amber-400 block text-sm">HOLD (Score 70 – 84)</span>
+              <span class="text-slate-400 text-[11px]">Stable neighborhood earners. Optimize chair throughput and appointment efficiency.</span>
+            </div>
+            <div class="p-3 rounded bg-rose-500/10 border border-rose-500/20">
+              <span class="font-bold text-rose-400 block text-sm">SHRINK (Score &lt; 70)</span>
+              <span class="text-slate-400 text-[11px]">Underperforming or heavily cannibalized sites. Downsize chairs or consolidate lease.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-3 text-xs">
+          <h4 class="font-bold text-white text-sm">Candidate Expansion Model</h4>
+          <p class="text-slate-400">
+            Assesses candidate growth zones across <strong>Unmet Demand (35%)</strong>, <strong>Demographic Affluence (25%)</strong>, <strong>Retail Gravity (20%)</strong>, and <strong>Cannibalization Safety (20%)</strong>:
+          </p>
+          <div class="flex flex-wrap gap-2 pt-1 font-mono text-[11px]">
+            <span class="px-2.5 py-1 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">GROW (Score ≥ 80): Dubai Hills Mall, Saadiyat</span>
+            <span class="px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">WATCH (Score 65–79): Track residential handovers</span>
+            <span class="px-2.5 py-1 rounded bg-slate-700 text-slate-400">SKIP (Score &lt; 65): De-prioritize</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section id="section-6" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">06.</span> AI Advisory & Board Memorandum
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">Zero Hallucination</span>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Strict Grounding Protocol</h4>
+            <p class="text-slate-400 leading-normal">
+              The AI Advisor does not invent scores or ratings. Prompts injected into Gemini include exact mathematical scores, review counts, competitor densities, and sister distances computed by the deterministic engine.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Dual-Path Resilience (Gemini 3.8 Flash + Deterministic Fallback)</h4>
+            <p class="text-slate-400 leading-normal">
+              If upstream Google Gemini models encounter 503 high-demand spikes or network rate limits, <code class="text-indigo-300">server.ts</code> activates an automated exponential backoff. If all retries fail, it falls back to the internal <strong>Deterministic Grounded Generator</strong>, ensuring continuous 200 OK responses with zero downtime.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7 -->
+      <section id="section-7" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">07.</span> Developer & Code Reference
+          </h2>
+          <span class="text-xs text-slate-400 font-mono">File Manifest</span>
+        </div>
+
+        <div class="border border-dark-600 rounded-lg overflow-hidden text-xs">
+          <table class="w-full text-left">
+            <thead class="bg-dark-800 text-slate-400 font-semibold text-[10px] uppercase tracking-wider border-b border-dark-600">
+              <tr>
+                <th class="p-3">File / Module</th>
+                <th class="p-3">Role & Key Exported Symbols</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-600 font-mono text-[11px]">
+              <tr>
+                <td class="p-3 text-indigo-300">/src/types.ts</td>
+                <td class="p-3 font-sans text-slate-400">TypeScript interfaces: <code class="text-slate-200">Branch</code>, <code class="text-slate-200">CandidateArea</code>, <code class="text-slate-200">BranchEvaluation</code>, <code class="text-slate-200">NetworkSummary</code>.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/services/scoringEngine.ts</td>
+                <td class="p-3 font-sans text-slate-400">Core logic: <code class="text-slate-200">evaluateBranch</code>, <code class="text-slate-200">evaluateCandidate</code>, <code class="text-slate-200">calculateHaversineDistance</code>.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
+                <td class="p-3 font-sans text-slate-400">Immutable dataset of 24 Bedashing lounges with geocodes, ratings, and operational parameters.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/data/candidates.ts</td>
+                <td class="p-3 font-sans text-slate-400">10 prospective expansion zones with population estimates and unmet demand indices.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/server.ts</td>
+                <td class="p-3 font-sans text-slate-400">Express server hosting <code class="text-slate-200">/api/ai/explain</code>, <code class="text-slate-200">/api/ai/executive-briefing</code>, and static doc serving.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 8 -->
+      <section id="section-8" class="scroll-mt-20 space-y-6">
+        <div class="flex items-center justify-between border-b border-dark-700 pb-2">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-indigo-400 font-mono">08.</span> Documentation Custodian Agent Protocol
+          </h2>
+          <span class="text-xs text-indigo-400 font-mono font-bold">AGENTS.md Policy</span>
+        </div>
+
+        <div class="p-5 rounded-lg bg-indigo-950/20 border border-indigo-500/30 text-xs space-y-3">
+          <h4 class="font-bold text-white text-sm">Automated Maintenance Directives</h4>
+          <p class="text-slate-300 leading-normal">
+            This repository incorporates a dedicated agent instruction file in <code class="text-indigo-300 font-mono">/AGENTS.md</code> that binds every coding session to the following automated rules:
+          </p>
+          <ul class="list-disc list-inside text-slate-400 space-y-1.5 pl-1">
+            <li><strong>Mandatory Doc Check</strong>: Any modification to scoring logic, data records, or API routes triggers a verification of this documentation.</li>
+            <li><strong>Provenance Matrix Synchronization</strong>: When new data dimensions are introduced, the provenance table in Section 2 must be updated immediately.</li>
+            <li><strong>Threshold Alignment</strong>: Changing scoring thresholds (PROTECT/HOLD/SHRINK) in code requires matching changes in the documentation.</li>
+            <li><strong>Proactive Developer Reminders</strong>: The agent will explicitly notify developers if functional enhancements warrant updating this reference page.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="pt-8 border-t border-dark-600 text-center text-xs text-slate-500">
+        <p>Decision Space • Bedashing UAE Network Intelligence • Maintained automatically under AGENTS.md governance</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Search / Filter Script -->
+  <script>
+    const searchInput = document.getElementById('docSearch');
+    const navLinks = document.getElementById('navLinks').querySelectorAll('a');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      navLinks.forEach(link => {
+        const text = link.textContent.toLowerCase();
+        link.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

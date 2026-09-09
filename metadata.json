@@ -1,0 +1,6 @@
+{
+  "name": "Decision Space",
+  "description": "AI-enabled geospatial decision-support application for multi-branch retail network planning in the UAE",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
