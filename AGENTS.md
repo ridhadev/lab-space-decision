@@ -6,8 +6,8 @@ Whenever you work on this project, you MUST strictly adhere to the following gov
 
 ---
 
-### 1. Mandatory Documentation Synchronization (`/docs/index.html`)
-The documentation for this project is hosted at `/docs/index.html` (and mirrored in `/public/docs/index.html`). It is a static, highly structured, technical reference for developers, stakeholders, and board members.
+### 1. Mandatory Documentation Synchronization (`/docs/index.html` & `/README.md`)
+The documentation for this project is hosted at `/docs/index.html` (and mirrored in `/public/docs/index.html`), and summarized in `/README.md`. It is a static, highly structured, technical reference for developers, stakeholders, and board members.
 
 Whenever you perform any changes to:
 1. **Scoring Engine** (`/src/services/scoringEngine.ts`):
@@ -22,6 +22,7 @@ Whenever you perform any changes to:
 
 👉 **YOU MUST**:
 - Update `/docs/index.html` and `/public/docs/index.html` immediately to keep the Provenance Table, Assumptions, and Formulas in 100% lockstep with the code.
+- Update `/README.md` to ensure the Quick Start guide, API key requirements, scripts, and feature summaries remain completely accurate.
 - Explicitly notify the user in your turn summary that the documentation has been updated to reflect the codebase changes.
 
 ---

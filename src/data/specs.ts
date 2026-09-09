@@ -2,6 +2,14 @@ import { DriveResourceFile } from "../types";
 
 export const DRIVE_RESOURCES: DriveResourceFile[] = [
   {
+    name: "README.md",
+    description: "Master GitHub Quick Start guide, business context, local installation steps, and API key configurations.",
+    category: "Specification",
+    status: "Loaded in App",
+    id: "doc-00",
+    size: "9 KB",
+  },
+  {
     name: "ai-case-study.docx",
     description: "The original client brief and source of truth for all requirements, strategic network goals, and evaluation criteria.",
     category: "Client Brief",

@@ -330,6 +330,9 @@ app.use("/docs", express.static(path.join(process.cwd(), "docs")));
 app.get("/docs", (_req: Request, res: Response) => {
   res.sendFile(path.join(process.cwd(), "docs", "index.html"));
 });
+app.get(["/README.md", "/readme", "/README"], (_req: Request, res: Response) => {
+  res.sendFile(path.join(process.cwd(), "README.md"));
+});
 
 // Grounded AI explanation endpoint
 app.post("/api/ai/explain", async (req: Request, res: Response) => {

@@ -105,6 +105,90 @@ export const ResourcesView: React.FC = () => {
 
         {/* Right Column: Detailed Document Viewer */}
         <div className="lg:col-span-8 bg-[#161B22] p-5 rounded-lg border border-slate-700 shadow-sm text-slate-200">
+          {activeDoc === "README.md" && (
+            <div className="space-y-4 text-xs text-slate-300 leading-relaxed">
+              <div className="border-b border-slate-700 pb-3 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400">
+                    GitHub Quick Start & Installation Reference • /README.md
+                  </span>
+                  <h3 className="text-base font-bold text-white mt-1">README.md (Developer Quick Start)</h3>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+                  Local Installation
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="p-3 bg-slate-900/90 rounded border border-slate-700 space-y-1.5">
+                  <h4 className="font-bold text-white text-xs">🚀 1-Minute Quick Start (From Cloned GitHub Repo):</h4>
+                  <pre className="font-mono text-[11px] text-indigo-300 bg-black/40 p-2.5 rounded overflow-x-auto">
+{`# 1. Clone repository
+git clone https://github.com/your-org/decision-space.git
+cd decision-space
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure environment file
+cp .env.example .env
+
+# 4. Start full-stack development server
+npm run dev
+
+# -> Open http://localhost:3000 in your browser`}
+                  </pre>
+                </div>
+
+                <div className="p-3 bg-slate-900/90 rounded border border-slate-700 space-y-2">
+                  <h4 className="font-bold text-white text-xs">🔑 API Keys Summary & Requirements:</h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-[11px] border-collapse">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-700 text-[10px] uppercase font-mono">
+                          <th className="pb-1.5">Service</th>
+                          <th className="pb-1.5">Required?</th>
+                          <th className="pb-1.5">Config Location</th>
+                          <th className="pb-1.5">Behavior If Not Set</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 font-mono text-[10px]">
+                        <tr>
+                          <td className="py-1.5 font-bold text-slate-200">CARTO Tiles</td>
+                          <td className="py-1.5 text-emerald-400">❌ No API Key</td>
+                          <td className="py-1.5 text-slate-400">None needed</td>
+                          <td className="py-1.5 text-slate-400">Loads public raster basemap immediately</td>
+                        </tr>
+                        <tr>
+                          <td className="py-1.5 font-bold text-slate-200">Scoring Engine</td>
+                          <td className="py-1.5 text-emerald-400">❌ No API Key</td>
+                          <td className="py-1.5 text-slate-400">None needed</td>
+                          <td className="py-1.5 text-slate-400">100% offline mathematical execution</td>
+                        </tr>
+                        <tr>
+                          <td className="py-1.5 font-bold text-slate-200">Gemini 3.8 Flash</td>
+                          <td className="py-1.5 text-amber-400">⚡ Optional</td>
+                          <td className="py-1.5 text-indigo-300">.env (GEMINI_API_KEY)</td>
+                          <td className="py-1.5 text-slate-400">Zero-downtime deterministic fallback synthesis</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-slate-900/90 rounded border border-slate-700 space-y-1 text-[11px]">
+                  <h4 className="font-bold text-white text-xs">📦 Production Build Commands:</h4>
+                  <p className="text-slate-400">
+                    To compile static assets and bundle the server for container or standalone production:
+                  </p>
+                  <pre className="font-mono text-[11px] text-slate-300 bg-black/40 p-2 rounded">
+npm run build && npm start
+                  </pre>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeDoc === "ai-case-study.docx" && (
             <div className="space-y-4 text-xs text-slate-300 leading-relaxed">
               <div className="border-b border-slate-700 pb-3">
