@@ -37,10 +37,10 @@ export const ExecutiveSummaryCards: React.FC<ExecutiveSummaryCardsProps> = ({
             </span>
           </div>
           <h3 className="text-base font-semibold tracking-tight text-white mt-1">
-            24 UAE Lounges
+            23 UAE Lounges
           </h3>
           <p className="text-[11px] text-slate-400 mt-0.5">
-            15 Abu Dhabi • 5 Dubai • 2 Sharjah • 1 Fujairah • 1 RAK
+            14 Abu Dhabi • 5 Dubai • 2 Sharjah • 1 Fujairah • 1 RAK
           </p>
 
           <div className="grid grid-cols-3 gap-2 mt-3 text-center">

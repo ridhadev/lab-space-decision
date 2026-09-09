@@ -167,7 +167,7 @@ export const BoardMemoModal: React.FC<BoardMemoModalProps> = ({
                 Generate Board-Level Strategic Memorandum
               </h3>
               <p className="text-xs text-slate-400">
-                Synthesize all 24 existing Bedashing branches, PROTECT/HOLD/SHRINK decisions, and GROW expansion candidates into an authoritative executive memorandum.
+                Synthesize all 23 existing Bedashing branches, PROTECT/HOLD/SHRINK decisions, and GROW expansion candidates into an authoritative executive memorandum.
               </p>
               <button
                 onClick={handleGenerateMemo}

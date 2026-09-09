@@ -188,21 +188,21 @@ function generateDeterministicExplanation(
   }
 
   // Network Cannibalization query
-  if (q.includes("cannibal") || q.includes("wasl") || q.includes("west yas") || q.includes("noya")) {
+  if (q.includes("cannibal") || q.includes("delma") || q.includes("khaleej") || q.includes("westyas") || q.includes("noya")) {
     return `### Network Cannibalization & Sister Proximity Diagnostic
 
 Our spatial evaluation reveals key intra-network overlap zones where Bedashing branches operate within the **< 4.0 km conflict radius**:
 
-1. **Al Wasl Jumeirah ↔ City Walk (3.9 km separation):**
-   - **Diagnosis:** Both branches compete for the same central Dubai affluent consumer base. Al Wasl is severely pressured by 26 local competitors, making chair down-sizing or specialized consolidation advisable.
-   - **Model Decision:** Al Wasl Jumeirah classified as **SHRINK**; City Walk maintained as flagship.
+1. **Delma ↔ Khaleej Al Arabi (1.9 km separation):**
+   - **Diagnosis:** Both branches serve central Abu Dhabi urban and residential villa corridors. High competition in the downtown cluster requires differentiated service positioning.
+   - **Model Decision:** Khaleej Al Arabi maintained as VIP flagship; Delma focused on express appointments.
 
-2. **West Yas Plaza ↔ Yas Mall / Noya Plaza (3.9 km separation):**
-   - **Diagnosis:** Three Bedashing presences across Yas Island concentrate capacity. West Yas experiences localized demand overlap with Yas Mall and incoming Noya Plaza catchment.
-   - **Model Decision:** Rationalize chair allocation at West Yas while defending Yas Mall retail dominance.
+2. **Noya Plaza ↔ Westyas Plaza (4.0 km separation):**
+   - **Diagnosis:** Two Bedashing presences across Yas Island. Noya Plaza caters to residential villa communities while Westyas captures waterfront and leisure traffic.
+   - **Model Decision:** Rationalize chair allocation to prevent customer split.
 
-3. **Deerfields Mall ↔ Shahama (3.1 km separation):**
-   - **Diagnosis:** The closest sister pair in the network. Weekend mall traffic at Deerfields diverts weekday appointments from street-side Shahama.
+3. **Ministries Complex ↔ Al Maqta Waterfront (2.4 km separation):**
+   - **Diagnosis:** Close proximity along the Khaleej Al Arabi / Ministries corridor. Ministries Complex targets corporate lunch hour traffic while Al Maqta operates as a luxury weekend destination villa.
 
 **Strategic Moat Rule:** Future expansion must enforce a minimum **4.5 km buffer** from existing stores to preserve unit-level return on capital.`;
   }
@@ -214,37 +214,37 @@ Our spatial evaluation reveals key intra-network overlap zones where Bedashing b
 Based on deterministic spatial attractiveness and zero sister cannibalization:
 
 1. **Dubai Hills Mall (Score: 91/100 • GROW):**
-   - **Separation:** 6.8 km from Al Barsha.
+   - **Separation:** 3.1 km from Al Barsha.
    - **Thesis:** Anchors a massive high-income master community. Major gap in premium express salon capacity with exceptional retail foot traffic.
 
 2. **Saadiyat Cultural District, Abu Dhabi (Score: 89/100 • GROW):**
-   - **Separation:** 6.4 km from Al Reem Island.
+   - **Separation:** 8.3 km from Delma.
    - **Thesis:** Highest HNW household density in the capital (Louvre, luxury beachfront villas). Currently zero Bedashing footprint on Saadiyat.
 
 3. **Dubai Creek Harbour (Score: 88/100 • GROW):**
-   - **Separation:** 7.9 km from Dubai Mall/Downtown.
+   - **Separation:** 3.6 km from Nad Al Sheba.
    - **Thesis:** Rapidly growing waterfront towers with young affluent expat families. Salon seat capacity is currently 40% below local demand threshold.
 
-4. **Al Ain - Al Jimi Mall / Civic Center (Score: 86/100 • GROW):**
-   - **Separation:** 118 km from nearest Abu Dhabi branch.
-   - **Thesis:** Abu Dhabi's second city has substantial local Emirati female beauty expenditure and zero Bedashing presence.`;
+4. **City Centre Al Zahia, Sharjah (Score: 82/100 • GROW):**
+   - **Separation:** 2.4 km from Zawaya Walk.
+   - **Thesis:** Northern Emirates largest shopping resort with massive female retail footfall.`;
   }
 
   // General Network Portfolio Synthesis
   const summary = modelContext?.summary || {};
-  const total = summary.totalBranches || 24;
+  const total = summary.totalBranches || 23;
   const protect = summary.protectCount || 7;
-  const hold = summary.holdCount || 13;
+  const hold = summary.holdCount || 12;
   const shrink = summary.shrinkCount || 4;
 
   return `### Bedashing UAE Network Optimization: Executive Grounding Summary
 
-**Network Overview:** ${total} Branches across 5 Emirates (15 Abu Dhabi, 5 Dubai, 2 Sharjah, 1 Fujairah, 1 Ras Al Khaimah).
+**Network Overview:** ${total} Branches across 5 Emirates (14 Abu Dhabi, 5 Dubai, 2 Sharjah, 1 Fujairah, 1 Ras Al Khaimah).
 
 **Deterministic Portfolio Breakdown:**
-- **PROTECT (${protect} Branches):** Top-performing flagship hubs with high Google ratings (>4.6★), affluent catchments, and defensible spatial moats (e.g., Al Maqta Waterfront, Yas Mall, Marina Mall, Al Khaleej Al Arabi). Capital allocation should fund VIP upgrades and service expansion.
-- **HOLD (${hold} Branches):** Resilient neighborhood performers maintaining stable cash flows (e.g., Al Falah Village, Al Reem Island, Khalifa City A). Priority is operational throughput and labor efficiency.
-- **SHRINK (${shrink} Branches):** Sites facing acute sister cannibalization (<4.0 km) or extreme local competitive saturation (e.g., Al Wasl Jumeirah, Baniyas East). Recommended action is chair reduction, lease restructuring, or consolidation.
+- **PROTECT (${protect} Branches):** Top-performing flagship hubs with high Google ratings (>4.6★), affluent catchments, and defensible spatial moats (e.g., Al Maqta Waterfront, Westyas Plaza, Khalifa City A, Khaleej Al Arabi). Capital allocation should fund VIP upgrades and service expansion.
+- **HOLD (${hold} Branches):** Resilient community performers maintaining stable cash flows (e.g., Al Falah Village, Delma, Mirdif 35, Jumeirah Park). Priority is operational throughput and labor efficiency.
+- **SHRINK (${shrink} Branches):** Sites facing local competitive saturation or low margins (e.g., Baniyas East). Recommended action is chair reduction, lease restructuring, or consolidation.
 
 *(Analysis generated via Grounded Deterministic Intelligence Engine)*`;
 }
@@ -273,7 +273,7 @@ SUBJECT: GEOSPATIAL NETWORK RESTRUCTURING & EXPANSION PLAN (CONFIDENTIAL)
 ─────────────────────────────────────────────────────────────────────────────
 
 1. EXECUTIVE SUMMARY & STRATEGIC DIAGNOSIS
-Bedashing operates 24 women's beauty lounges across five Emirates: 15 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, and 1 in Ras Al Khaimah.
+Bedashing operates 23 women's beauty lounges across five Emirates: 14 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, and 1 in Ras Al Khaimah.
 A comprehensive deterministic geospatial audit reveals three structural dynamics:
 - Core Monopolies: 7 PROTECT lounges drive disproportionate brand equity and high-margin traffic.
 - Cannibalization Frictions: 4 SHRINK branches suffer from internal sister-overlap (< 4.0 km) and high rival salon saturation.
@@ -286,29 +286,29 @@ A. PROTECT CATEGORY (${protectBranches?.length || 7} Branches)
 - Key Assets: ${protectBranches?.map((b: any) => `${b.name} (${b.emirate} • Score: ${b.score})`).slice(0, 4).join(", ") || "Al Maqta Waterfront, Yas Mall, Marina Mall, Al Khaleej Al Arabi"}.
 - Board Action: Ring-fence capital expenditure for VIP lounge upgrades, express manicure chair additions, and staff retention incentives.
 
-B. HOLD CATEGORY (${holdBranches?.length || 13} Branches)
+B. HOLD CATEGORY (${holdBranches?.length || 12} Branches)
 - Strategic Role: Stable community volume providers.
-- Key Assets: ${holdBranches?.map((b: any) => `${b.name} (${b.emirate})`).slice(0, 4).join(", ") || "Al Falah, Al Reem, Khalifa City A, Muwaileh"}.
+- Key Assets: ${holdBranches?.map((b: any) => `${b.name} (${b.emirate})`).slice(0, 4).join(", ") || "Al Falah Village, Delma, Mirdif 35, Jumeirah Park"}.
 - Board Action: Maintain steady-state operations; target a 5% improvement in appointment turnaround time and cross-selling index without expanding footprint.
 
 C. SHRINK / RATIONALIZATION TARGETS (${shrinkBranches?.length || 4} Branches)
 - Strategic Role: Margin-dilutive locations with severe spatial cannibalization or market saturation.
 - Prime Focus:
-  1. Al Wasl Jumeirah: Pressured by 26 competitors within 3 km and 3.9 km proximity to City Walk flagship.
-  2. Baniyas East / West Yas: Sub-optimal unit margins and catchment cannibalization.
+  1. Baniyas East: High local salon competitor density and modest discretionary spend.
+  2. Shahama / Noya Plaza: Localized catchment overlaps requiring chair rationalization.
 - Board Action: Authorize lease renegotiation at the next break clause, reduce operational chair count by 20-30%, or consolidate bookings into dominant sister branches.
 
 3. STRATEGIC EXPANSION PIPELINE (GROW VECTOR)
 The deterministic model identifies high-yield white-space zones completely devoid of Bedashing sister cannibalization:
-- Dubai Hills Mall (GROW • Score: 91/100): High-income master community hub, 6.8 km buffer from Al Barsha.
+- Dubai Hills Mall (GROW • Score: 91/100): High-income master community hub, 3.1 km buffer from Al Barsha.
 - Saadiyat Cultural District, Abu Dhabi (GROW • Score: 89/100): Premier HNW residency zone with zero current network coverage.
-- Dubai Creek Harbour (GROW • Score: 88/100): Rapid residential handovers, young affluent demographics, 7.9 km safe buffer.
-- Al Ain Regional Hub (GROW • Score: 86/100): Untapped local Emirati female discretionary spend.
+- Dubai Creek Harbour (GROW • Score: 88/100): Rapid residential handovers, young affluent demographics, 3.6 km buffer.
+- City Centre Al Zahia, Sharjah (GROW • Score: 82/100): Northern Emirates premier regional shopping destination.
 
 4. 90-DAY IMMEDIATE EXECUTION ROADMAP
-- Days 1–30: Formulate lease break and chair reduction plans for designated SHRINK assets (Al Wasl Jumeirah).
+- Days 1–30: Formulate lease break and chair reduction plans for designated SHRINK assets (Baniyas East).
 - Days 31–60: Issue formal Expressions of Interest (EOI) for retail tenancy at Dubai Hills Mall and Saadiyat Island.
-- Days 61–90: Deploy VIP upgrade budget to PROTECT branch flagships (Al Maqta, Yas Mall).
+- Days 61–90: Deploy VIP upgrade budget to PROTECT branch flagships (Al Maqta, Khaleej Al Arabi, City Walk).
 
 Respectfully submitted,
 Decision Space Executive Intelligence System
@@ -349,8 +349,8 @@ app.post("/api/ai/explain", async (req: Request, res: Response) => {
   }
 
   try {
-    const systemPrompt = `You are Decision Space AI, a senior retail network and geospatial strategist advising the executive leadership of Bedashing (a 24-branch women's beauty lounge chain in the UAE).
-The network consists of: 15 branches in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, and 1 in Ras Al Khaimah.
+    const systemPrompt = `You are Decision Space AI, a senior retail network and geospatial strategist advising the executive leadership of Bedashing (a 23-branch women's beauty lounge chain in the UAE).
+The network consists of: 14 branches in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, and 1 in Ras Al Khaimah.
 Classifications for existing branches are: PROTECT (defend moat, high ROI/strategic hub), HOLD (stable, monitor economics), SHRINK (downsize chairs, high cannibalization or weak economics).
 Classifications for candidate expansion areas are: GROW (prime priority target, underserved), WATCH (promising, monitor community growth/leases), SKIP (saturated or high cannibalization).
 
@@ -412,7 +412,7 @@ app.post("/api/ai/executive-briefing", async (req: Request, res: Response) => {
     const systemPrompt = `You are a Principal Geospatial Strategy Consultant drafting an Executive Decision Memorandum for Bedashing's Board of Directors and C-Suite.
 Your memorandum must be grounded strictly in the provided computed scores, weights, and network classifications.
 Include:
-1. Executive Summary & Network Health Diagnosis (24 branches across 5 Emirates: 15 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
+1. Executive Summary & Network Health Diagnosis (23 branches across 5 Emirates: 14 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
 2. Existing Network Realignment:
    - PROTECT Priorities (Why protect, capital allocation, moat defense)
    - HOLD Strategy (Operational monitoring, efficiency improvements)

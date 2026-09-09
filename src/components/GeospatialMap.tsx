@@ -48,9 +48,16 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       maxZoom: 17,
     });
 
-    // Dark Matter CartoDB tiles for high-contrast dark theme
+    // Dark Matter CartoDB tiles for high-contrast dark theme with authenticated key
+    const cartoKey =
+      (import.meta as any).env?.VITE_CARTO_API_KEY ||
+      "cb1_340n_1_df0876dfe4afaf348083fd15";
+    const tileUrl = cartoKey
+      ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${cartoKey}`
+      : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      tileUrl,
       {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -393,8 +400,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
             onChange={(e) => setActiveEmirate(e.target.value)}
             className="w-full text-xs py-1 px-2 border border-slate-700 rounded bg-slate-900 text-slate-200 focus:outline-hidden focus:border-indigo-500"
           >
-            <option value="All">All Emirates (24 Branches)</option>
-            <option value="Abu Dhabi">Abu Dhabi (15)</option>
+            <option value="All">All Emirates (23 Branches)</option>
+            <option value="Abu Dhabi">Abu Dhabi (14)</option>
             <option value="Dubai">Dubai (5)</option>
             <option value="Sharjah">Sharjah (2)</option>
             <option value="Fujairah">Fujairah (1)</option>

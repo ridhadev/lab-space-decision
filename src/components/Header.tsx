@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                Reference: <span className="text-slate-200 font-medium">Bedashing Beauty Lounges</span> (24 Branches: 15 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
+                Reference: <span className="text-slate-200 font-medium">Bedashing Beauty Lounges</span> (23 Branches: 14 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
               </p>
             </div>
           </div>

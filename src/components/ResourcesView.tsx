@@ -155,9 +155,9 @@ npm run dev
                       <tbody className="divide-y divide-slate-800 font-mono text-[10px]">
                         <tr>
                           <td className="py-1.5 font-bold text-slate-200">CARTO Tiles</td>
-                          <td className="py-1.5 text-emerald-400">❌ No API Key</td>
-                          <td className="py-1.5 text-slate-400">None needed</td>
-                          <td className="py-1.5 text-slate-400">Loads public raster basemap immediately</td>
+                          <td className="py-1.5 text-emerald-400">⚡ Pre-Configured</td>
+                          <td className="py-1.5 text-indigo-300">.env (VITE_CARTO_API_KEY)</td>
+                          <td className="py-1.5 text-slate-400">Authenticated key eliminates "API key required" watermark flag</td>
                         </tr>
                         <tr>
                           <td className="py-1.5 font-bold text-slate-200">Scoring Engine</td>
@@ -199,7 +199,7 @@ npm run build && npm start
               </div>
               <div className="space-y-3">
                 <p>
-                  <strong>Context & Objective:</strong> Bedashing is an established luxury women's beauty lounge chain operating 24 branches across the UAE (15 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, 1 in Ras Al Khaimah). Executive leadership requires a robust, AI-enabled geospatial decision-support application to answer two core strategic questions:
+                  <strong>Context & Objective:</strong> Bedashing is an established luxury women's beauty lounge chain operating 23 branches across the UAE (14 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, 1 in Ras Al Khaimah). Executive leadership requires a robust, AI-enabled geospatial decision-support application to answer two core strategic questions:
                 </p>
                 <div className="p-3 bg-slate-900/90 rounded border border-slate-700 space-y-1">
                   <div><strong>1. Existing Branches:</strong> Which branches to PROTECT, HOLD, or SHRINK?</div>
@@ -226,7 +226,7 @@ npm run build && npm start
               <div className="space-y-3">
                 <h4 className="font-bold text-white">Key Functional Requirements:</h4>
                 <ul className="list-disc pl-5 space-y-1.5 text-[11px] text-slate-300">
-                  <li><strong>FR-1 (Branch Scoring):</strong> Compute deterministic scores for all 24 Bedashing branches across Reputation, Catchment Demand, Cannibalization, and Competition.</li>
+                  <li><strong>FR-1 (Branch Scoring):</strong> Compute deterministic scores for all 23 Bedashing branches across Reputation, Catchment Demand, Cannibalization, and Competition.</li>
                   <li><strong>FR-2 (Branch Classification):</strong> Classify branches into PROTECT, HOLD, or SHRINK based on user-adjustable thresholds.</li>
                   <li><strong>FR-3 (Candidate Scoring):</strong> Compute expansion attractiveness across Unmet Demand, Affluence, Retail Gravity, and Sister Separation.</li>
                   <li><strong>FR-4 (Candidate Classification):</strong> Classify expansion zones into GROW, WATCH, or SKIP.</li>
@@ -297,7 +297,7 @@ npm run build && npm start
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400">
                   Resource #5 • Raw Extracted Data
                 </span>
-                <h3 className="text-base font-bold text-white mt-1">branches_raw.csv (24 Branches)</h3>
+                <h3 className="text-base font-bold text-white mt-1">branches_raw.csv (23 Branches)</h3>
               </div>
               <div className="max-h-96 overflow-y-auto font-mono text-[10px] bg-slate-900/90 p-3 rounded border border-slate-700 text-slate-300">
                 <div className="font-bold text-indigo-400 border-b border-slate-700 pb-1 mb-1">
@@ -332,7 +332,7 @@ def haversine(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
-print("Loaded 24 Bedashing branches. Haversine sister-branch distance matrix calculated.")
+print("Loaded 23 Bedashing branches. Haversine sister-branch distance matrix calculated.")
 `}
               </pre>
             </div>

@@ -1,12 +1,12 @@
 # Decision Space | Retail Geospatial Intelligence Platform
 
-> **Geospatial decision-support system and portfolio optimization engine for Bedashing Beauty Lounge's 24-store network across the United Arab Emirates.**
+> **Geospatial decision-support system and portfolio optimization engine for Bedashing Beauty Lounge's 23-store network across the United Arab Emirates.**
 
 ---
 
 ## 1. Business Context & Strategic Purpose
 
-**Bedashing Beauty Lounge** is one of the UAE's premier beauty and wellness operators, running **24 locations** across Abu Dhabi, Dubai, and the Northern Emirates. As the brand expands within rapidly growing master-planned communities, corporate leadership faces key capital allocation and spatial dilemmas:
+**Bedashing Beauty Lounge** is one of the UAE's premier beauty and wellness operators, running **23 locations** across Abu Dhabi, Dubai, and the Northern Emirates. As the brand expands within rapidly growing master-planned communities, corporate leadership faces key capital allocation and spatial dilemmas:
 
 1. **Portfolio Defense vs. Rightsizing**: Which existing branches represent high-margin "crown jewels" requiring priority CapEx protection, versus underperforming locations suffering from severe local competitor saturation?
 2. **Sister-Branch Cannibalization**: Rapid urban expansion has placed several branches within competing trade areas (< 4.0 km separation), dividing foot traffic rather than capturing incremental revenue.
@@ -19,7 +19,7 @@
 ## 2. Core Capabilities & Features
 
 - **Interactive Geospatial Network Map**:
-  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 24 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, and dynamic sister-proximity lines.
+  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, and dynamic sister-proximity lines.
 - **Deterministic Multi-Factor Scoring Engine**:
   Auditable, mathematically transparent evaluation:
   - **Existing Branches**: Classified into \`PROTECT\` (≥ 85), \`HOLD\` (70–84), or \`SHRINK\` (< 70) based on reputation, catchment affluence, sister distance, and competitor saturation.
@@ -79,13 +79,19 @@ GEMINI_API_KEY=
 # Google Drive Sync (Optional)
 GOOGLE_DRIVE_FOLDER_ID=1fjPVxav6Zp-I9U0sPh1uHVEgqJwXt-cA
 GOOGLE_DRIVE_SERVICE_ACCOUNT_KEY=
+
+# CARTO Basemap API Key (Optional)
+# CARTO appends a watermark flag on raster tiles without an authenticated key.
+# A default key is pre-configured in the codebase; you can override it here.
+CARTO_API_KEY=
+VITE_CARTO_API_KEY=
 \`\`\`
 
 #### 🔑 API Key Reference Guide:
 
 | Integration | API Key Required? | Where to Set | Notes |
 | :--- | :---: | :--- | :--- |
-| **CARTO / Basemap Tiles** | ❌ **No** | *None* | Uses free, public CartoDB Dark Matter / OpenStreetMap raster tile endpoints. No key or account required. |
+| **CARTO / Basemap Tiles** | ⚡ **Optional** (Pre-set) | \`.env\` (\`VITE_CARTO_API_KEY\`) | Removes the CARTO "API key required" watermark flag from Dark Matter tiles. The app includes a default authenticated key out of the box. |
 | **Deterministic Scoring** | ❌ **No** | *None* | All Haversine distance, cannibalization, and scoring formulas execute 100% locally in-memory. |
 | **Google Gemini (AI Advisor)** | ⚡ **Optional** | \`.env\` (\`GEMINI_API_KEY\`) | Obtain a free key from [Google AI Studio](https://aistudio.google.com). If not provided, the platform automatically activates its built-in deterministic briefing generator without crashing. |
 | **Google Drive Sync** | ⚡ **Optional** | \`.env\` (\`GOOGLE_DRIVE_...\`) | Optional. The app loads verified local snapshots from \`/src/data/specs.ts\` by default. |
@@ -136,7 +142,7 @@ decision-space/
     ├── App.tsx                # Main layout, tab navigation, and modal controllers
     ├── types.ts               # Central TypeScript interfaces (Branch, Candidate, Evaluation)
     ├── data/
-    │   ├── branches.ts        # Verified dataset of 24 Bedashing UAE locations
+    │   ├── branches.ts        # Verified dataset of 23 Bedashing UAE locations
     │   ├── candidates.ts      # 10 prospective rollout zones with demographics
     │   └── specs.ts           # Technical specifications from client brief
     ├── services/

@@ -246,7 +246,7 @@ export const DriveSyncModal: React.FC<DriveSyncModalProps> = ({
             <div className="text-slate-300 text-xs font-sans leading-relaxed pt-1">
               {selectedFile === "ai-case-study.docx" && (
                 <div>
-                  <strong>Client Brief:</strong> Bedashing is a premier UAE beauty lounge network with 24 branches. Executive leadership requires a deterministic decision-support model to classify existing branches into PROTECT, HOLD, or SHRINK, and evaluate new expansion candidate areas into GROW, WATCH, or SKIP. Public reputation, demographic affluence, and spatial competition govern the model.
+                  <strong>Client Brief:</strong> Bedashing is a premier UAE beauty lounge network with 23 branches. Executive leadership requires a deterministic decision-support model to classify existing branches into PROTECT, HOLD, or SHRINK, and evaluate new expansion candidate areas into GROW, WATCH, or SKIP. Public reputation, demographic affluence, and spatial competition govern the model.
                 </div>
               )}
               {selectedFile === "FUNCTIONAL_SPEC.md" && (
@@ -266,7 +266,7 @@ export const DriveSyncModal: React.FC<DriveSyncModalProps> = ({
               )}
               {selectedFile === "branches_raw.csv" && (
                 <div>
-                  <strong>Branch Dataset:</strong> 24 branches extracted across 5 Emirates: 15 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, 1 in Ras Al Khaimah with exact latitudes, longitudes, addresses, and ratings.
+                  <strong>Branch Dataset:</strong> 23 branches extracted across 5 Emirates: 14 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, 1 in Ras Al Khaimah with exact latitudes, longitudes, addresses, and ratings.
                 </div>
               )}
               {selectedFile === "01_branches.py" && (

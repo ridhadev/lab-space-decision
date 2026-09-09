@@ -3,6 +3,7 @@
   "appId": "1:225828596820:web:230269fca80f4179b111c1",
   "apiKey": "AIzaSyB1DpzGTbGnLa_4HfBaZPqP9dVwIlDDQIs",
   "authDomain": "jeux-eco.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-decisionspace-7e97bdbd-dfa9-4921-b5e6-14064f99a93a",
   "storageBucket": "jeux-eco.firebasestorage.app",
   "messagingSenderId": "225828596820",
   "measurementId": "",

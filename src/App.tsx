@@ -96,13 +96,13 @@ export default function App() {
           />
         )}
 
-        {/* Tab 1: Overview & 24 Branches */}
+        {/* Tab 1: Overview & 23 Branches */}
         {activeTab === "overview" && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-semibold tracking-tight text-white uppercase">
-                  Existing Branch Portfolio (24 Lounges)
+                  Existing Branch Portfolio (23 Lounges)
                 </h2>
                 <p className="text-[11px] text-slate-400">
                   Deterministic classification into PROTECT, HOLD, or SHRINK based on reputation, catchment demand, sister proximity, and competition.
@@ -133,7 +133,7 @@ export default function App() {
                   UAE Network Geospatial Analysis
                 </h2>
                 <p className="text-[11px] text-slate-400">
-                  Interactive spatial visualization of all 24 Bedashing lounges, 3km catchment radii, sister cannibalization conflict lines, and expansion target zones.
+                  Interactive spatial visualization of all 23 Bedashing lounges, 3km catchment radii, sister cannibalization conflict lines, and expansion target zones.
                 </p>
               </div>
             </div>

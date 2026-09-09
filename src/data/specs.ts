@@ -43,7 +43,7 @@ export const DRIVE_RESOURCES: DriveResourceFile[] = [
   },
   {
     name: "branches_raw.csv",
-    description: "All 24 Bedashing branches with exact coordinates, emirate allocations, and base spatial attributes extracted.",
+    description: "All 23 Bedashing branches with exact coordinates, emirate allocations, and base spatial attributes extracted.",
     category: "Data & Collectors",
     status: "Loaded in App",
     id: "doc-05",
