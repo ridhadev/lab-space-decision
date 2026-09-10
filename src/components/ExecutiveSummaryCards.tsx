@@ -3,6 +3,11 @@ import { NetworkSummary, BranchEvaluation, CandidateEvaluation } from "../types"
 import {
   AlertTriangle,
   Sparkles,
+  ShieldCheck,
+  CheckCircle2,
+  Building2,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 
 interface ExecutiveSummaryCardsProps {
@@ -24,152 +29,185 @@ export const ExecutiveSummaryCards: React.FC<ExecutiveSummaryCardsProps> = ({
   const topGrowCandidates = candidateEvals.filter((c) => c.classification === "GROW");
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-      {/* Card 1: Network Health & Breakdown */}
-      <div className="bg-[#161B22] p-3.5 rounded-lg border border-slate-700 shadow-sm flex flex-col justify-between">
-        <div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              Network Health Matrix
-            </span>
-            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">
-              Score: {summary.averageHealthScore}/100
-            </span>
+    <div className="mb-4 space-y-2.5">
+      {/* Operations Section Header (As in the uploaded screenshot) */}
+      <div className="flex items-center justify-between px-1">
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <Building2 className="w-5 h-5" />
           </div>
-          <h3 className="text-base font-semibold tracking-tight text-white mt-1">
-            23 UAE Lounges
-          </h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">
-            14 Abu Dhabi • 5 Dubai • 2 Sharjah • 1 Fujairah • 1 RAK
-          </p>
-
-          <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-            <div className="p-2 rounded bg-emerald-500/10 border border-emerald-500/20">
-              <div className="text-emerald-400 font-mono font-bold text-base">
-                {summary.protectCount}
-              </div>
-              <div className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">
-                PROTECT
-              </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <h2 className="text-xs font-bold tracking-[0.22em] ds-text-primary uppercase">
+                P O R T F O L I O &nbsp; O P E R A T I O N S
+              </h2>
             </div>
-
-            <div className="p-2 rounded bg-amber-500/10 border border-amber-500/20">
-              <div className="text-amber-400 font-mono font-bold text-base">
-                {summary.holdCount}
-              </div>
-              <div className="text-[9px] font-bold text-amber-400 uppercase tracking-wider">
-                HOLD
-              </div>
-            </div>
-
-            <div className="p-2 rounded bg-rose-500/10 border border-rose-500/20">
-              <div className="text-rose-400 font-mono font-bold text-base">
-                {summary.shrinkCount}
-              </div>
-              <div className="text-[9px] font-bold text-rose-400 uppercase tracking-wider">
-                SHRINK
-              </div>
-            </div>
+            <p className="text-[11px] ds-text-secondary mt-0.5">
+              23 Bedashing Lounges • Health Score {summary.averageHealthScore}/100 • 10 Prospective Zones
+            </p>
           </div>
         </div>
 
-        <div className="mt-3 pt-2.5 border-t border-slate-700/80 text-[10px] text-slate-400 flex items-center justify-between">
-          <span>Capital Allocation:</span>
-          <span className="font-semibold text-emerald-400">
-            {Math.round((summary.protectCount / summary.totalBranches) * 100)}% Core High-Moat
+        <div className="flex items-center space-x-2">
+          <span className="text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-[#142842] border border-[#1D3452] text-cyan-300 uppercase">
+            ACTIVE CYCLE
           </span>
         </div>
       </div>
 
-      {/* Card 2: Cannibalization Conflict Alerts */}
-      <div className="bg-[#161B22] p-3.5 rounded-lg border border-slate-700 shadow-sm flex flex-col justify-between">
-        <div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest flex items-center space-x-1">
-              <AlertTriangle className="w-3 h-3" />
-              <span>Cannibalization Conflicts</span>
-            </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              {cannibalizedBranches.length} Overlaps
-            </span>
-          </div>
-          <h3 className="text-base font-semibold tracking-tight text-white mt-1">
-            Network Overlaps (&lt;4km)
-          </h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">
-            Sister lounges competing in the same hyper-local catchment
-          </p>
-
-          <div className="space-y-1.5 mt-2.5 max-h-28 overflow-y-auto pr-1">
-            {cannibalizedBranches.slice(0, 3).map((item) => (
-              <div
-                key={item.branch.id}
-                onClick={() => onSelectBranch(item)}
-                className="p-1.5 px-2.5 rounded bg-slate-800/60 hover:bg-slate-800 border border-slate-700/70 hover:border-rose-500/40 cursor-pointer flex items-center justify-between text-xs transition-colors"
-              >
-                <div>
-                  <span className="font-medium text-slate-200">{item.branch.name}</span>
-                  <div className="text-[10px] text-slate-400">{item.branch.emirate}</div>
+        {/* 3 Operations Metric Cards (from the screenshot structure) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* Card 1: Core Capital Moat (PROTECT) */}
+          <div className="ds-card p-4 border shadow-sm flex flex-col justify-between relative group hover:border-cyan-500/40 transition-all">
+            <div>
+              {/* Top Row with Rounded Icon Badge & Nav Arrows */}
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <CheckCircle2 className="w-5 h-5" />
                 </div>
-                <div className="text-right">
-                  <span className="font-mono font-bold text-rose-400 text-xs">
-                    {item.branch.nearestSisterDistanceKm} km
+                <div className="flex items-center space-x-1 text-slate-500">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {Math.round((summary.protectCount / summary.totalBranches) * 100)}% High-Moat
                   </span>
-                  <div className="text-[9px] text-slate-500">to sister</div>
                 </div>
               </div>
-            ))}
+
+              {/* Spaced Metric Caption (Image Style) */}
+              <div className="mt-3">
+                <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                  PROTECT ALLOCATION
+                </span>
+                <div className="text-3xl font-bold tracking-tight ds-text-primary mt-0.5">
+                  {summary.protectCount} <span className="text-base font-normal text-slate-400">/ 23</span>
+                </div>
+                <p className="text-[11px] ds-text-secondary mt-1">
+                  14 Abu Dhabi • 5 Dubai • 2 Sharjah • 1 FUJ • 1 RAK
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Status Pill */}
+            <div className="mt-4 pt-2.5 border-t ds-border-subtle flex items-center justify-between text-xs">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">
+                <ShieldCheck className="w-3 h-3" />
+                <span>Zero Sister Conflict • Safe Cashflow</span>
+              </span>
+              <span className="text-[10px] ds-text-muted">HOLD: {summary.holdCount} • SHRINK: {summary.shrinkCount}</span>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-2.5 pt-2 border-t border-slate-700/80 text-[10px] text-slate-400">
-          Action: Downsize chairs or renegotiate leases for overlapping branches.
-        </div>
-      </div>
-
-      {/* Card 3: Top Expansion Opportunities */}
-      <div className="bg-[#161B22] p-3.5 rounded-lg border border-slate-700 shadow-sm flex flex-col justify-between">
-        <div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-teal-400 uppercase tracking-widest flex items-center space-x-1">
-              <Sparkles className="w-3 h-3" />
-              <span>Expansion Pipeline</span>
-            </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
-              {summary.growCount} GROW Targets
-            </span>
-          </div>
-          <h3 className="text-base font-semibold tracking-tight text-white mt-1">
-            High-Potential Zones
-          </h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">
-            Underserved high-affluence catchments with zero sister overlap
-          </p>
-
-          <div className="space-y-1.5 mt-2.5 max-h-28 overflow-y-auto pr-1">
-            {topGrowCandidates.slice(0, 3).map((c) => (
-              <div
-                key={c.candidate.id}
-                onClick={() => onSelectCandidate(c)}
-                className="p-1.5 px-2.5 rounded bg-slate-800/60 hover:bg-slate-800 border border-slate-700/70 hover:border-teal-500/40 cursor-pointer flex items-center justify-between text-xs transition-colors"
-              >
-                <div>
-                  <span className="font-medium text-slate-200">{c.candidate.name}</span>
-                  <div className="text-[10px] text-slate-400">{c.candidate.emirate} • {c.candidate.zoneType}</div>
+          {/* Card 2: Cannibalization Conflict Alerts */}
+          <div className="ds-card p-4 border shadow-sm flex flex-col justify-between relative group hover:border-rose-500/40 transition-all">
+            <div>
+              {/* Top Row with Rounded Clock/Alert Badge */}
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                  <AlertTriangle className="w-5 h-5" />
                 </div>
                 <div className="text-right">
-                  <span className="font-mono font-bold text-teal-400 text-xs">Score {c.finalScore}</span>
-                  <div className="text-[9px] text-slate-500">Demand: {c.demandScore}/100</div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                    {cannibalizedBranches.length} Conflicts
+                  </span>
                 </div>
               </div>
-            ))}
+
+              {/* Spaced Metric Caption (Image Style) */}
+              <div className="mt-3">
+                <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                  CANNIBALIZATION ALERTS
+                </span>
+                <div className="text-3xl font-bold tracking-tight ds-text-primary mt-0.5">
+                  {cannibalizedBranches.length}{" "}
+                  <span className="text-xs font-normal text-rose-400 font-mono">
+                    (&lt;4.0km sister buffer)
+                  </span>
+                </div>
+                <p className="text-[11px] ds-text-secondary mt-1">
+                  Overlapping catchment radii diluting revenue per chair
+                </p>
+              </div>
+
+              {/* Quick interactive mini-chips for cannibalized branches */}
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {cannibalizedBranches.slice(0, 3).map((item) => (
+                  <button
+                    key={item.branch.id}
+                    onClick={() => onSelectBranch(item)}
+                    className="px-2 py-1 rounded-lg ds-card-subtle hover:border-rose-500/50 border text-[10px] ds-text-secondary flex items-center gap-1 transition-colors"
+                    title="Click to audit sister cannibalization"
+                  >
+                    <span className="font-semibold text-rose-400">{item.branch.name.split(" ")[0]}</span>
+                    <span>({item.branch.nearestSisterDistanceKm}km)</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom Trend Pill (Screenshot variance badge style) */}
+            <div className="mt-3 pt-2.5 border-t ds-border-subtle flex items-center justify-between text-xs">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 text-[10px] font-semibold border border-rose-500/25">
+                <TrendingDown className="w-3 h-3" />
+                <span>Action: Downsize chairs or renegotiate lease</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Card 3: Expansion Pipeline (GROW) */}
+          <div className="ds-card p-4 border shadow-sm flex flex-col justify-between relative group hover:border-cyan-500/40 transition-all">
+            <div>
+              {/* Top Row with Rounded Arrow/Target Badge */}
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                    {summary.growCount} GROW Targets
+                  </span>
+                </div>
+              </div>
+
+              {/* Spaced Metric Caption (Image Style) */}
+              <div className="mt-3">
+                <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                  EXPANSION PIPELINE
+                </span>
+                <div className="text-3xl font-bold tracking-tight ds-text-primary mt-0.5">
+                  +56 Chairs{" "}
+                  <span className="text-xs font-normal text-cyan-400 font-mono">
+                    (Target Capacity)
+                  </span>
+                </div>
+                <p className="text-[11px] ds-text-secondary mt-1">
+                  10 UAE Candidates Analyzed • Unserved affluent catchments
+                </p>
+              </div>
+
+              {/* Quick interactive mini-chips for GROW candidates */}
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {topGrowCandidates.slice(0, 3).map((item) => (
+                  <button
+                    key={item.candidate.id}
+                    onClick={() => onSelectCandidate(item)}
+                    className="px-2 py-1 rounded-lg ds-card-subtle hover:border-cyan-500/50 border text-[10px] ds-text-secondary flex items-center gap-1 transition-colors"
+                    title="Click to inspect candidate specs"
+                  >
+                    <span className="font-semibold text-cyan-400">{item.candidate.name.split(" ")[0]}</span>
+                    <span>(Score {item.finalScore})</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom Trend Pill */}
+            <div className="mt-3 pt-2.5 border-t ds-border-subtle flex items-center justify-between text-xs">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 text-[10px] font-semibold border border-cyan-500/25">
+                <TrendingUp className="w-3 h-3" />
+                <span>Priority: Dubai Hills, Al Reem, Saadiyat</span>
+              </span>
+            </div>
           </div>
         </div>
-
-        <div className="mt-2.5 pt-2 border-t border-slate-700/80 text-[10px] text-slate-400">
-          Target: Add ~56 high-efficiency beauty chairs across priority locations.
-        </div>
       </div>
-    </div>
   );
 };

@@ -231,7 +231,7 @@ npm run build && npm start
                   <li><strong>FR-3 (Candidate Scoring):</strong> Compute expansion attractiveness across Unmet Demand, Affluence, Retail Gravity, and Sister Separation.</li>
                   <li><strong>FR-4 (Candidate Classification):</strong> Classify expansion zones into GROW, WATCH, or SKIP.</li>
                   <li><strong>FR-5 (Interactive Weight Tuning):</strong> Provide interactive controls to adjust scoring weights with live recalculation in &lt;100ms.</li>
-                  <li><strong>FR-6 (Geospatial Visualization):</strong> Render interactive map of the UAE with branch and candidate markers, 3km buffer circles, and cannibalization conflict vectors.</li>
+                  <li><strong>FR-6 (Map Visualization):</strong> Render interactive map of the UAE with branch and candidate markers, 3km buffer circles, and cannibalization conflict vectors.</li>
                   <li><strong>FR-7 (Audit Tracing):</strong> Expose exact mathematical formula strings for every evaluated branch and candidate.</li>
                   <li><strong>FR-8 (Grounded AI Reasoning):</strong> Integrate LLM that explains decisions strictly referencing the computed numbers.</li>
                   <li><strong>FR-9 (Board Memorandum Generation):</strong> One-click synthesis of executive board memorandum with copy and print formats.</li>
@@ -279,7 +279,7 @@ npm run build && npm start
                   <strong>Stack:</strong> React 19 + TypeScript + Vite + Express + Tailwind CSS.
                 </p>
                 <p>
-                  <strong>Geospatial:</strong> Leaflet with CartoDB Dark tiles, SVG overlay markers, buffer circles, and dynamic cannibalization vectors.
+                  <strong>Map Engine:</strong> Leaflet with CartoDB Dark tiles, SVG overlay markers, buffer circles, and dynamic cannibalization vectors.
                 </p>
                 <p>
                   <strong>AI Integration:</strong> Google Gen AI SDK (`@google/genai`) with `gemini-3.8-flash` on server-side `/api/ai/*` routes.

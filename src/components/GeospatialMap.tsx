@@ -7,6 +7,8 @@ import {
 import {
   Layers,
   Maximize2,
+  Minimize2,
+  RotateCcw,
 } from "lucide-react";
 
 interface GeospatialMapProps {
@@ -34,6 +36,53 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   const [showBuffers, setShowBuffers] = useState(true);
   const [showCannibalizationLinks, setShowCannibalizationLinks] = useState(true);
   const [activeEmirate, setActiveEmirate] = useState<string>("All");
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  // Handle Fullscreen escape listener & body scroll lock
+  useEffect(() => {
+    if (isFullScreen) {
+      document.body.style.overflow = "hidden";
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setIsFullScreen(false);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [isFullScreen]);
+
+  // Robust map dimensions and center handling on fullscreen or focus change
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const handleResize = () => {
+      const container = mapContainerRef.current;
+      if (!container || container.clientHeight === 0) return;
+      map.invalidateSize({ pan: false });
+      if (focusedLocation) {
+        map.setView([focusedLocation.lat, focusedLocation.lng], map.getZoom() || 12, { animate: false });
+      } else {
+        map.setView([24.4539, 54.6773], map.getZoom() || 8, { animate: false });
+      }
+    };
+
+    const rafId = requestAnimationFrame(handleResize);
+    const timer1 = setTimeout(handleResize, 50);
+    const timer2 = setTimeout(handleResize, 150);
+    const timer3 = setTimeout(handleResize, 350);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
+  }, [isFullScreen, focusedLocation]);
 
   // Initialize Map with High Density Dark CartoDB Tiles
   useEffect(() => {
@@ -48,13 +97,11 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       maxZoom: 17,
     });
 
-    // Dark Matter CartoDB tiles for high-contrast dark theme with authenticated key
-    const cartoKey =
-      (import.meta as any).env?.VITE_CARTO_API_KEY ||
-      "cb1_340n_1_df0876dfe4afaf348083fd15";
+    // Dark Matter CartoDB tiles for high-contrast dark theme
+    const cartoKey = (import.meta as any).env?.VITE_CARTO_API_KEY;
     const tileUrl = cartoKey
       ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${cartoKey}`
-      : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+      : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png";
 
     L.tileLayer(
       tileUrl,
@@ -71,7 +118,9 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     mapInstanceRef.current = map;
 
     const resizeObserver = new ResizeObserver(() => {
-      map.invalidateSize();
+      if (mapContainerRef.current && mapContainerRef.current.clientHeight > 0) {
+        map.invalidateSize({ pan: false });
+      }
     });
     resizeObserver.observe(mapContainerRef.current);
 
@@ -369,109 +418,199 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[620px] rounded-lg border border-slate-700 overflow-hidden shadow-sm bg-[#161B22]">
-      {/* Map Container */}
-      <div ref={mapContainerRef} className="w-full h-full z-0" />
-
-      {/* Floating Map Controls & Legend - High Density Style */}
-      <div className="absolute top-3 left-3 z-10 bg-black/70 backdrop-blur-md p-3 rounded border border-white/10 shadow-xl max-w-xs text-xs space-y-2.5 text-slate-200">
-        <div className="flex items-center justify-between pb-1.5 border-b border-white/10">
-          <div className="flex items-center space-x-1.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              GEOSPATIAL HEATMAP
-            </span>
+    <div
+      className={
+        isFullScreen
+          ? "fixed inset-0 z-[9999] w-full h-full bg-[#08111E] ds-app flex flex-col overflow-hidden"
+          : "relative w-full h-[620px] rounded-lg border border-[#1D3452] shadow-sm bg-[#0F1F35] overflow-hidden flex flex-col"
+      }
+    >
+      {/* Top Banner when in Fullscreen Mode */}
+      {isFullScreen && (
+        <div className="h-12 bg-[#0C182A] border-b border-[#1D3452] px-4 z-20 flex items-center justify-between shadow-md shrink-0">
+          <div className="flex items-center space-x-3">
+            <div className="w-7 h-7 rounded-lg bg-[#142842] border border-[#1D3452] flex items-center justify-center p-1">
+              <img src="/bedashing-icon.svg" alt="Bedashing" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-xs font-bold tracking-tight text-white uppercase">
+                  UAE Map
+                </h2>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  Full View
+                </span>
+              </div>
+              <p className="text-[11px] text-[#8BA2C1]">
+                23 Bedashing Lounges • 10 Prospective Growth Zones • 3km Buffers &amp; Cannibalization
+              </p>
+            </div>
           </div>
-          <button
-            onClick={resetMapZoom}
-            className="p-1 text-slate-400 hover:text-white rounded hover:bg-white/10 transition-colors"
-            title="Reset UAE View"
-          >
-            <Maximize2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
 
-        {/* Emirate filter */}
-        <div>
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-            Focus Emirate:
-          </label>
-          <select
-            value={activeEmirate}
-            onChange={(e) => setActiveEmirate(e.target.value)}
-            className="w-full text-xs py-1 px-2 border border-slate-700 rounded bg-slate-900 text-slate-200 focus:outline-hidden focus:border-indigo-500"
-          >
-            <option value="All">All Emirates (23 Branches)</option>
-            <option value="Abu Dhabi">Abu Dhabi (14)</option>
-            <option value="Dubai">Dubai (5)</option>
-            <option value="Sharjah">Sharjah (2)</option>
-            <option value="Fujairah">Fujairah (1)</option>
-            <option value="Ras Al Khaimah">Ras Al Khaimah (1)</option>
-          </select>
-        </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={resetMapZoom}
+              className="inline-flex items-center space-x-1.5 px-2.5 py-1.5 rounded text-xs font-medium bg-[#142842] hover:bg-[#193152] text-[#8BA2C1] hover:text-white border border-[#1D3452] transition-colors cursor-pointer"
+              title="Reset UAE Geographic View"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Reset View</span>
+            </button>
 
-        {/* Layer checkboxes */}
-        <div className="space-y-1.5 pt-1.5 border-t border-white/10 text-[11px]">
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showBranches}
-              onChange={(e) => setShowBranches(e.target.checked)}
-              className="rounded-xs text-indigo-500 bg-slate-900 border-slate-700 focus:ring-0"
-            />
-            <span className="text-slate-300">Existing Branches (Circles)</span>
-          </label>
-
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showCandidates}
-              onChange={(e) => setShowCandidates(e.target.checked)}
-              className="rounded-xs text-teal-500 bg-slate-900 border-slate-700 focus:ring-0"
-            />
-            <span className="text-slate-300">Expansion Candidates (Diamonds)</span>
-          </label>
-
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showBuffers}
-              onChange={(e) => setShowBuffers(e.target.checked)}
-              className="rounded-xs text-indigo-500 bg-slate-900 border-slate-700 focus:ring-0"
-            />
-            <span className="text-slate-300">3km Catchment Buffers</span>
-          </label>
-
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showCannibalizationLinks}
-              onChange={(e) => setShowCannibalizationLinks(e.target.checked)}
-              className="rounded-xs text-rose-500 bg-slate-900 border-slate-700 focus:ring-0"
-            />
-            <span className="text-slate-300">Cannibalization Vectors (&lt;4km)</span>
-          </label>
-        </div>
-
-        {/* Legend */}
-        <div className="pt-2 border-t border-white/10 space-y-1.5 text-[11px]">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <span className="text-slate-200">Protect / Grow</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-            <span className="text-slate-200">Hold / Watch</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-            <span className="text-slate-200">Shrink / Skip</span>
+            <button
+              onClick={() => setIsFullScreen(false)}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-xs border border-cyan-400 transition-colors cursor-pointer"
+              title="Exit Full View (or press Esc)"
+            >
+              <Minimize2 className="w-3.5 h-3.5" />
+              <span>Exit Full View (Esc)</span>
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* High Density Status Pill in Bottom Right */}
-      <div className="absolute bottom-3 right-3 bg-slate-900/90 border border-slate-700 px-2.5 py-1 rounded text-[10px] text-slate-400 shadow-md">
-        View: UAE CartoDB Dark | Layer: Affluence & Cannibalization Vectors
+      {/* Map Canvas & Controls Wrapper */}
+      <div
+        className="relative w-full flex-1 min-h-0 overflow-hidden"
+        style={{
+          height: isFullScreen ? "calc(100vh - 48px)" : "100%",
+          minHeight: isFullScreen ? "calc(100vh - 48px)" : "620px",
+        }}
+      >
+        {/* Leaflet Map Target Element */}
+        <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
+
+        {/* Top Right Full View Button when in standard mode */}
+        {!isFullScreen && (
+          <div className="absolute top-3 right-3 z-[1000]">
+            <button
+              onClick={() => setIsFullScreen(true)}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0C182A]/90 hover:bg-[#142842] text-slate-200 hover:text-white border border-[#1D3452] shadow-lg text-xs font-semibold transition-all backdrop-blur-md cursor-pointer"
+              title="Expand Map to Full Screen View"
+            >
+              <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Full View</span>
+            </button>
+          </div>
+        )}
+
+        {/* Floating Map Controls & Legend - Dark Navy High Density Style */}
+        <div
+          className={`absolute z-[1000] bg-[#0C182A]/95 backdrop-blur-md p-3 rounded-lg border border-[#1D3452] shadow-2xl max-w-xs text-xs space-y-2.5 text-slate-200 transition-all ${
+            isFullScreen ? "top-4 left-4" : "top-3 left-3"
+          }`}
+        >
+          <div className="flex items-center justify-between pb-1.5 border-b border-[#1D3452]">
+            <div className="flex items-center space-x-1.5">
+              <img src="/bedashing-icon.svg" alt="Bedashing Icon" className="h-3.5 w-auto" />
+              <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest">
+                MAP LAYERS
+              </span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={resetMapZoom}
+                className="p-1 text-[#8BA2C1] hover:text-white rounded hover:bg-[#142842] transition-colors cursor-pointer"
+                title="Reset UAE Zoom"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setIsFullScreen(!isFullScreen)}
+                className={`p-1 rounded transition-colors cursor-pointer ${
+                  isFullScreen ? "text-cyan-300 hover:bg-[#142842]" : "text-[#8BA2C1] hover:text-white hover:bg-[#142842]"
+                }`}
+                title={isFullScreen ? "Exit Full View (Esc)" : "Full View Screen"}
+              >
+                {isFullScreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Emirate filter */}
+          <div>
+            <label className="text-[10px] font-bold text-[#8BA2C1] uppercase tracking-wider block mb-1">
+              Focus Emirate:
+            </label>
+            <select
+              value={activeEmirate}
+              onChange={(e) => setActiveEmirate(e.target.value)}
+              className="w-full text-xs py-1 px-2 border border-[#1D3452] rounded bg-[#0A1424] text-slate-200 focus:outline-hidden focus:border-cyan-500 cursor-pointer"
+            >
+              <option value="All">All Emirates (23 Branches)</option>
+              <option value="Abu Dhabi">Abu Dhabi (14)</option>
+              <option value="Dubai">Dubai (5)</option>
+              <option value="Sharjah">Sharjah (2)</option>
+              <option value="Fujairah">Fujairah (1)</option>
+              <option value="Ras Al Khaimah">Ras Al Khaimah (1)</option>
+            </select>
+          </div>
+
+          {/* Layer checkboxes */}
+          <div className="space-y-1.5 pt-1.5 border-t border-[#1D3452] text-[11px]">
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showBranches}
+                onChange={(e) => setShowBranches(e.target.checked)}
+                className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+              />
+              <span className="text-slate-300">Existing Branches (Circles)</span>
+            </label>
+
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showCandidates}
+                onChange={(e) => setShowCandidates(e.target.checked)}
+                className="rounded-xs text-teal-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+              />
+              <span className="text-slate-300">Expansion Candidates (Diamonds)</span>
+            </label>
+
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showBuffers}
+                onChange={(e) => setShowBuffers(e.target.checked)}
+                className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+              />
+              <span className="text-slate-300">3km Catchment Buffers</span>
+            </label>
+
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showCannibalizationLinks}
+                onChange={(e) => setShowCannibalizationLinks(e.target.checked)}
+                className="rounded-xs text-rose-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+              />
+              <span className="text-slate-300">Cannibalization Vectors (&lt;4km)</span>
+            </label>
+          </div>
+
+          {/* Legend */}
+          <div className="pt-2 border-t border-[#1D3452] space-y-1.5 text-[11px]">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span className="text-slate-200">Protect / Grow</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span className="text-slate-200">Hold / Watch</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+              <span className="text-slate-200">Shrink / Skip</span>
+            </div>
+          </div>
+        </div>
+
+        {/* High Density Status Pill in Bottom Right */}
+        <div className="absolute bottom-3 right-3 bg-[#0C182A]/90 border border-[#1D3452] px-2.5 py-1 rounded text-[10px] text-[#8BA2C1] shadow-md flex items-center gap-1.5 z-[1000]">
+          <img src="/bedashing-icon.svg" alt="Bedashing" className="h-3 w-auto opacity-70" />
+          <span>UAE Dark Map | Catchments &amp; Cannibalization</span>
+        </div>
       </div>
     </div>
   );

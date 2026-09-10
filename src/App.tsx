@@ -29,8 +29,8 @@ import { DriveSyncModal } from "./components/DriveSyncModal";
 import { ResourcesView } from "./components/ResourcesView";
 
 export default function App() {
-  // Navigation & Tab State
-  const [activeTab, setActiveTab] = useState<"overview" | "map" | "candidates" | "resources" | "docs">("overview");
+  // Navigation & Tab State: Map is first and default
+  const [activeTab, setActiveTab] = useState<"map" | "overview" | "candidates" | "resources" | "docs">("map");
 
   // Scoring Weights & Thresholds
   const [branchWeights, setBranchWeights] = useState<BranchScoringWeights>(DEFAULT_BRANCH_WEIGHTS);
@@ -70,7 +70,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F1115] text-slate-200 flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen ds-app flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white transition-colors duration-200">
       {/* Top Header */}
       <Header
         summary={summary}
@@ -96,44 +96,16 @@ export default function App() {
           />
         )}
 
-        {/* Tab 1: Overview & 23 Branches */}
-        {activeTab === "overview" && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold tracking-tight text-white uppercase">
-                  Existing Branch Portfolio (23 Lounges)
-                </h2>
-                <p className="text-[11px] text-slate-400">
-                  Deterministic classification into PROTECT, HOLD, or SHRINK based on reputation, catchment demand, sister proximity, and competition.
-                </p>
-              </div>
-              <button
-                onClick={() => setActiveTab("map")}
-                className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
-              >
-                View on Geospatial Map →
-              </button>
-            </div>
-
-            <BranchTable
-              evaluations={branchEvals}
-              onSelectBranch={(b) => setSelectedBranchEval(b)}
-              onOpenMapFocus={handleMapFocus}
-            />
-          </div>
-        )}
-
-        {/* Tab 2: UAE Geospatial Map */}
+        {/* Tab 1: UAE Map */}
         {activeTab === "map" && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold tracking-tight text-white uppercase">
-                  UAE Network Geospatial Analysis
+                <h2 className="text-sm font-semibold tracking-tight ds-text-primary uppercase">
+                  UAE Map
                 </h2>
-                <p className="text-[11px] text-slate-400">
-                  Interactive spatial visualization of all 23 Bedashing lounges, 3km catchment radii, sister cannibalization conflict lines, and expansion target zones.
+                <p className="text-[11px] ds-text-secondary">
+                  Interactive map of all 23 Bedashing lounges, 3km catchment buffers, sister cannibalization lines, and expansion target zones.
                 </p>
               </div>
             </div>
@@ -148,15 +120,43 @@ export default function App() {
           </div>
         )}
 
+        {/* Tab 2: Existing Branches */}
+        {activeTab === "overview" && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold tracking-tight ds-text-primary uppercase">
+                  Branches (23)
+                </h2>
+                <p className="text-[11px] ds-text-secondary">
+                  Deterministic classification into PROTECT, HOLD, or SHRINK based on reputation, catchment demand, sister proximity, and competition.
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveTab("map")}
+                className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
+              >
+                View on Map →
+              </button>
+            </div>
+
+            <BranchTable
+              evaluations={branchEvals}
+              onSelectBranch={(b) => setSelectedBranchEval(b)}
+              onOpenMapFocus={handleMapFocus}
+            />
+          </div>
+        )}
+
         {/* Tab 3: Expansion Candidates */}
         {activeTab === "candidates" && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold tracking-tight text-white uppercase">
-                  Prospective UAE Expansion Zones (10 Candidates)
+                <h2 className="text-sm font-semibold tracking-tight ds-text-primary uppercase">
+                  Candidates (10)
                 </h2>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] ds-text-secondary">
                   Evaluating new territory growth into GROW, WATCH, or SKIP based on unmet demand, target female affluence, retail gravity, and sister cannibalization safety.
                 </p>
               </div>
@@ -176,13 +176,13 @@ export default function App() {
         {/* Tab 5: Technical & Strategic Architecture Documentation */}
         {activeTab === "docs" && (
           <div className="space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-slate-900/90 rounded-lg border border-slate-700 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 ds-card border shadow-sm">
               <div>
-                <h2 className="text-sm font-semibold tracking-tight text-white uppercase flex items-center gap-2">
+                <h2 className="text-sm font-semibold tracking-tight ds-text-primary uppercase flex items-center gap-2">
                   <span>Technical & Strategic Architecture Documentation</span>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">/docs/index.html</span>
                 </h2>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-[11px] ds-text-secondary mt-0.5">
                   Complete technical specification: Data provenance table, mathematical models (Haversine & cannibalization curves), hypotheses, and developer reference.
                 </p>
               </div>
@@ -198,7 +198,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="w-full h-[76vh] rounded-xl overflow-hidden border border-slate-700 bg-[#0B0D11] shadow-2xl">
+            <div className="w-full h-[76vh] ds-card overflow-hidden border shadow-2xl">
               <iframe
                 src="/docs/index.html"
                 title="Decision Space Technical Documentation"
@@ -210,10 +210,10 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#161B22] border-t border-slate-800 py-2.5 text-xs text-slate-400">
+      <footer className="ds-header border-t py-2.5 text-xs ds-text-secondary transition-colors">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="text-[11px]">
-            <strong className="text-slate-300">Decision Space</strong> • AI-Enabled Geospatial Decision-Support for UAE Retail Networks
+            <strong className="ds-text-primary">Decision Space</strong> • UAE Retail Network Decision-Support
           </div>
           <div className="text-slate-500 text-[10px] font-mono">
             Grounding Mandate: Models explain computed metrics; deterministic models govern all scoring.

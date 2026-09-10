@@ -106,17 +106,34 @@ export const BoardMemoModal: React.FC<BoardMemoModalProps> = ({
       <div className="bg-[#161B22] rounded-lg border border-slate-700 shadow-2xl max-w-4xl w-full h-[90vh] flex flex-col overflow-hidden text-slate-200 animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="p-3.5 border-b border-slate-700 bg-[#1C2128] flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-7 h-7 rounded bg-indigo-600 text-white flex items-center justify-center font-bold">
-              <FileText className="w-3.5 h-3.5" />
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 p-1 flex items-center justify-center">
+              <img
+                src="/bedashing-icon.svg"
+                alt="Bedashing Icon"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
-              <h2 className="text-sm font-semibold tracking-tight text-white uppercase">
-                EXECUTIVE BOARD DECISION MEMORANDUM
-              </h2>
-              <p className="text-[11px] text-slate-400">
-                Bedashing UAE Network Optimization & Expansion Strategy • Confidential
-              </p>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold tracking-tight text-white uppercase">
+                  EXECUTIVE BOARD DECISION MEMORANDUM
+                </h2>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  Confidential
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <img
+                  src="/bedashing-logo-white.svg"
+                  alt="Bedashing Beauty Lounge"
+                  className="h-3 w-auto object-contain opacity-80"
+                />
+                <span className="text-slate-500 text-[10px]">•</span>
+                <p className="text-[11px] text-slate-400">
+                  UAE Network Optimization &amp; Expansion Strategy
+                </p>
+              </div>
             </div>
           </div>
           <div className="flex items-center space-x-2">

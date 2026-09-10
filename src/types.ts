@@ -2,6 +2,9 @@ export type BranchClassification = "PROTECT" | "HOLD" | "SHRINK";
 export type CandidateClassification = "GROW" | "WATCH" | "SKIP";
 export type Emirate = "Abu Dhabi" | "Dubai" | "Sharjah" | "Fujairah" | "Ras Al Khaimah";
 
+export type ThemeTone = "navy";
+export type ColorMode = "dark";
+
 export interface Branch {
   id: string;
   name: string;

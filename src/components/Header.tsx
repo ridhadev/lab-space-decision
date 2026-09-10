@@ -8,7 +8,6 @@ import {
   Layers,
   Sparkles,
   BookOpen,
-  ExternalLink
 } from "lucide-react";
 
 interface HeaderProps {
@@ -32,39 +31,49 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenMemo,
   isAiLoading,
 }) => {
+
   return (
-    <header className="bg-[#161B22] border-b border-slate-700 sticky top-0 z-30 text-slate-200 shadow-md">
+    <header className="ds-header border-b sticky top-0 z-30 ds-text-primary shadow-md transition-colors">
       {/* Top Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
           {/* Brand & Reference Info */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-white shadow-xs">
-              D
+            <div className="w-9 h-9 bg-[#0C182A] border border-[#1D3452] rounded-lg flex items-center justify-center p-1.5 shadow-xs shrink-0">
+              <img
+                src="/bedashing-icon.svg"
+                alt="Bedashing Icon"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base font-semibold tracking-tight text-white uppercase">
+                <h1 className="text-sm font-bold tracking-tight ds-text-primary uppercase">
                   DECISION SPACE
                 </h1>
-                <span className="text-xs font-normal text-slate-400 italic">
-                  v1.1
-                </span>
-                <span className="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
                   UAE Network
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
-                Reference: <span className="text-slate-200 font-medium">Bedashing Beauty Lounges</span> (23 Branches: 14 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
-              </p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <img
+                  src="/bedashing-logo-white.svg"
+                  alt="Bedashing Beauty Lounge"
+                  className="h-3.5 w-auto object-contain opacity-90 transition-all"
+                />
+                <span className="text-[#536F93] text-[10px]">•</span>
+                <p className="text-[11px] ds-text-secondary">
+                  <span className="font-semibold ds-text-primary">23 Branches</span> (14 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
+                </p>
+              </div>
             </div>
           </div>
 
           {/* High Density Metric Badges */}
           <div className="flex items-center flex-wrap gap-2 text-xs">
-            <div className="px-2.5 py-1 bg-slate-800 rounded border border-slate-700 flex flex-col">
-              <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Avg Health</span>
-              <span className="text-xs font-mono font-bold text-slate-200">{summary.averageHealthScore}/100</span>
+            <div className="px-2.5 py-1 rounded border ds-card-subtle flex flex-col">
+              <span className="text-[9px] text-[#8BA2C1] uppercase font-bold tracking-wider">Avg Health</span>
+              <span className="text-xs font-mono font-bold ds-text-primary">{summary.averageHealthScore}/100</span>
             </div>
 
             <div className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-bold border border-emerald-500/20 flex items-center space-x-1">
@@ -88,20 +97,20 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Action Tools */}
-          <div className="flex items-center space-x-2">
+          {/* Action Tools & Theme/Mode Switcher */}
+          <div className="flex items-center flex-wrap gap-2">
             <button
               onClick={onOpenControls}
-              className="inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded ds-card-subtle hover:opacity-85 ds-text-secondary border transition-colors cursor-pointer"
               title="Adjust scoring weights and thresholds"
             >
-              <Sliders className="w-3.5 h-3.5 text-slate-400" />
+              <Sliders className="w-3.5 h-3.5 text-[#8BA2C1]" />
               <span>Weights</span>
             </button>
 
             <button
               onClick={onOpenAi}
-              className="inline-flex items-center space-x-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 transition-colors shadow-xs"
+              className="inline-flex items-center space-x-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white border border-cyan-400 transition-colors shadow-xs cursor-pointer"
             >
               <Bot className="w-3.5 h-3.5" />
               <span>AI Advisor</span>
@@ -110,18 +119,18 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onOpenMemo}
               disabled={isAiLoading}
-              className="inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+              className="inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded ds-card-subtle hover:opacity-85 ds-text-primary border transition-colors cursor-pointer"
             >
-              <FileText className="w-3.5 h-3.5 text-indigo-400" />
+              <FileText className="w-3.5 h-3.5 text-cyan-400" />
               <span>Board Memo</span>
             </button>
 
             <button
               onClick={onOpenDrive}
-              className="inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded ds-card-subtle hover:opacity-85 ds-text-secondary border transition-colors cursor-pointer"
               title="Google Drive Resource Sync"
             >
-              <FolderSync className="w-3.5 h-3.5 text-slate-400" />
+              <FolderSync className="w-3.5 h-3.5 text-[#8BA2C1]" />
               <span>Drive Sync</span>
             </button>
 
@@ -129,73 +138,73 @@ export const Header: React.FC<HeaderProps> = ({
               href="/docs"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded bg-indigo-950/60 hover:bg-indigo-900/80 text-indigo-300 border border-indigo-500/40 hover:border-indigo-400 transition-colors shadow-xs"
+              className="inline-flex items-center space-x-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded bg-[#142842] hover:bg-[#193152] text-cyan-300 border border-[#1D3452] hover:border-cyan-500/50 transition-colors shadow-xs"
               title="Open Technical & Strategic Architecture Documentation in new tab"
             >
-              <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+              <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
               <span>Docs ↗</span>
             </a>
           </div>
         </div>
 
         {/* Navigation Tabs - High Density Bar */}
-        <div className="flex items-center space-x-1.5 mt-2.5 pt-2 border-t border-slate-800 overflow-x-auto text-xs">
+        <div className="flex items-center space-x-1.5 mt-2.5 pt-2 border-t border-[#1D3452] overflow-x-auto text-xs">
           <button
-            onClick={() => setActiveTab("overview")}
-            className={`px-3 py-1 text-[11px] font-medium rounded border transition-colors ${
-              activeTab === "overview"
-                ? "bg-slate-800 text-white border-slate-600 shadow-xs"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent"
+            onClick={() => setActiveTab("map")}
+            className={`inline-flex items-center space-x-1 px-3 py-1 text-[11px] font-medium rounded border transition-colors cursor-pointer ${
+              activeTab === "map"
+                ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                : "ds-text-secondary hover:ds-text-primary hover:bg-[#142842]/60 border-transparent"
             }`}
           >
-            Network Branches ({summary.totalBranches})
+            <Layers className="w-3 h-3 text-cyan-400" />
+            <span>Map</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("map")}
-            className={`inline-flex items-center space-x-1 px-3 py-1 text-[11px] font-medium rounded border transition-colors ${
-              activeTab === "map"
-                ? "bg-slate-800 text-white border-slate-600 shadow-xs"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent"
+            onClick={() => setActiveTab("overview")}
+            className={`px-3 py-1 text-[11px] font-medium rounded border transition-colors cursor-pointer ${
+              activeTab === "overview"
+                ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                : "ds-text-secondary hover:ds-text-primary hover:bg-[#142842]/60 border-transparent"
             }`}
           >
-            <Layers className="w-3 h-3 text-indigo-400" />
-            <span>UAE Geospatial Map</span>
+            Branches ({summary.totalBranches})
           </button>
 
           <button
             onClick={() => setActiveTab("candidates")}
-            className={`px-3 py-1 text-[11px] font-medium rounded border transition-colors ${
+            className={`px-3 py-1 text-[11px] font-medium rounded border transition-colors cursor-pointer ${
               activeTab === "candidates"
-                ? "bg-slate-800 text-white border-slate-600 shadow-xs"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent"
+                ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                : "ds-text-secondary hover:ds-text-primary hover:bg-[#142842]/60 border-transparent"
             }`}
           >
-            Expansion Candidates ({summary.totalCandidates})
+            Candidates ({summary.totalCandidates})
           </button>
 
           <button
             onClick={() => setActiveTab("resources")}
-            className={`inline-flex items-center space-x-1 px-3 py-1 text-[11px] font-medium rounded border transition-colors ${
+            className={`inline-flex items-center space-x-1 px-3 py-1 text-[11px] font-medium rounded border transition-colors cursor-pointer ${
               activeTab === "resources"
-                ? "bg-slate-800 text-white border-slate-600 shadow-xs"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent"
+                ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                : "ds-text-secondary hover:ds-text-primary hover:bg-[#142842]/60 border-transparent"
             }`}
           >
-            <FileText className="w-3 h-3 text-indigo-400" />
-            <span>Specs & Drive Sources (6 Docs)</span>
+            <FileText className="w-3 h-3 text-cyan-400" />
+            <span>Resources</span>
           </button>
 
           <button
             onClick={() => setActiveTab("docs")}
-            className={`inline-flex items-center space-x-1 px-3 py-1 text-[11px] font-semibold rounded border transition-colors ${
+            className={`inline-flex items-center space-x-1 px-3 py-1 text-[11px] font-semibold rounded border transition-colors cursor-pointer ${
               activeTab === "docs"
-                ? "bg-indigo-900/50 text-indigo-200 border-indigo-500/60 shadow-xs"
-                : "text-indigo-400/90 hover:text-indigo-200 hover:bg-indigo-950/40 border-indigo-500/20"
+                ? "bg-cyan-950/60 text-cyan-200 border-cyan-500/60 shadow-xs"
+                : "text-cyan-400/90 hover:text-cyan-200 hover:bg-cyan-950/40 border-cyan-500/20"
             }`}
           >
-            <BookOpen className="w-3 h-3 text-indigo-400" />
-            <span>Architecture Docs</span>
+            <BookOpen className="w-3 h-3 text-cyan-400" />
+            <span>Docs</span>
           </button>
         </div>
       </div>
