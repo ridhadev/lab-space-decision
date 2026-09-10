@@ -55,7 +55,41 @@ export const ExecutiveSummaryCards: React.FC<ExecutiveSummaryCardsProps> = ({
         </div>
       </div>
 
-        {/* 3 Operations Metric Cards (from the screenshot structure) */}
+      {/* Market Saturation Portfolio Profile Strip */}
+      <div className="ds-card p-2.5 px-3 border shadow-xs flex flex-wrap items-center justify-between gap-2 text-xs rounded-lg">
+        <div className="flex items-center space-x-2">
+          <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase font-mono">
+            COMPETITION SATURATION PROFILE:
+          </span>
+          <span className="text-[11px] ds-text-secondary hidden sm:inline">
+            3km salon density across 23 lounges
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/25 text-[10.5px]">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-xs"></span>
+            <span className="font-semibold">Monopolistic Moat (1–4):</span>
+            <span className="font-bold font-mono text-cyan-200">{summary.saturationBreakdown?.monopolistic ?? 0}</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/25 text-[10.5px]">
+            <span className="w-2 h-2 rounded-full bg-amber-400 shadow-xs"></span>
+            <span className="font-semibold">Balanced (5–9):</span>
+            <span className="font-bold font-mono text-amber-200">{summary.saturationBreakdown?.balanced ?? 0}</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-orange-500/10 text-orange-300 border border-orange-500/25 text-[10.5px]">
+            <span className="w-2 h-2 rounded-full bg-orange-400 shadow-xs"></span>
+            <span className="font-semibold">Saturated (10–17):</span>
+            <span className="font-bold font-mono text-orange-200">{summary.saturationBreakdown?.saturated ?? 0}</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/25 text-[10.5px]">
+            <span className="w-2 h-2 rounded-full bg-rose-400 shadow-xs"></span>
+            <span className="font-semibold">Hyper-Saturated (18+):</span>
+            <span className="font-bold font-mono text-rose-200">{summary.saturationBreakdown?.hyperSaturated ?? 0}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3 Operations Metric Cards (from the screenshot structure) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* Card 1: Core Capital Moat (PROTECT) */}
           <div className="ds-card p-4 border shadow-sm flex flex-col justify-between relative group hover:border-cyan-500/40 transition-all">

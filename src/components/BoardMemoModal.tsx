@@ -6,6 +6,7 @@ import {
   BranchScoringWeights,
 } from "../types";
 import { FileText, Sparkles, Copy, Check, X, Printer } from "lucide-react";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface BoardMemoModalProps {
   isOpen: boolean;
@@ -228,8 +229,8 @@ export const BoardMemoModal: React.FC<BoardMemoModalProps> = ({
                 </div>
               </div>
 
-              <div className="whitespace-pre-wrap leading-relaxed text-slate-200">
-                {memoText}
+              <div className="leading-relaxed text-slate-200">
+                <MarkdownRenderer content={memoText} />
               </div>
             </div>
           )}

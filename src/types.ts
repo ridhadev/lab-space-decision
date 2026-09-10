@@ -71,12 +71,15 @@ export interface ThresholdConfig {
   sisterBufferKm: number; // default: 4.0 km
 }
 
+export type MarketSaturationTier = "Monopolistic" | "Balanced" | "Saturated" | "Hyper-Saturated";
+
 export interface BranchEvaluation {
   branch: Branch;
   reputationScore: number; // 0-100
   demandScore: number; // 0-100
   cannibalizationScore: number; // 0-100 (higher = safe / low cannibalization)
   competitionScore: number; // 0-100 (higher = resilient / favorable share)
+  saturationTier: MarketSaturationTier;
   finalScore: number; // 0-100
   classification: BranchClassification;
   cannibalizationWarning: boolean;
@@ -90,6 +93,7 @@ export interface CandidateEvaluation {
   affluenceScore: number;
   retailScore: number;
   cannibalizationSafetyScore: number;
+  saturationTier: MarketSaturationTier;
   finalScore: number;
   classification: CandidateClassification;
   cannibalizationRisk: boolean;
@@ -109,6 +113,12 @@ export interface NetworkSummary {
   watchCount: number;
   skipCount: number;
   emirateBreakdown: Record<Emirate, { total: number; protect: number; hold: number; shrink: number }>;
+  saturationBreakdown: {
+    monopolistic: number;
+    balanced: number;
+    saturated: number;
+    hyperSaturated: number;
+  };
 }
 
 export interface DriveResourceFile {

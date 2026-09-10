@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { CandidateEvaluation, CandidateClassification } from "../types";
+import { CandidateEvaluation, CandidateClassification, MarketSaturationTier } from "../types";
+import { getMarketSaturationInfo } from "../services/scoringEngine";
 import {
   Search,
   Sparkles,
@@ -25,6 +26,7 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClassification, setSelectedClassification] = useState<string>("All");
+  const [selectedSaturation, setSelectedSaturation] = useState<string>("All");
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   // Handle Fullscreen escape listener & body scroll lock
@@ -55,9 +57,13 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
         selectedClassification === "All" ||
         item.classification === selectedClassification;
 
-      return matchSearch && matchClass;
+      const matchSaturation =
+        selectedSaturation === "All" ||
+        item.saturationTier === selectedSaturation;
+
+      return matchSearch && matchClass && matchSaturation;
     });
-  }, [evaluations, searchTerm, selectedClassification]);
+  }, [evaluations, searchTerm, selectedClassification, selectedSaturation]);
 
   const getBadge = (cls: CandidateClassification) => {
     switch (cls) {
@@ -138,7 +144,7 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
           />
         </div>
 
-        <div className="flex items-center space-x-1.5 text-xs">
+        <div className="flex items-center space-x-1.5 text-xs flex-wrap gap-y-1.5">
           <span className="ds-text-secondary text-[11px]">Filter Classification:</span>
           {(["All", "GROW", "WATCH", "SKIP"] as const).map((cls) => (
             <button
@@ -153,6 +159,39 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
               {cls}
             </button>
           ))}
+
+          <div className="h-3.5 w-px bg-[#1D3452] mx-1 hidden sm:block" />
+
+          {/* Saturation Filter */}
+          <span className="ds-text-secondary text-[11px]">Saturation:</span>
+          {(["All", "Monopolistic", "Balanced", "Saturated", "Hyper-Saturated"] as const).map((sat) => {
+            const count =
+              sat === "All"
+                ? evaluations.length
+                : evaluations.filter((e) => e.saturationTier === sat).length;
+            const satLabel =
+              sat === "All"
+                ? "All"
+                : sat === "Monopolistic"
+                ? "Moat (1-4)"
+                : sat === "Hyper-Saturated"
+                ? "Hyper (18+)"
+                : sat;
+            return (
+              <button
+                key={sat}
+                onClick={() => setSelectedSaturation(sat)}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors border flex items-center gap-1 ${
+                  selectedSaturation === sat
+                    ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                    : "ds-card-subtle ds-text-secondary hover:ds-text-primary"
+                }`}
+              >
+                <span>{satLabel}</span>
+                <span className="text-[10px] font-mono opacity-70">({count})</span>
+              </button>
+            );
+          })}
 
           <div className="h-3.5 w-px bg-[#1D3452] mx-1 hidden sm:block" />
 
@@ -192,6 +231,7 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
               <th className="py-2.5 px-2.5 text-center">Unmet Demand</th>
               <th className="py-2.5 px-2.5 text-center">Retail Gravity</th>
               <th className="py-2.5 px-2.5 text-center">Sister Distance</th>
+              <th className="py-2.5 px-2.5 text-center">Market Saturation</th>
               <th className="py-2.5 px-2.5 text-center">Expansion Score</th>
               <th className="py-2.5 px-3 text-center">Recommendation</th>
               <th className="py-2.5 px-3 text-right">Action</th>
@@ -200,6 +240,7 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
           <tbody className="divide-y ds-border-subtle text-xs">
             {filteredCandidates.map((item, idx) => {
               const { candidate, finalScore, classification, cannibalizationRisk } = item;
+              const satInfo = getMarketSaturationInfo(candidate.competitorCount);
               return (
                 <tr
                   key={candidate.id}
@@ -234,7 +275,7 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
                   </td>
 
                   <td className="py-2.5 px-2.5 text-center">
-                    <div className="font-mono ds-text-primary font-medium">{candidate.retailAnchorGravity}/100</div>
+                    <div className="font-mono ds-text-primary font-medium">{candidate.retailGravityScore}/100</div>
                   </td>
 
                   <td className="py-2.5 px-2.5 text-center">
@@ -243,10 +284,26 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
                         cannibalizationRisk ? "text-rose-400 font-bold" : "ds-text-primary"
                       }`}
                     >
-                      {candidate.nearestSisterDistanceKm} km
+                      {candidate.nearestBedashingDistanceKm} km
                     </div>
                     <div className="text-[10px] ds-text-secondary">
                       {cannibalizationRisk ? "Overlap risk" : "Safe spacing"}
+                    </div>
+                  </td>
+
+                  <td className="py-2.5 px-2.5 text-center">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ${satInfo.badgeClass}`}
+                      title={`${candidate.competitorCount} salons in 3km - ${satInfo.description}`}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full shrink-0 shadow-xs"
+                        style={{ backgroundColor: satInfo.dotColor }}
+                      />
+                      <span>{satInfo.label}</span>
+                    </span>
+                    <div className="text-[10px] ds-text-muted font-mono mt-0.5">
+                      {candidate.competitorCount} salons
                     </div>
                   </td>
 

@@ -265,6 +265,12 @@
                 <td class="p-3 text-slate-400">Mathematical scoring engine calibrated with user weights</td>
                 <td class="p-3 text-indigo-300">/src/services/scoringEngine.ts</td>
               </tr>
+              <tr class="hover:bg-dark-800/40">
+                <td class="p-3 font-sans font-medium text-slate-200">Market Saturation Tiers</td>
+                <td class="p-3"><span class="badge-deterministic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Deterministic</span></td>
+                <td class="p-3 text-slate-400">4-tier categorization: Monopolistic Moat (1–4), Balanced (5–9), Saturated (10–17), Hyper-Saturated (18+)</td>
+                <td class="p-3 text-indigo-300">/src/services/scoringEngine.ts</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -356,6 +362,62 @@
               <li>Between 3 and 25: Linear decay: <code class="text-slate-300">100 - ((competitors - 3) / 22) × 70</code>.</li>
             </ul>
           </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">D. Thermal Market Saturation & Competition Density Heatmap</h4>
+            <p class="text-slate-400">
+              Renders multi-tier concentric thermal density rings over CartoDB Dark Matter to illuminate competitive hotspots across the UAE:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 space-y-1">
+              <li><strong class="text-cyan-400">Low Density / Moat (1–4 Salons):</strong> Blue/Cyan thermal halo (3.8km plume, 1.0km core) indicating protected trade areas (e.g. Al Dhafra, Al Ain, Saadiyat).</li>
+              <li><strong class="text-yellow-400">Balanced Competition (5–9 Salons):</strong> Yellow/Gold gradient representing sustainable commercial retail density.</li>
+              <li><strong class="text-orange-400">High Saturation (10–17 Salons):</strong> Amber/Orange plume signaling competitive pressure (e.g. Al Khalidiya, Marina Mall AD, Al Zahia).</li>
+              <li><strong class="text-rose-400">Severe Hyper-Saturation (18–26+ Salons):</strong> Deep Crimson/Red thermal center signaling margin compression and aggressive customer acquisition costs (e.g. Downtown Dubai, Jumeirah Beach Road, City Walk).</li>
+            </ul>
+            <p class="text-slate-500 text-[11px]">Toggleable in <code class="text-indigo-300">GeospatialMap.tsx</code> with interactive tooltips and continuous thermal gradient legend.</p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">E. Coverage Gap & "White Space" Opportunity Layer</h4>
+            <p class="text-slate-400">
+              Isolates unserved high-yield geographic pockets where luxury salon demand significantly outpaces current capacity without sister cannibalization:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 space-y-1">
+              <li><strong>Gap Classification Rule:</strong> <code class="text-slate-300">Unmet Demand ≥ 80</code> AND <code class="text-slate-300">Affluence Score ≥ 80</code> AND <code class="text-slate-300">Sister Distance ≥ 3.0 km</code>.</li>
+              <li><strong>Opportunity Aura (3.5km Radius):</strong> Renders a glowing, dashed cyan/teal perimeter delineating the unserved primary trade area.</li>
+              <li><strong>Unmet Demand Core (1.4km Radius):</strong> High-opacity concentric nucleus illustrating the immediate retail density hub.</li>
+              <li><strong>Network Gap Reach Vector:</strong> Dotted directional vector connecting the candidate centroid to the nearest Bedashing branch, displaying exact inter-store separation and verifying zero sister cannibalization.</li>
+            </ul>
+            <p class="text-slate-500 text-[11px]">Toggleable in <code class="text-indigo-300">GeospatialMap.tsx</code> with interactive deep-dive audit tooltips and capacity deficit projections.</p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">F. Market Saturation Metric & Multi-Tier Classification System</h4>
+            <p class="text-slate-400">
+              Categorizes each branch and expansion candidate into distinct competitive saturation tiers to provide executive visibility across the portfolio:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 space-y-1">
+              <li><strong class="text-cyan-400">Monopolistic Moat (1–4 Salons):</strong> Defensible trade territory with low competitor density and high pricing resilience.</li>
+              <li><strong class="text-yellow-400">Balanced Density (5–9 Salons):</strong> Equilibrium trade zone supporting steady appointments and organic repeat bookings.</li>
+              <li><strong class="text-orange-400">Saturated Trade (10–17 Salons):</strong> Dense beauty market demanding continuous promotions, loyalty retention, and service differentiation.</li>
+              <li><strong class="text-rose-400">Hyper-Saturated (18+ Salons):</strong> Extreme salon density with aggressive customer acquisition costs and margin compression.</li>
+            </ul>
+            <p class="text-slate-500 text-[11px]">Integrated into <code class="text-indigo-300">ExecutiveSummaryCards.tsx</code> (portfolio profile strip), <code class="text-indigo-300">BranchTable.tsx</code> &amp; <code class="text-indigo-300">CandidateTable.tsx</code> (dedicated sortable columns &amp; one-click filter chips), and <code class="text-indigo-300">BranchDetailModal.tsx</code> (metrics audit cards).</p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">G. Collapsible Map Layers Panel & Center of Gravity Navigation</h4>
+            <p class="text-slate-400">
+              Interactive map navigation controls engineered for high-density spatial inspection and executive workflows:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 space-y-1">
+              <li><strong class="text-indigo-300">Collapsible Floating Dialog:</strong> Allows toggling the full controls/legend panel into a compact floating badge pill (<code class="text-slate-300">Map Layers [Emirate]</code>) to provide an unobstructed 100% full-screen map view with one-click re-expansion.</li>
+              <li><strong class="text-cyan-400">Deterministic Center of Gravity:</strong> When changing the Focus Emirate (via select dropdown or quick-select chips <code class="text-slate-300">UAE, AD, DXB, SHJ, FUJ, RAK</code>), the camera calculates the arithmetic centroid $(\bar{\text{lat}}, \bar{\text{lng}})$ of all selected branches and candidate growth zones.</li>
+              <li><strong class="text-emerald-400">Calibrated Symmetrical Zoom:</strong> Fits symmetric geographic bounds around the Center of Gravity with proportional margins, guaranteeing the map is centered on trade mass while accommodating full spatial spread (zoom 8 for UAE, ~10 for Abu Dhabi &amp; Al Ain, ~11 for Dubai Metro, ~12 for Sharjah, ~12.5 for single-location emirates like Fujairah and Ras Al Khaimah).</li>
+              <li><strong class="text-cyan-300">Unobstructed Bottom-Right Zoom Controls:</strong> Relocated zoom in/out (<code class="text-slate-300">+ / &minus;</code>) controls from underneath the top-left layer dialog to the bottom-right corner of the map viewport, styled in dark navy glassmorphism with high-contrast active states.</li>
+            </ul>
+            <p class="text-slate-500 text-[11px]">Implemented in <code class="text-indigo-300">GeospatialMap.tsx</code> with smooth Leaflet <code class="text-slate-300">flyToBounds</code> and <code class="text-slate-300">flyTo</code> transitions.</p>
+          </div>
         </div>
       </section>
 
@@ -428,6 +490,20 @@
               If upstream Google Gemini models encounter 503 high-demand spikes or network rate limits, <code class="text-indigo-300">server.ts</code> activates an automated exponential backoff. If all retries fail, it falls back to the internal <strong>Deterministic Grounded Generator</strong>, ensuring continuous 200 OK responses with zero downtime.
             </p>
           </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Rich Markdown Presentation Pipeline</h4>
+            <p class="text-slate-400 leading-normal">
+              All AI generated output (natural language strategic explanations, board memorandums, and chat conversations) are parsed via <code class="text-indigo-300">MarkdownRenderer.tsx</code> leveraging <code class="text-slate-200">react-markdown</code> and GitHub Flavored Markdown (<code class="text-slate-200">remark-gfm</code>). Replaces raw text dumps with high-contrast typography, styled H1&ndash;H4 hierarchy, structured tables, formatted bulleted lists, and monospace code blocks.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Per-Branch/Candidate Local Storage Caching &amp; Loading States</h4>
+            <p class="text-slate-400 leading-normal">
+              AI recommendations are isolated per branch and candidate using <code class="text-indigo-300">/src/services/aiStorage.ts</code>. If an AI deep dive has never been requested for a specific location, an explicit generation prompt is presented. Upon execution, an active processing animation displays a pulsing radar indicator, status text, and shimmering skeleton placeholders. Once returned, rationales are persisted in browser <code class="text-slate-200">localStorage</code> with timestamps and instant zero-latency retrieval on subsequent visits, alongside one-click regeneration controls.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -454,6 +530,10 @@
                 <td class="p-3 font-sans text-slate-400">Master GitHub repository guide: Business context, local 1-minute quick start, API key guidelines, and commands.</td>
               </tr>
               <tr>
+                <td class="p-3 text-indigo-300">/VERSIONS.md</td>
+                <td class="p-3 font-sans text-slate-400">Release registry and changelog recording all version snapshots (starting with active baseline <code class="text-slate-200">V.01</code>) and manifest artifacts.</td>
+              </tr>
+              <tr>
                 <td class="p-3 text-indigo-300">/src/types.ts</td>
                 <td class="p-3 font-sans text-slate-400">TypeScript interfaces: <code class="text-slate-200">Branch</code>, <code class="text-slate-200">CandidateArea</code>, <code class="text-slate-200">BranchEvaluation</code>, <code class="text-slate-200">NetworkSummary</code>.</td>
               </tr>
@@ -468,6 +548,14 @@
               <tr>
                 <td class="p-3 text-indigo-300">/src/data/candidates.ts</td>
                 <td class="p-3 font-sans text-slate-400">10 prospective expansion zones with population estimates and unmet demand indices.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/services/aiStorage.ts</td>
+                <td class="p-3 font-sans text-slate-400">LocalStorage client caching service for per-branch and per-candidate AI strategic rationales and feasibility assessments with timestamps and session isolation.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/components/MarkdownRenderer.tsx</td>
+                <td class="p-3 font-sans text-slate-400">Reusable Markdown presenter using <code class="text-slate-200">react-markdown</code> and <code class="text-slate-200">remark-gfm</code> for executive briefings, rationales, and chat.</td>
               </tr>
               <tr>
                 <td class="p-3 text-indigo-300">/server.ts</td>

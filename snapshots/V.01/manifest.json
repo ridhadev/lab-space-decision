@@ -1,0 +1,53 @@
+{
+  "version": "V.01",
+  "semver": "0.1.0",
+  "snapshotName": "V.01 - Initial Production Baseline",
+  "createdAt": "2026-09-10T06:15:00Z",
+  "git": {
+    "tag": "V.01",
+    "initialCommit": "1cab8c9",
+    "branch": "master"
+  },
+  "modules": [
+    {
+      "name": "Deterministic Scoring Engine",
+      "file": "src/services/scoringEngine.ts",
+      "description": "Multi-factor scoring for lounges (PROTECT, HOLD, SHRINK) and candidates (GROW, WATCH, SKIP) with 4.0km Haversine sister buffer"
+    },
+    {
+      "name": "Bedashing Lounge Dataset",
+      "file": "src/data/branches.ts",
+      "description": "23 verified UAE locations across Abu Dhabi, Dubai, Sharjah, Ras Al Khaimah, and Fujairah"
+    },
+    {
+      "name": "Expansion Candidates Dataset",
+      "file": "src/data/candidates.ts",
+      "description": "10 white-space candidate zones evaluated by unmet demand and retail gravity"
+    },
+    {
+      "name": "Interactive Geospatial Map",
+      "file": "src/components/GeospatialMap.tsx",
+      "description": "Leaflet map with CartoDB tiles, sister proximity vectors, and cannibalization rings"
+    },
+    {
+      "name": "Grounded AI Advisor & Board Memo",
+      "file": "server.ts",
+      "description": "Gemini 3.8 Flash grounded natural-language briefing engine with deterministic fallback"
+    },
+    {
+      "name": "AI Recommendation Runtime Cache",
+      "file": "src/services/aiStorage.ts",
+      "description": "Per-location LocalStorage caching with active processing animations and real-time state isolation"
+    },
+    {
+      "name": "Markdown Presentation Pipeline",
+      "file": "src/components/MarkdownRenderer.tsx",
+      "description": "react-markdown and remark-gfm parser for executive briefs, tables, and rationales"
+    }
+  ],
+  "verification": {
+    "linter": "passed",
+    "build": "passed",
+    "runtime": "Node 20 / Vite 6 / React 19"
+  }
+}

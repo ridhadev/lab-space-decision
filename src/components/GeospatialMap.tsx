@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import L from "leaflet";
 import {
   BranchEvaluation,
@@ -9,6 +9,8 @@ import {
   Maximize2,
   Minimize2,
   RotateCcw,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 interface GeospatialMapProps {
@@ -35,8 +37,12 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   const [showCandidates, setShowCandidates] = useState(true);
   const [showBuffers, setShowBuffers] = useState(true);
   const [showCannibalizationLinks, setShowCannibalizationLinks] = useState(true);
+  const [showCompetitionHeatmap, setShowCompetitionHeatmap] = useState(true);
+  const [showCoverageGaps, setShowCoverageGaps] = useState(true);
   const [activeEmirate, setActiveEmirate] = useState<string>("All");
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isPanelExpanded, setIsPanelExpanded] = useState(true);
+  const isInitialMount = useRef(true);
 
   // Handle Fullscreen escape listener & body scroll lock
   useEffect(() => {
@@ -55,7 +61,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     }
   }, [isFullScreen]);
 
-  // Robust map dimensions and center handling on fullscreen or focus change
+  // Robust map dimensions on fullscreen or focus change
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -64,11 +70,6 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       const container = mapContainerRef.current;
       if (!container || container.clientHeight === 0) return;
       map.invalidateSize({ pan: false });
-      if (focusedLocation) {
-        map.setView([focusedLocation.lat, focusedLocation.lng], map.getZoom() || 12, { animate: false });
-      } else {
-        map.setView([24.4539, 54.6773], map.getZoom() || 8, { animate: false });
-      }
     };
 
     const rafId = requestAnimationFrame(handleResize);
@@ -82,7 +83,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       clearTimeout(timer2);
       clearTimeout(timer3);
     };
-  }, [isFullScreen, focusedLocation]);
+  }, [isFullScreen]);
 
   // Initialize Map with High Density Dark CartoDB Tiles
   useEffect(() => {
@@ -92,10 +93,13 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     const map = L.map(mapContainerRef.current, {
       center: [24.4539, 54.6773],
       zoom: 8,
-      zoomControl: true,
+      zoomControl: false,
       minZoom: 6,
       maxZoom: 17,
     });
+
+    // Add zoom in/out control at bottom-right corner of the map
+    L.control.zoom({ position: "bottomright" }).addTo(map);
 
     // Dark Matter CartoDB tiles for high-contrast dark theme
     const cartoKey = (import.meta as any).env?.VITE_CARTO_API_KEY;
@@ -138,6 +142,179 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     if (!map || !layerGroup) return;
 
     layerGroup.clearLayers();
+
+    // 0. Competition Density & Market Saturation Heatmap (Thermal Blue-to-Red)
+    if (showCompetitionHeatmap) {
+      // Render thermal saturation blobs around existing branches
+      branchEvals.forEach((item) => {
+        const { branch } = item;
+        if (activeEmirate !== "All" && branch.emirate !== activeEmirate) return;
+
+        const count = branch.competitorDensity3km;
+
+        let outerColor = "#06b6d4"; // Cool cyan
+        let midColor = "#0ea5e9";
+        let coreColor = "#0284c7";
+        let tierLabel = "Low Density Moat";
+        let outerOpacity = 0.08;
+        let midOpacity = 0.16;
+        let coreOpacity = 0.26;
+
+        if (count >= 18) {
+          // Hyper-Saturated (Red/Crimson)
+          outerColor = "#ef4444";
+          midColor = "#dc2626";
+          coreColor = "#b91c1c";
+          tierLabel = "Hyper-Saturated Corridor";
+          outerOpacity = 0.16;
+          midOpacity = 0.28;
+          coreOpacity = 0.42;
+        } else if (count >= 10) {
+          // High Saturation (Orange/Amber)
+          outerColor = "#f97316";
+          midColor = "#ea580c";
+          coreColor = "#c2410c";
+          tierLabel = "High Saturation";
+          outerOpacity = 0.13;
+          midOpacity = 0.23;
+          coreOpacity = 0.35;
+        } else if (count >= 5) {
+          // Moderate (Yellow/Gold)
+          outerColor = "#eab308";
+          midColor = "#d97706";
+          coreColor = "#b45309";
+          tierLabel = "Balanced Competition";
+          outerOpacity = 0.10;
+          midOpacity = 0.18;
+          coreOpacity = 0.28;
+        }
+
+        // Outer thermal dissipation ring (3.8km)
+        const outerCircle = L.circle([branch.lat, branch.lng], {
+          radius: 3800,
+          color: outerColor,
+          fillColor: outerColor,
+          fillOpacity: outerOpacity,
+          weight: 0,
+          interactive: false,
+        });
+        outerCircle.addTo(layerGroup);
+
+        // Mid thermal density ring (2.2km)
+        const midCircle = L.circle([branch.lat, branch.lng], {
+          radius: 2200,
+          color: midColor,
+          fillColor: midColor,
+          fillOpacity: midOpacity,
+          weight: 0,
+          interactive: false,
+        });
+        midCircle.addTo(layerGroup);
+
+        // Core thermal density ring (1.0km) with interactive tooltip
+        const coreCircle = L.circle([branch.lat, branch.lng], {
+          radius: 1000,
+          color: coreColor,
+          fillColor: coreColor,
+          fillOpacity: coreOpacity,
+          weight: 0,
+          interactive: true,
+        });
+
+        coreCircle.bindTooltip(
+          `<div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
+            <div style="font-weight: 700; color: #FFFFFF;">${branch.name} — Saturation Zone</div>
+            <div style="color: #94A3B8; font-size: 10px;">${branch.emirate} • ${branch.area}</div>
+            <div style="margin-top: 4px; font-weight: 700; color: ${
+              count >= 18 ? "#FB7185" : count >= 10 ? "#FB923C" : count >= 5 ? "#FBBF24" : "#38BDF8"
+            }; font-family: monospace;">
+              ${count} salons within 3km (${tierLabel})
+            </div>
+          </div>`,
+          { sticky: true, className: "bg-[#0C182A] text-slate-200 border border-[#1D3452] shadow-xl rounded-md p-1.5" }
+        );
+
+        coreCircle.addTo(layerGroup);
+      });
+
+      // Also render thermal saturation for expansion candidates if active
+      if (showCandidates) {
+        candidateEvals.forEach((item) => {
+          const { candidate } = item;
+          if (activeEmirate !== "All" && candidate.emirate !== activeEmirate) return;
+
+          const count = candidate.competitorCount;
+
+          let outerColor = "#06b6d4";
+          let midColor = "#0ea5e9";
+          let coreColor = "#0284c7";
+          let tierLabel = "Low Density Moat";
+          let outerOpacity = 0.08;
+          let midOpacity = 0.16;
+          let coreOpacity = 0.26;
+
+          if (count >= 18) {
+            outerColor = "#ef4444";
+            midColor = "#dc2626";
+            coreColor = "#b91c1c";
+            tierLabel = "Hyper-Saturated Corridor";
+            outerOpacity = 0.16;
+            midOpacity = 0.28;
+            coreOpacity = 0.42;
+          } else if (count >= 10) {
+            outerColor = "#f97316";
+            midColor = "#ea580c";
+            coreColor = "#c2410c";
+            tierLabel = "High Saturation";
+            outerOpacity = 0.13;
+            midOpacity = 0.23;
+            coreOpacity = 0.35;
+          } else if (count >= 5) {
+            outerColor = "#eab308";
+            midColor = "#d97706";
+            coreColor = "#b45309";
+            tierLabel = "Balanced Competition";
+            outerOpacity = 0.10;
+            midOpacity = 0.18;
+            coreOpacity = 0.28;
+          }
+
+          const outerCircle = L.circle([candidate.lat, candidate.lng], {
+            radius: 3600,
+            color: outerColor,
+            fillColor: outerColor,
+            fillOpacity: outerOpacity * 0.85,
+            weight: 0,
+            interactive: false,
+          });
+          outerCircle.addTo(layerGroup);
+
+          const coreCircle = L.circle([candidate.lat, candidate.lng], {
+            radius: 1100,
+            color: coreColor,
+            fillColor: coreColor,
+            fillOpacity: coreOpacity * 0.85,
+            weight: 0,
+            interactive: true,
+          });
+
+          coreCircle.bindTooltip(
+            `<div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
+              <div style="font-weight: 700; color: #FFFFFF;">${candidate.name} (Candidate)</div>
+              <div style="color: #94A3B8; font-size: 10px;">${candidate.emirate} • ${candidate.zoneType}</div>
+              <div style="margin-top: 4px; font-weight: 700; color: ${
+                count >= 18 ? "#FB7185" : count >= 10 ? "#FB923C" : count >= 5 ? "#FBBF24" : "#38BDF8"
+              }; font-family: monospace;">
+                ${count} competitors (${tierLabel})
+              </div>
+            </div>`,
+            { sticky: true, className: "bg-[#0C182A] text-slate-200 border border-[#1D3452] shadow-xl rounded-md p-1.5" }
+          );
+
+          coreCircle.addTo(layerGroup);
+        });
+      }
+    }
 
     // 1. Existing Bedashing Branches
     if (showBranches) {
@@ -295,7 +472,94 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       });
     }
 
-    // 3. Expansion Candidate Areas
+    // 3. Coverage Gap & "White Space" Opportunity Layer
+    if (showCoverageGaps) {
+      candidateEvals.forEach((item) => {
+        const { candidate, classification, finalScore } = item;
+
+        if (activeEmirate !== "All" && candidate.emirate !== activeEmirate) {
+          return;
+        }
+
+        // Coverage gap criteria: high unmet demand (>=80), high affluence (>=80), outside immediate sister cannibalization threshold (>=3.0km)
+        const isCoverageGap =
+          candidate.unmetDemandIndex >= 80 &&
+          candidate.affluenceScore >= 80 &&
+          candidate.nearestBedashingDistanceKm >= 3.0;
+
+        if (!isCoverageGap) return;
+
+        // Primary Opportunity Catchment Aura (3,500m radius)
+        const auraCircle = L.circle([candidate.lat, candidate.lng], {
+          radius: 3500,
+          color: "#06b6d4",
+          fillColor: "#0891b2",
+          fillOpacity: 0.12,
+          weight: 1.5,
+          dashArray: "6, 6",
+          interactive: true,
+        });
+
+        // Inner Core of intense unmet demand (1,400m)
+        const coreAura = L.circle([candidate.lat, candidate.lng], {
+          radius: 1400,
+          color: "#22d3ee",
+          fillColor: "#06b6d4",
+          fillOpacity: 0.20,
+          weight: 1,
+          interactive: false,
+        });
+
+        auraCircle.bindTooltip(
+          `<div style="font-family: sans-serif; font-size: 11px; line-height: 1.45;">
+            <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 3px;">
+              <span style="display: inline-block; width: 7px; height: 7px; border-radius: 9999px; background: #22d3ee;"></span>
+              <strong style="color: #FFFFFF; font-size: 12px;">Coverage Gap: ${candidate.name}</strong>
+            </div>
+            <div style="color: #94A3B8; font-size: 10px; margin-bottom: 5px;">${candidate.emirate} • ${candidate.zoneType}</div>
+            <div style="font-family: monospace; font-size: 10px; color: #22d3ee; margin-bottom: 3px;">
+              Unmet Demand: <strong>${candidate.unmetDemandIndex}/100</strong> • Affluence: <strong>${candidate.affluenceScore}/100</strong>
+            </div>
+            <div style="font-size: 10.5px; color: #CBD5E1; line-height: 1.5;">
+              Network Gap: <strong style="color: #F8FAFC">${candidate.nearestBedashingDistanceKm} km</strong> from nearest sister branch<br/>
+              Target Demographic: <strong style="color: #F8FAFC">${candidate.targetDemographicPopulation.toLocaleString()}</strong> residents<br/>
+              Expected Capacity: <strong style="color: #F8FAFC">${candidate.expectedChairCapacity} chairs</strong><br/>
+              Strategic Priority: <strong style="color: ${classification === "GROW" ? "#2DD4BF" : "#FBBF24"}">${classification} (${finalScore}/100)</strong>
+            </div>
+          </div>`,
+          { sticky: true, className: "bg-[#0C182A] text-slate-200 border border-cyan-500/50 shadow-xl rounded-md p-2" }
+        );
+
+        auraCircle.addTo(layerGroup);
+        coreAura.addTo(layerGroup);
+
+        // Network Gap Reach Vector connecting candidate to nearest Bedashing branch
+        const nearestSister = branchEvals.find((b) => b.branch.id === candidate.nearestBedashingBranchId);
+        if (nearestSister) {
+          const reachVector = L.polyline(
+            [
+              [candidate.lat, candidate.lng],
+              [nearestSister.branch.lat, nearestSister.branch.lng],
+            ],
+            {
+              color: "#06b6d4",
+              weight: 1.5,
+              dashArray: "3, 6",
+              opacity: 0.65,
+            }
+          );
+
+          reachVector.bindTooltip(
+            `Coverage Gap: ${candidate.nearestBedashingDistanceKm} km unserved corridor from ${nearestSister.branch.name}`,
+            { sticky: true, className: "bg-[#0C182A] text-cyan-300 font-mono text-[10px] border border-cyan-500/40 p-1" }
+          );
+
+          reachVector.addTo(layerGroup);
+        }
+      });
+    }
+
+    // 4. Expansion Candidate Areas
     if (showCandidates) {
       candidateEvals.forEach((item) => {
         const { candidate, finalScore, classification } = item;
@@ -397,6 +661,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     showCandidates,
     showBuffers,
     showCannibalizationLinks,
+    showCompetitionHeatmap,
+    showCoverageGaps,
     activeEmirate,
     onSelectBranch,
     onSelectCandidate,
@@ -411,10 +677,91 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     }
   }, [focusedLocation]);
 
-  const resetMapZoom = () => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView([24.4539, 54.6773], 8, { animate: true });
+  // Center map dynamically on the Center of Gravity of selected emirate/points
+  const centerMapOnSelection = useCallback(
+    (emirate: string) => {
+      const map = mapInstanceRef.current;
+      if (!map) return;
+
+      if (emirate === "All") {
+        const allPoints: [number, number][] = [
+          ...branchEvals.map((b) => [b.branch.lat, b.branch.lng] as [number, number]),
+          ...candidateEvals.map((c) => [c.candidate.lat, c.candidate.lng] as [number, number]),
+        ];
+        if (allPoints.length > 0) {
+          const bounds = L.latLngBounds(allPoints);
+          map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 9, duration: 1.2 });
+        } else {
+          map.flyTo([24.4539, 54.6773], 8, { duration: 1.2 });
+        }
+        return;
+      }
+
+      // Collect all branches and candidates for the chosen emirate
+      const emirateBranches = branchEvals
+        .filter((b) => b.branch.emirate === emirate)
+        .map((b) => ({ lat: b.branch.lat, lng: b.branch.lng }));
+
+      const emirateCandidates = candidateEvals
+        .filter((c) => c.candidate.emirate === emirate)
+        .map((c) => ({ lat: c.candidate.lat, lng: c.candidate.lng }));
+
+      const selectedPoints = [...emirateBranches, ...emirateCandidates];
+      if (selectedPoints.length === 0) return;
+
+      // 1. Compute Center of Gravity (arithmetic mean of geographic coordinates)
+      const sumLat = selectedPoints.reduce((acc, p) => acc + p.lat, 0);
+      const sumLng = selectedPoints.reduce((acc, p) => acc + p.lng, 0);
+      const cogLat = sumLat / selectedPoints.length;
+      const cogLng = sumLng / selectedPoints.length;
+
+      // 2. Determine spatial spread from Center of Gravity to calibrate ideal zoom
+      if (selectedPoints.length === 1) {
+        // Single location (e.g. Fujairah City Centre or Manar Mall RAK)
+        map.flyTo([cogLat, cogLng], 12.5, { duration: 1.2 });
+      } else {
+        // Multi-location emirate (e.g. Abu Dhabi, Dubai, Sharjah)
+        let maxDeltaLat = 0;
+        let maxDeltaLng = 0;
+
+        selectedPoints.forEach((p) => {
+          const dLat = Math.abs(p.lat - cogLat);
+          const dLng = Math.abs(p.lng - cogLng);
+          if (dLat > maxDeltaLat) maxDeltaLat = dLat;
+          if (dLng > maxDeltaLng) maxDeltaLng = dLng;
+        });
+
+        // Calibrate symmetric bounds with comfortable visual margin
+        const padLat = Math.max(maxDeltaLat * 1.25, 0.045);
+        const padLng = Math.max(maxDeltaLng * 1.25, 0.045);
+
+        const balancedBounds = L.latLngBounds([
+          [cogLat - padLat, cogLng - padLng],
+          [cogLat + padLat, cogLng + padLng],
+        ]);
+
+        map.flyToBounds(balancedBounds, {
+          padding: [50, 50],
+          maxZoom: 13,
+          duration: 1.2,
+        });
+      }
+    },
+    [branchEvals, candidateEvals]
+  );
+
+  // Automatically center map on center of gravity whenever activeEmirate selection changes
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
     }
+    centerMapOnSelection(activeEmirate);
+  }, [activeEmirate, centerMapOnSelection]);
+
+  const resetMapZoom = () => {
+    setActiveEmirate("All");
+    centerMapOnSelection("All");
   };
 
   return (
@@ -494,122 +841,263 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
           </div>
         )}
 
-        {/* Floating Map Controls & Legend - Dark Navy High Density Style */}
-        <div
-          className={`absolute z-[1000] bg-[#0C182A]/95 backdrop-blur-md p-3 rounded-lg border border-[#1D3452] shadow-2xl max-w-xs text-xs space-y-2.5 text-slate-200 transition-all ${
-            isFullScreen ? "top-4 left-4" : "top-3 left-3"
-          }`}
-        >
-          <div className="flex items-center justify-between pb-1.5 border-b border-[#1D3452]">
-            <div className="flex items-center space-x-1.5">
-              <img src="/bedashing-icon.svg" alt="Bedashing Icon" className="h-3.5 w-auto" />
-              <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest">
-                MAP LAYERS
-              </span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={resetMapZoom}
-                className="p-1 text-[#8BA2C1] hover:text-white rounded hover:bg-[#142842] transition-colors cursor-pointer"
-                title="Reset UAE Zoom"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => setIsFullScreen(!isFullScreen)}
-                className={`p-1 rounded transition-colors cursor-pointer ${
-                  isFullScreen ? "text-cyan-300 hover:bg-[#142842]" : "text-[#8BA2C1] hover:text-white hover:bg-[#142842]"
-                }`}
-                title={isFullScreen ? "Exit Full View (Esc)" : "Full View Screen"}
-              >
-                {isFullScreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Emirate filter */}
-          <div>
-            <label className="text-[10px] font-bold text-[#8BA2C1] uppercase tracking-wider block mb-1">
-              Focus Emirate:
-            </label>
-            <select
-              value={activeEmirate}
-              onChange={(e) => setActiveEmirate(e.target.value)}
-              className="w-full text-xs py-1 px-2 border border-[#1D3452] rounded bg-[#0A1424] text-slate-200 focus:outline-hidden focus:border-cyan-500 cursor-pointer"
+        {/* Collapsed Map Layers Trigger Pill */}
+        {!isPanelExpanded && (
+          <div
+            className={`absolute z-[1000] transition-all ${
+              isFullScreen ? "top-4 left-4" : "top-3 left-3"
+            }`}
+          >
+            <button
+              onClick={() => setIsPanelExpanded(true)}
+              className="inline-flex items-center space-x-2 px-3 py-2 rounded-lg bg-[#0C182A]/95 hover:bg-[#142842] text-slate-200 hover:text-white border border-[#1D3452] shadow-2xl text-xs font-semibold transition-all backdrop-blur-md group cursor-pointer"
+              title="Expand Map Layers & Controls"
             >
-              <option value="All">All Emirates (23 Branches)</option>
-              <option value="Abu Dhabi">Abu Dhabi (14)</option>
-              <option value="Dubai">Dubai (5)</option>
-              <option value="Sharjah">Sharjah (2)</option>
-              <option value="Fujairah">Fujairah (1)</option>
-              <option value="Ras Al Khaimah">Ras Al Khaimah (1)</option>
-            </select>
+              <Layers className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[11px] font-bold text-cyan-300 uppercase tracking-wider">
+                Map Layers
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#142842] text-slate-300 font-mono border border-[#1D3452]">
+                {activeEmirate === "All" ? "UAE (23)" : activeEmirate}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#8BA2C1] group-hover:text-white transition-colors" />
+            </button>
           </div>
+        )}
 
-          {/* Layer checkboxes */}
-          <div className="space-y-1.5 pt-1.5 border-t border-[#1D3452] text-[11px]">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showBranches}
-                onChange={(e) => setShowBranches(e.target.checked)}
-                className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
-              />
-              <span className="text-slate-300">Existing Branches (Circles)</span>
-            </label>
+        {/* Floating Map Controls & Legend - Expandable Panel */}
+        {isPanelExpanded && (
+          <div
+            className={`absolute z-[1000] bg-[#0C182A]/95 backdrop-blur-md p-3 rounded-lg border border-[#1D3452] shadow-2xl max-w-xs text-xs space-y-2.5 text-slate-200 transition-all ${
+              isFullScreen ? "top-4 left-4" : "top-3 left-3"
+            }`}
+          >
+            <div className="flex items-center justify-between pb-1.5 border-b border-[#1D3452]">
+              <div
+                className="flex items-center space-x-1.5 cursor-pointer select-none group"
+                onClick={() => setIsPanelExpanded(false)}
+                title="Click to collapse panel"
+              >
+                <img src="/bedashing-icon.svg" alt="Bedashing Icon" className="h-3.5 w-auto" />
+                <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest group-hover:text-cyan-200 transition-colors">
+                  MAP LAYERS
+                </span>
+                <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/15 text-cyan-300 font-mono border border-cyan-500/30">
+                  {activeEmirate === "All" ? "UAE" : activeEmirate}
+                </span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <button
+                  onClick={resetMapZoom}
+                  className="p-1 text-[#8BA2C1] hover:text-white rounded hover:bg-[#142842] transition-colors cursor-pointer"
+                  title="Reset UAE Zoom (All Emirates)"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setIsFullScreen(!isFullScreen)}
+                  className={`p-1 rounded transition-colors cursor-pointer ${
+                    isFullScreen ? "text-cyan-300 hover:bg-[#142842]" : "text-[#8BA2C1] hover:text-white hover:bg-[#142842]"
+                  }`}
+                  title={isFullScreen ? "Exit Full View (Esc)" : "Full View Screen"}
+                >
+                  {isFullScreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+                </button>
+                <button
+                  onClick={() => setIsPanelExpanded(false)}
+                  className="p-1 text-[#8BA2C1] hover:text-white rounded hover:bg-[#142842] transition-colors cursor-pointer"
+                  title="Hide / Collapse Map Layers Panel"
+                >
+                  <ChevronUp className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
 
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showCandidates}
-                onChange={(e) => setShowCandidates(e.target.checked)}
-                className="rounded-xs text-teal-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
-              />
-              <span className="text-slate-300">Expansion Candidates (Diamonds)</span>
-            </label>
+            {/* Emirate filter with Center of Gravity dynamic centering */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold text-[#8BA2C1] uppercase tracking-wider block">
+                  Focus Emirate:
+                </label>
+                <span className="text-[9px] text-cyan-400 font-mono">
+                  Auto-centers on gravity
+                </span>
+              </div>
+              <select
+                value={activeEmirate}
+                onChange={(e) => setActiveEmirate(e.target.value)}
+                className="w-full text-xs py-1 px-2 border border-[#1D3452] rounded bg-[#0A1424] text-slate-200 focus:outline-hidden focus:border-cyan-500 cursor-pointer"
+              >
+                <option value="All">All Emirates (23 Branches • UAE Overview)</option>
+                <option value="Abu Dhabi">Abu Dhabi (14 Branches)</option>
+                <option value="Dubai">Dubai (5 Branches)</option>
+                <option value="Sharjah">Sharjah (2 Branches)</option>
+                <option value="Fujairah">Fujairah (1 Branch)</option>
+                <option value="Ras Al Khaimah">Ras Al Khaimah (1 Branch)</option>
+              </select>
 
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showBuffers}
-                onChange={(e) => setShowBuffers(e.target.checked)}
-                className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
-              />
-              <span className="text-slate-300">3km Catchment Buffers</span>
-            </label>
+              {/* Quick-select interactive emirate chips */}
+              <div className="flex items-center gap-1">
+                {(
+                  [
+                    { id: "All", label: "UAE" },
+                    { id: "Abu Dhabi", label: "AD" },
+                    { id: "Dubai", label: "DXB" },
+                    { id: "Sharjah", label: "SHJ" },
+                    { id: "Fujairah", label: "FUJ" },
+                    { id: "Ras Al Khaimah", label: "RAK" },
+                  ] as const
+                ).map((em) => (
+                  <button
+                    key={em.id}
+                    type="button"
+                    onClick={() => setActiveEmirate(em.id)}
+                    className={`flex-1 py-0.5 rounded text-[10px] font-mono font-bold transition-all border cursor-pointer ${
+                      activeEmirate === em.id
+                        ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-xs"
+                        : "bg-[#0A1424] text-[#8BA2C1] border-[#1D3452] hover:text-slate-200 hover:border-slate-500"
+                    }`}
+                    title={`Focus ${em.id} and center map on its center of gravity`}
+                  >
+                    {em.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showCannibalizationLinks}
-                onChange={(e) => setShowCannibalizationLinks(e.target.checked)}
-                className="rounded-xs text-rose-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
-              />
-              <span className="text-slate-300">Cannibalization Vectors (&lt;4km)</span>
-            </label>
+            {/* Layer checkboxes */}
+            <div className="space-y-1.5 pt-1.5 border-t border-[#1D3452] text-[11px]">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showBranches}
+                  onChange={(e) => setShowBranches(e.target.checked)}
+                  className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+                />
+                <span className="text-slate-300">Existing Branches (Circles)</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showCandidates}
+                  onChange={(e) => setShowCandidates(e.target.checked)}
+                  className="rounded-xs text-teal-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+                />
+                <span className="text-slate-300">Expansion Candidates (Diamonds)</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showBuffers}
+                  onChange={(e) => setShowBuffers(e.target.checked)}
+                  className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+                />
+                <span className="text-slate-300">3km Catchment Buffers</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showCannibalizationLinks}
+                  onChange={(e) => setShowCannibalizationLinks(e.target.checked)}
+                  className="rounded-xs text-rose-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+                />
+                <span className="text-slate-300">Cannibalization Vectors (&lt;4km)</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showCompetitionHeatmap}
+                  onChange={(e) => setShowCompetitionHeatmap(e.target.checked)}
+                  className="rounded-xs text-orange-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+                />
+                <span className="text-slate-300 flex items-center justify-between w-full pr-1">
+                  <span>Saturation Heatmap (Thermal)</span>
+                  <span className="inline-block w-3.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-yellow-400 to-rose-500 shadow-xs"></span>
+                </span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showCoverageGaps}
+                  onChange={(e) => setShowCoverageGaps(e.target.checked)}
+                  className="rounded-xs text-cyan-400 bg-[#0A1424] border-[#1D3452] focus:ring-0"
+                />
+                <span className="text-slate-300 flex items-center justify-between w-full pr-1">
+                  <span>Coverage Gaps (White Spaces)</span>
+                  <span className="inline-block w-2.5 h-2.5 rounded-full border border-dashed border-cyan-400 bg-cyan-500/30"></span>
+                </span>
+              </label>
+            </div>
+
+            {/* Legend */}
+            <div className="pt-2 border-t border-[#1D3452] space-y-1.5 text-[11px]">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span className="text-slate-200">Protect / Grow</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span className="text-slate-200">Hold / Watch</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span className="text-slate-200">Shrink / Skip</span>
+              </div>
+
+              {showCoverageGaps && (
+                <div className="pt-1.5 border-t border-[#1D3452]/70 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full border border-dashed border-cyan-400 bg-cyan-500/20"></span>
+                    <span className="text-cyan-300 font-semibold text-[10px]">Unserved Coverage Gap</span>
+                  </div>
+                  <div className="text-[9px] text-[#8BA2C1] font-mono leading-tight pl-4">
+                    Affluence ≥80 • Distance ≥3km • Unmet ≥80
+                  </div>
+                </div>
+              )}
+
+              {showCompetitionHeatmap && (
+                <div className="pt-2 border-t border-[#1D3452] space-y-1">
+                  <div className="flex items-center justify-between text-[9px] text-[#8BA2C1] font-bold uppercase tracking-wider">
+                    <span>Competition Saturation</span>
+                    <span>Salons / 3km</span>
+                  </div>
+                  {/* Thermal Color Ramp Bar */}
+                  <div className="h-1.5 w-full rounded-full bg-gradient-to-r from-cyan-400 via-yellow-400 via-orange-500 to-rose-600 shadow-inner" />
+                  <div className="flex items-center justify-between text-[8px] font-mono text-[#8BA2C1]">
+                    <span className="text-cyan-400 font-semibold">1–4 Low</span>
+                    <span className="text-yellow-400 font-semibold">5–9</span>
+                    <span className="text-orange-400 font-semibold">10–17</span>
+                    <span className="text-rose-400 font-semibold">18+ Hyper</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Collapse Footer */}
+            <div className="pt-1.5 border-t border-[#1D3452]/60 flex items-center justify-between text-[10px] text-[#8BA2C1]">
+              <span className="text-[9px] font-mono opacity-80">6 Map Layers</span>
+              <button
+                onClick={() => setIsPanelExpanded(false)}
+                className="inline-flex items-center space-x-1 text-[#8BA2C1] hover:text-cyan-300 transition-colors cursor-pointer"
+                title="Hide / Collapse Menu"
+              >
+                <span>Hide Menu</span>
+                <ChevronUp className="w-3 h-3" />
+              </button>
+            </div>
           </div>
+        )}
 
-          {/* Legend */}
-          <div className="pt-2 border-t border-[#1D3452] space-y-1.5 text-[11px]">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-              <span className="text-slate-200">Protect / Grow</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-              <span className="text-slate-200">Hold / Watch</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-              <span className="text-slate-200">Shrink / Skip</span>
-            </div>
-          </div>
-        </div>
-
-        {/* High Density Status Pill in Bottom Right */}
-        <div className="absolute bottom-3 right-3 bg-[#0C182A]/90 border border-[#1D3452] px-2.5 py-1 rounded text-[10px] text-[#8BA2C1] shadow-md flex items-center gap-1.5 z-[1000]">
+        {/* High Density Status Pill in Bottom Left */}
+        <div className="absolute bottom-3 left-3 bg-[#0C182A]/90 border border-[#1D3452] px-2.5 py-1 rounded text-[10px] text-[#8BA2C1] shadow-md hidden sm:flex items-center gap-1.5 z-[1000] backdrop-blur-md">
           <img src="/bedashing-icon.svg" alt="Bedashing" className="h-3 w-auto opacity-70" />
-          <span>UAE Dark Map | Catchments &amp; Cannibalization</span>
+          <span>UAE Dark Map | Saturation Heatmap &amp; Coverage Gaps</span>
         </div>
       </div>
     </div>

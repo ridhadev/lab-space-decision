@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BranchEvaluation, CandidateEvaluation, BranchScoringWeights } from "../types";
+import { getMarketSaturationInfo } from "../services/scoringEngine";
+import { getStoredAiRationale, setStoredAiRationale } from "../services/aiStorage";
 import {
   X,
   Star,
@@ -7,7 +9,11 @@ import {
   AlertTriangle,
   Bot,
   Calculator,
+  Loader2,
+  RefreshCw,
+  CheckCircle2,
 } from "lucide-react";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface BranchDetailModalProps {
   branchEval: BranchEvaluation | null;
@@ -22,13 +28,44 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
   branchWeights,
   onClose,
 }) => {
+  const subjectKey = branchEval
+    ? `branch_${branchEval.branch.id}`
+    : candidateEval
+    ? `candidate_${candidateEval.candidate.id}`
+    : null;
+
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
+  const [aiGeneratedAt, setAiGeneratedAt] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+
+  // Sync state whenever selected branch/candidate changes or mounts
+  useEffect(() => {
+    if (!subjectKey) {
+      setAiExplanation(null);
+      setAiGeneratedAt(null);
+      setIsAiLoading(false);
+      setAiError(null);
+      return;
+    }
+
+    setIsAiLoading(false);
+    setAiError(null);
+
+    const cached = getStoredAiRationale(subjectKey);
+    if (cached) {
+      setAiExplanation(cached.text);
+      setAiGeneratedAt(cached.generatedAt);
+    } else {
+      setAiExplanation(null);
+      setAiGeneratedAt(null);
+    }
+  }, [subjectKey]);
 
   if (!branchEval && !candidateEval) return null;
 
   const handleRequestAi = async () => {
+    if (!subjectKey) return;
     setIsAiLoading(true);
     setAiError(null);
     try {
@@ -54,7 +91,11 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
       }
 
       const data = await res.json();
-      setAiExplanation(data.explanation);
+      const explanation = data.explanation || "";
+      setAiExplanation(explanation);
+      const now = new Date().toISOString();
+      setAiGeneratedAt(now);
+      setStoredAiRationale(subjectKey, explanation);
     } catch (err: any) {
       setAiError(err.message || "Failed to contact Gemini advisor.");
     } finally {
@@ -151,11 +192,24 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
               </div>
 
               <div className="p-2.5 bg-slate-900/90 rounded border border-slate-700/80">
-                <div className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Local Salons</div>
-                <div className="text-sm font-mono font-bold text-slate-200 mt-1">
-                  {branch.competitorDensity3km}
-                </div>
-                <div className="text-[10px] text-slate-400">Salons in 3km</div>
+                <div className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Local Salons & Saturation</div>
+                {(() => {
+                  const satInfo = getMarketSaturationInfo(branch.competitorDensity3km);
+                  return (
+                    <>
+                      <div className="text-sm font-mono font-bold text-slate-200 mt-1 flex items-center justify-between">
+                        <span>{branch.competitorDensity3km} <span className="text-[10px] font-normal text-slate-400">salons</span></span>
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold ${satInfo.badgeClass}`}>
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: satInfo.dotColor }}></span>
+                          <span>{satInfo.label}</span>
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-0.5 truncate" title={satInfo.description}>
+                        {satInfo.description}
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -191,32 +245,118 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                   <Bot className="w-3.5 h-3.5 text-indigo-400" />
                   <span>Grounded AI Strategic Reasoning</span>
                 </div>
-                {!aiExplanation && (
+                {!aiExplanation && !isAiLoading && (
                   <button
                     onClick={handleRequestAi}
-                    disabled={isAiLoading}
-                    className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors disabled:opacity-50"
+                    className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors cursor-pointer"
                   >
                     <Sparkles className="w-3 h-3" />
-                    <span>{isAiLoading ? "Consulting AI..." : "Generate AI Rationale"}</span>
+                    <span>Generate AI Rationale</span>
                   </button>
+                )}
+                {isAiLoading && (
+                  <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded bg-indigo-950/70 text-indigo-300 border border-indigo-500/30 text-xs font-medium">
+                    <Loader2 className="w-3 h-3 animate-spin text-indigo-400" />
+                    <span>Processing Deep Dive...</span>
+                  </div>
                 )}
               </div>
 
               {aiError && (
-                <div className="text-rose-400 bg-rose-950/40 p-2 rounded border border-rose-500/30 text-xs">
-                  {aiError}
+                <div className="text-rose-400 bg-rose-950/40 p-2.5 rounded border border-rose-500/30 text-xs space-y-1.5">
+                  <div className="flex items-center space-x-1.5 font-semibold">
+                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                    <span>AI Reasoning Error</span>
+                  </div>
+                  <p>{aiError}</p>
+                  <button
+                    onClick={handleRequestAi}
+                    className="text-[11px] underline hover:text-rose-300 cursor-pointer font-medium"
+                  >
+                    Retry Consultation
+                  </button>
                 </div>
               )}
 
-              {aiExplanation ? (
-                <div className="bg-slate-900/90 p-3 rounded border border-slate-700 text-slate-200 leading-relaxed whitespace-pre-wrap font-sans text-xs">
-                  {aiExplanation}
+              {/* Active Loading State Animation */}
+              {isAiLoading && (
+                <div className="bg-indigo-950/30 rounded-lg border border-indigo-500/40 p-4 space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center space-x-3">
+                    <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/40 text-indigo-400 shrink-0">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-bold text-white tracking-wide">
+                          Synthesizing Grounded Strategic Reasoning...
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
+                          Gemini 3.8 Flash
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                        Auditing rating ({branch.googleRating}★), sister distance ({branch.nearestSisterDistanceKm}km), affluence &amp; saturation...
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Shimmer / Skeleton Animation */}
+                  <div className="space-y-2 pt-2 border-t border-indigo-500/20">
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-3/4"></div>
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-full"></div>
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-5/6"></div>
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-2/3"></div>
+                  </div>
                 </div>
-              ) : (
-                <p className="text-slate-400 text-[11px]">
-                  Click the button to query Gemini, strictly grounded in the computed deterministic numbers above.
-                </p>
+              )}
+
+              {/* Cached AI Explanation Output */}
+              {!isAiLoading && aiExplanation && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 pb-1.5 border-b border-slate-700/60">
+                    <span className="flex items-center gap-1.5 text-indigo-300 font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Cached Branch Rationale</span>
+                      {aiGeneratedAt && (
+                        <span className="text-slate-500 font-mono text-[10px]">
+                          ({new Date(aiGeneratedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      onClick={handleRequestAi}
+                      disabled={isAiLoading}
+                      className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
+                      title="Re-run AI analysis with current model weights"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      <span>Regenerate</span>
+                    </button>
+                  </div>
+                  <div className="bg-slate-900/90 p-3 rounded border border-slate-700 text-slate-200 leading-relaxed font-sans text-xs">
+                    <MarkdownRenderer content={aiExplanation} />
+                  </div>
+                </div>
+              )}
+
+              {/* Initial Empty State (First Time Visit) */}
+              {!isAiLoading && !aiExplanation && !aiError && (
+                <div className="p-3.5 rounded-lg border border-dashed border-slate-700/80 bg-slate-900/40 text-center space-y-2.5">
+                  <p className="text-slate-400 text-xs leading-relaxed max-w-md mx-auto">
+                    No strategic rationale generated yet for <strong className="text-slate-200">{branch.name}</strong>. Click below to consult Google Gemini, strictly grounded in this branch's computed score ({finalScore}/100), sister separation ({branch.nearestSisterDistanceKm} km), and competition density.
+                  </p>
+                  <button
+                    onClick={handleRequestAi}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md transition-all cursor-pointer hover:shadow-indigo-500/20 active:scale-95"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate AI Strategic Rationale</span>
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -276,7 +416,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
 
           <div className="p-4 overflow-y-auto space-y-4 text-xs text-slate-300">
             {/* Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
               <div className="p-2.5 bg-slate-900/90 rounded border border-slate-700/80">
                 <div className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Unmet Demand</div>
                 <div className="text-sm font-mono font-bold text-teal-400 mt-1">
@@ -308,6 +448,27 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                 </div>
                 <div className="text-[10px] text-slate-400">To nearest Bedashing</div>
               </div>
+
+              <div className="p-2.5 bg-slate-900/90 rounded border border-slate-700/80 col-span-2 sm:col-span-1">
+                <div className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Saturation Tier</div>
+                {(() => {
+                  const satInfo = getMarketSaturationInfo(candidate.competitorCount);
+                  return (
+                    <>
+                      <div className="text-sm font-mono font-bold text-slate-200 mt-1 flex items-center justify-between">
+                        <span>{candidate.competitorCount} <span className="text-[10px] font-normal text-slate-400">salons</span></span>
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold ${satInfo.badgeClass}`}>
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: satInfo.dotColor }}></span>
+                          <span>{satInfo.label}</span>
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-0.5 truncate" title={satInfo.description}>
+                        {satInfo.description}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
             </div>
 
             {/* Formula Audit */}
@@ -332,21 +493,117 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                   <Bot className="w-3.5 h-3.5 text-teal-400" />
                   <span>AI Expansion Feasibility Assessment</span>
                 </div>
-                {!aiExplanation && (
+                {!aiExplanation && !isAiLoading && (
                   <button
                     onClick={handleRequestAi}
-                    disabled={isAiLoading}
-                    className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs transition-colors disabled:opacity-50"
+                    className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs transition-colors cursor-pointer"
                   >
                     <Sparkles className="w-3 h-3" />
-                    <span>{isAiLoading ? "Consulting AI..." : "Generate AI Feasibility"}</span>
+                    <span>Generate AI Feasibility</span>
                   </button>
+                )}
+                {isAiLoading && (
+                  <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded bg-teal-950/70 text-teal-300 border border-teal-500/30 text-xs font-medium">
+                    <Loader2 className="w-3 h-3 animate-spin text-teal-400" />
+                    <span>Processing Feasibility...</span>
+                  </div>
                 )}
               </div>
 
-              {aiExplanation && (
-                <div className="bg-slate-900/90 p-3 rounded border border-slate-700 text-slate-200 leading-relaxed whitespace-pre-wrap font-sans text-xs">
-                  {aiExplanation}
+              {aiError && (
+                <div className="text-rose-400 bg-rose-950/40 p-2.5 rounded border border-rose-500/30 text-xs space-y-1.5">
+                  <div className="flex items-center space-x-1.5 font-semibold">
+                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                    <span>AI Feasibility Error</span>
+                  </div>
+                  <p>{aiError}</p>
+                  <button
+                    onClick={handleRequestAi}
+                    className="text-[11px] underline hover:text-rose-300 cursor-pointer font-medium"
+                  >
+                    Retry Consultation
+                  </button>
+                </div>
+              )}
+
+              {/* Active Loading State Animation */}
+              {isAiLoading && (
+                <div className="bg-teal-950/30 rounded-lg border border-teal-500/40 p-4 space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center space-x-3">
+                    <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-teal-600/20 border border-teal-500/40 text-teal-400 shrink-0">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-500"></span>
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-bold text-white tracking-wide">
+                          Synthesizing Expansion Feasibility...
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-300 border border-teal-500/30">
+                          Gemini 3.8 Flash
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                        Auditing unmet demand ({candidate.unmetDemandIndex}/100), {candidate.targetDemographicPopulation.toLocaleString()} females &amp; retail gravity...
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Shimmer / Skeleton Animation */}
+                  <div className="space-y-2 pt-2 border-t border-teal-500/20">
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-3/4"></div>
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-full"></div>
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-5/6"></div>
+                    <div className="h-2 bg-gradient-to-r from-slate-700/80 via-slate-600/50 to-slate-700/80 rounded animate-pulse w-2/3"></div>
+                  </div>
+                </div>
+              )}
+
+              {/* Cached AI Explanation Output */}
+              {!isAiLoading && aiExplanation && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 pb-1.5 border-b border-slate-700/60">
+                    <span className="flex items-center gap-1.5 text-teal-300 font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Cached Feasibility Assessment</span>
+                      {aiGeneratedAt && (
+                        <span className="text-slate-500 font-mono text-[10px]">
+                          ({new Date(aiGeneratedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      onClick={handleRequestAi}
+                      disabled={isAiLoading}
+                      className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
+                      title="Re-run AI feasibility assessment with current model weights"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      <span>Regenerate</span>
+                    </button>
+                  </div>
+                  <div className="bg-slate-900/90 p-3 rounded border border-slate-700 text-slate-200 leading-relaxed font-sans text-xs">
+                    <MarkdownRenderer content={aiExplanation} />
+                  </div>
+                </div>
+              )}
+
+              {/* Initial Empty State (First Time Visit) */}
+              {!isAiLoading && !aiExplanation && !aiError && (
+                <div className="p-3.5 rounded-lg border border-dashed border-slate-700/80 bg-slate-900/40 text-center space-y-2.5">
+                  <p className="text-slate-400 text-xs leading-relaxed max-w-md mx-auto">
+                    No feasibility assessment generated yet for <strong className="text-slate-200">{candidate.name}</strong>. Click below to consult Google Gemini, strictly grounded in candidate demand, retail gravity, and sister spacing.
+                  </p>
+                  <button
+                    onClick={handleRequestAi}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md transition-all cursor-pointer hover:shadow-teal-500/20 active:scale-95"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate AI Feasibility</span>
+                  </button>
                 </div>
               )}
             </div>

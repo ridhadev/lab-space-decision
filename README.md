@@ -1,5 +1,7 @@
 # Decision Space | Retail Geospatial Intelligence Platform
 
+**Current Release: V.01 (Baseline Snapshot)** | [Version Changelog](./VERSIONS.md)
+
 > **Geospatial decision-support system and portfolio optimization engine for Bedashing Beauty Lounge's 23-store network across the United Arab Emirates.**
 
 ---
@@ -19,7 +21,9 @@
 ## 2. Core Capabilities & Features
 
 - **Interactive Geospatial Network Map**:
-  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, and dynamic sister-proximity lines.
+  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, dynamic sister-proximity lines, a **Thermal Competition Density & Saturation Heatmap** (Blue-to-Red thermal gradient mapping local salon saturation from low-density moats to hyper-saturated retail corridors), a **Coverage Gap & "White Space" Analysis Layer** (cyan/teal opportunity auras and directional reach vectors highlighting unserved high-affluence trade pockets), and an **Expandable/Collapsible Map Layers Panel** with one-click hide/show controls and automated **Center of Gravity Camera Navigation** that centers and scales map viewports directly on the weighted geographic centroid of any selected emirate (`UAE`, `AD`, `DXB`, `SHJ`, `FUJ`, `RAK`).
+- **Market Saturation Metric in Summary Badges & Tables**:
+  4-tier competitive saturation classification (`Monopolistic Moat 1–4`, `Balanced 5–9`, `Saturated 10–17`, `Hyper-Saturated 18+`). Integrated into the Executive Summary portfolio banner strip, interactive filter chips, and sortable table columns across all 23 branches and 10 candidate growth zones, with deep-dive audit tooltips and modal breakdowns.
 - **Deterministic Multi-Factor Scoring Engine**:
   Auditable, mathematically transparent evaluation:
   - **Existing Branches**: Classified into \`PROTECT\` (≥ 85), \`HOLD\` (70–84), or \`SHRINK\` (< 70) based on reputation, catchment affluence, sister distance, and competitor saturation.
@@ -29,7 +33,7 @@
 - **Dynamic What-If Sensitivity Modeling**:
   Interactive slider controls enabling executives to adjust weighting matrices in real time, with instant client-side recalculation.
 - **Grounded AI Advisor & Board Memorandum**:
-  Dual-path executive briefing engine powered by Google Gemini 3.8 Flash with a zero-downtime deterministic fallback. Generates formal Board of Directors strategic memoranda.
+  Dual-path executive briefing engine powered by Google Gemini 3.8 Flash with a zero-downtime deterministic fallback. Generates formal Board of Directors strategic memoranda and natural-language branch rationales rendered through a high-contrast, fully formatted Markdown presentation pipeline (`react-markdown` + `remark-gfm`). Features per-location session isolation with browser `localStorage` caching (`/src/services/aiStorage.ts`) and active real-time processing indicators with pulsing radar states and shimmering skeleton rows.
 - **Built-In Architecture & Methodology Documentation**:
   Interactive technical reference with complete data provenance and mathematical proofs served directly at \`/docs\` and embedded within the app.
 

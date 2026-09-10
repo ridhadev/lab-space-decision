@@ -235,6 +235,7 @@ export default function App() {
       />
 
       <BranchDetailModal
+        key={selectedBranchEval?.branch.id || selectedCandidateEval?.candidate.id || "none"}
         branchEval={selectedBranchEval}
         candidateEval={selectedCandidateEval}
         branchWeights={branchWeights}

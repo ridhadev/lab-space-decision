@@ -12,6 +12,7 @@ import {
   Check,
   X,
 } from "lucide-react";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface AiAdvisorProps {
   isOpen: boolean;
@@ -203,10 +204,14 @@ Ask me any strategic question, or select a suggested prompt below to analyze net
                   className={`relative max-w-[85%] rounded-lg px-3.5 py-2.5 text-xs leading-relaxed ${
                     isUser
                       ? "bg-indigo-600 text-white rounded-tr-none"
-                      : "bg-[#161B22] text-slate-200 border border-slate-700 shadow-sm rounded-tl-none"
+                      : "bg-[#161B22] text-slate-200 border border-slate-700 shadow-sm rounded-tl-none pr-8"
                   }`}
                 >
-                  <div className="whitespace-pre-wrap font-sans">{m.content}</div>
+                  {isUser ? (
+                    <div className="whitespace-pre-wrap font-sans">{m.content}</div>
+                  ) : (
+                    <MarkdownRenderer content={m.content} />
+                  )}
                   {!isUser && (
                     <button
                       onClick={() => copyToClipboard(m.content, idx)}

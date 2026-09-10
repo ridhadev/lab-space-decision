@@ -8,6 +8,7 @@ import {
   CandidateEvaluation,
   NetworkSummary,
   Emirate,
+  MarketSaturationTier,
 } from "../types";
 
 export const DEFAULT_BRANCH_WEIGHTS: BranchScoringWeights = {
@@ -31,6 +32,51 @@ export const DEFAULT_THRESHOLDS: ThresholdConfig = {
   watchCutoff: 56,
   sisterBufferKm: 4.0,
 };
+
+/**
+ * Helper to determine market saturation tier and metadata based on competitor density
+ */
+export function getMarketSaturationInfo(competitors: number): {
+  tier: MarketSaturationTier;
+  label: string;
+  badgeClass: string;
+  dotColor: string;
+  description: string;
+} {
+  if (competitors >= 18) {
+    return {
+      tier: "Hyper-Saturated",
+      label: "Hyper-Saturated",
+      badgeClass: "bg-rose-500/15 text-rose-400 border border-rose-500/30",
+      dotColor: "#FB7185",
+      description: "Severe competitor density (18+ salons in 3km)",
+    };
+  } else if (competitors >= 10) {
+    return {
+      tier: "Saturated",
+      label: "Saturated",
+      badgeClass: "bg-orange-500/15 text-orange-400 border border-orange-500/30",
+      dotColor: "#FB923C",
+      description: "High competitor density (10–17 salons in 3km)",
+    };
+  } else if (competitors >= 5) {
+    return {
+      tier: "Balanced",
+      label: "Balanced",
+      badgeClass: "bg-amber-500/15 text-amber-400 border border-amber-500/30",
+      dotColor: "#FBBF24",
+      description: "Moderate commercial density (5–9 salons in 3km)",
+    };
+  } else {
+    return {
+      tier: "Monopolistic",
+      label: "Monopolistic (Moat)",
+      badgeClass: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30",
+      dotColor: "#38BDF8",
+      description: "Protected trade area / low competition (1–4 salons in 3km)",
+    };
+  }
+}
 
 /**
  * Deterministic evaluation for a Bedashing branch.
@@ -68,6 +114,8 @@ export function evaluateBranch(
   } else {
     competitionScore = Math.round(100 - ((branch.competitorDensity3km - 3) / 22) * 70);
   }
+
+  const saturationInfo = getMarketSaturationInfo(branch.competitorDensity3km);
 
   // Weighted sum
   const totalWeight =
@@ -117,6 +165,7 @@ export function evaluateBranch(
     demandScore,
     cannibalizationScore,
     competitionScore,
+    saturationTier: saturationInfo.tier,
     finalScore,
     classification,
     cannibalizationWarning,
@@ -183,12 +232,15 @@ export function evaluateCandidate(
     recommendationSummary = `Sub-optimal expansion target. Heavy competition or cannibalization risk with existing branch.`;
   }
 
+  const saturationInfo = getMarketSaturationInfo(candidate.competitorCount);
+
   return {
     candidate,
     demandScore,
     affluenceScore,
     retailScore,
     cannibalizationSafetyScore,
+    saturationTier: saturationInfo.tier,
     finalScore,
     classification,
     cannibalizationRisk,
@@ -210,6 +262,13 @@ export function calculateNetworkSummary(
   let scoreSum = 0;
   let highRiskCannibalizedCount = 0;
 
+  const saturationBreakdown = {
+    monopolistic: 0,
+    balanced: 0,
+    saturated: 0,
+    hyperSaturated: 0,
+  };
+
   const emirates: Emirate[] = ["Abu Dhabi", "Dubai", "Sharjah", "Fujairah", "Ras Al Khaimah"];
   const emirateBreakdown: Record<Emirate, { total: number; protect: number; hold: number; shrink: number }> = {
     "Abu Dhabi": { total: 0, protect: 0, hold: 0, shrink: 0 },
@@ -225,6 +284,11 @@ export function calculateNetworkSummary(
     if (b.classification === "HOLD") holdCount++;
     if (b.classification === "SHRINK") shrinkCount++;
     if (b.cannibalizationWarning) highRiskCannibalizedCount++;
+
+    if (b.saturationTier === "Monopolistic") saturationBreakdown.monopolistic++;
+    else if (b.saturationTier === "Balanced") saturationBreakdown.balanced++;
+    else if (b.saturationTier === "Saturated") saturationBreakdown.saturated++;
+    else if (b.saturationTier === "Hyper-Saturated") saturationBreakdown.hyperSaturated++;
 
     const em = b.branch.emirate;
     if (emirateBreakdown[em]) {
@@ -257,5 +321,6 @@ export function calculateNetworkSummary(
     watchCount,
     skipCount,
     emirateBreakdown,
+    saturationBreakdown,
   };
 }

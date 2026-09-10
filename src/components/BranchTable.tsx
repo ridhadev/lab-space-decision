@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { BranchEvaluation, Emirate, BranchClassification } from "../types";
+import { BranchEvaluation, Emirate, BranchClassification, MarketSaturationTier } from "../types";
+import { getMarketSaturationInfo } from "../services/scoringEngine";
 import {
   Search,
   Filter,
@@ -29,6 +30,7 @@ export const BranchTable: React.FC<BranchTableProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmirate, setSelectedEmirate] = useState<string>("All");
   const [selectedClassification, setSelectedClassification] = useState<string>("All");
+  const [selectedSaturation, setSelectedSaturation] = useState<string>("All");
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   // Handle Fullscreen escape listener & body scroll lock
@@ -71,9 +73,13 @@ export const BranchTable: React.FC<BranchTableProps> = ({
         selectedClassification === "All" ||
         item.classification === selectedClassification;
 
-      return matchSearch && matchEmirate && matchClassification;
+      const matchSaturation =
+        selectedSaturation === "All" ||
+        item.saturationTier === selectedSaturation;
+
+      return matchSearch && matchEmirate && matchClassification && matchSaturation;
     });
-  }, [evaluations, searchTerm, selectedEmirate, selectedClassification]);
+  }, [evaluations, searchTerm, selectedEmirate, selectedClassification, selectedSaturation]);
 
   const getBadge = (classification: BranchClassification) => {
     switch (classification) {
@@ -194,6 +200,41 @@ export const BranchTable: React.FC<BranchTableProps> = ({
 
           <div className="h-3.5 w-px bg-[#1D3452] mx-1 hidden sm:block" />
 
+          {/* Saturation Filter */}
+          <div className="flex items-center space-x-1 ds-text-secondary text-[11px]">
+            <span>Saturation:</span>
+          </div>
+          {(["All", "Monopolistic", "Balanced", "Saturated", "Hyper-Saturated"] as const).map((sat) => {
+            const count =
+              sat === "All"
+                ? evaluations.length
+                : evaluations.filter((e) => e.saturationTier === sat).length;
+            const satLabel =
+              sat === "All"
+                ? "All"
+                : sat === "Monopolistic"
+                ? "Moat (1-4)"
+                : sat === "Hyper-Saturated"
+                ? "Hyper (18+)"
+                : sat;
+            return (
+              <button
+                key={sat}
+                onClick={() => setSelectedSaturation(sat)}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors border flex items-center gap-1 ${
+                  selectedSaturation === sat
+                    ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                    : "ds-card-subtle ds-text-secondary hover:ds-text-primary"
+                }`}
+              >
+                <span>{satLabel}</span>
+                <span className="text-[10px] font-mono opacity-70">({count})</span>
+              </button>
+            );
+          })}
+
+          <div className="h-3.5 w-px bg-[#1D3452] mx-1 hidden sm:block" />
+
           {/* Full View Mode Toggle */}
           <button
             onClick={() => setIsFullScreen(!isFullScreen)}
@@ -230,6 +271,7 @@ export const BranchTable: React.FC<BranchTableProps> = ({
               <th className="py-2.5 px-2.5 text-center">Catchment Affluence</th>
               <th className="py-2.5 px-2.5 text-center">Sister Distance</th>
               <th className="py-2.5 px-2.5 text-center">Competitors (3km)</th>
+              <th className="py-2.5 px-2.5 text-center">Market Saturation</th>
               <th className="py-2.5 px-2.5 text-center">Health Score</th>
               <th className="py-2.5 px-3 text-center">Decision</th>
               <th className="py-2.5 px-3 text-right">Audit</th>
@@ -238,13 +280,14 @@ export const BranchTable: React.FC<BranchTableProps> = ({
           <tbody className="divide-y ds-border-subtle text-xs">
             {filteredBranches.length === 0 ? (
               <tr>
-                <td colSpan={9} className="py-8 text-center ds-text-muted">
+                <td colSpan={10} className="py-8 text-center ds-text-muted">
                   No branches found matching your search and filter criteria.
                 </td>
               </tr>
             ) : (
               filteredBranches.map((item, idx) => {
                 const { branch, finalScore, classification, cannibalizationWarning } = item;
+                const satInfo = getMarketSaturationInfo(branch.competitorDensity3km);
                 return (
                   <tr
                     key={branch.id}
@@ -313,6 +356,19 @@ export const BranchTable: React.FC<BranchTableProps> = ({
                     <td className="py-2.5 px-2.5 text-center">
                       <span className="font-mono ds-text-primary font-medium">{branch.competitorDensity3km}</span>
                       <span className="text-[10px] ds-text-secondary ml-1">salons</span>
+                    </td>
+
+                    <td className="py-2.5 px-2.5 text-center">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ${satInfo.badgeClass}`}
+                        title={satInfo.description}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full shrink-0 shadow-xs"
+                          style={{ backgroundColor: satInfo.dotColor }}
+                        />
+                        <span>{satInfo.label}</span>
+                      </span>
                     </td>
 
                     <td className="py-2.5 px-2.5 text-center">
