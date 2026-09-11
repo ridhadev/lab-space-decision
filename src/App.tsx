@@ -26,6 +26,7 @@ import { BranchesView } from "./components/BranchesView";
 import { GeospatialMap } from "./components/GeospatialMap";
 import { BoardMemoModal } from "./components/BoardMemoModal";
 import { DriveSyncModal } from "./components/DriveSyncModal";
+import { GuidedTour } from "./components/GuidedTour";
 
 export default function App() {
   // Navigation State: Map, Branches, Growth, Summary
@@ -53,6 +54,16 @@ export default function App() {
   const [isMemoModalOpen, setIsMemoModalOpen] = useState<boolean>(false);
   const [isDriveModalOpen, setIsDriveModalOpen] = useState<boolean>(false);
   const [initialAdvisorPrompt, setInitialAdvisorPrompt] = useState<string | null>(null);
+
+  // Guided Tour State
+  const [isTourOpen, setIsTourOpen] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("decisionspace_tour_dismissed") !== "true";
+    } catch {
+      return true;
+    }
+  });
+  const [tourStepIndex, setTourStepIndex] = useState<number>(0);
 
   // Deterministic Recalculation Engine
   const branchEvals = useMemo(() => {
@@ -93,6 +104,55 @@ export default function App() {
     setSelectedBranchEval(null);
   }, []);
 
+  // Guided Tour Step Handler: Automatically switches views, panels, and maps
+  const handleTourStepChange = useCallback((stepIdx: number) => {
+    setTourStepIndex(stepIdx);
+    switch (stepIdx) {
+      case 0: // 1. Interactive Geospatial Network Map
+        setActiveView("map");
+        setActivePanel(null);
+        setIsKpiOpen(false);
+        break;
+      case 1: // 2. Market Saturation & Portfolio Summary
+        setActiveView("overview");
+        setActivePanel(null);
+        setIsKpiOpen(true);
+        break;
+      case 2: // 3. Deterministic Branch Portfolio Evaluation
+        setActiveView("branches");
+        setActivePanel(null);
+        setIsKpiOpen(true);
+        break;
+      case 3: // 4. Growth Pipeline & Greenfield Expansion
+        setActiveView("growth");
+        setActivePanel(null);
+        setIsKpiOpen(true);
+        break;
+      case 4: // 5. Dynamic What-If Sensitivity Modeling
+        setActivePanel("config");
+        break;
+      case 5: // 6. Grounded AI Strategic Advisor & Board Memo
+        setActivePanel("advisor");
+        break;
+      default:
+        break;
+    }
+  }, []);
+
+  const handleCloseTour = useCallback(() => {
+    setIsTourOpen(false);
+    try {
+      localStorage.setItem("decisionspace_tour_dismissed", "true");
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const handleStartTour = useCallback(() => {
+    setIsTourOpen(true);
+    handleTourStepChange(0);
+  }, [handleTourStepChange]);
+
   return (
     <div
       id="decision-space-root"
@@ -123,6 +183,8 @@ export default function App() {
             setActivePanel("branch");
           }}
           onFocusMapLocation={handleFocusMapLocation}
+          onStartTour={handleStartTour}
+          isTourOpen={isTourOpen}
         />
 
         {/* Flex Row starting directly under 60px header containing Content + Sibling Drawer */}
@@ -257,6 +319,15 @@ export default function App() {
       <DriveSyncModal
         isOpen={isDriveModalOpen}
         onClose={() => setIsDriveModalOpen(false)}
+      />
+
+      {/* Guided Tour Workflow Cards (7 Core Capabilities) */}
+      <GuidedTour
+        isOpen={isTourOpen}
+        currentStepIndex={tourStepIndex}
+        onStepChange={handleTourStepChange}
+        onClose={handleCloseTour}
+        onRestart={() => handleTourStepChange(0)}
       />
     </div>
   );

@@ -1,0 +1,477 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 960" width="1920" height="960" style="background:#070D18; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A1424"/>
+      <stop offset="100%" stop-color="#060C16"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0F1C30"/>
+      <stop offset="100%" stop-color="#0A1424"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0C192C"/>
+      <stop offset="100%" stop-color="#081220"/>
+    </linearGradient>
+    <linearGradient id="accentCyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <radialGradient id="mapGlow" cx="620" cy="550" r="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F2847" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#0A192E" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#060C16" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="960" fill="url(#bgGrad)"/>
+
+  <!-- Top Application Header (60px) -->
+  <rect x="0" y="0" width="1920" height="58" fill="url(#headerGrad)" stroke="#192F4D" stroke-width="1"/>
+  
+  <!-- Left Brand -->
+  <rect x="18" y="11" width="36" height="36" rx="8" fill="#14263D" stroke="#2A486E" stroke-width="1"/>
+  <text x="26" y="34" fill="#E2E8F0" font-size="14" font-weight="800" letter-spacing="1">BE</text>
+  
+  <text x="66" y="27" fill="#FFFFFF" font-size="15" font-weight="700" letter-spacing="0.5">DECISION SPACE</text>
+  <rect x="195" y="15" width="70" height="18" rx="4" fill="#0C2540" stroke="#1E456E" stroke-width="1"/>
+  <text x="203" y="28" fill="#38BDF8" font-size="10" font-weight="600">UAE Retail</text>
+  <text x="66" y="44" fill="#7E96B5" font-size="11">23 Bedashing Lounges · 2026 Q1 Cycle</text>
+
+  <!-- Center Search Bar -->
+  <rect x="680" y="12" width="380" height="34" rx="8" fill="#081220" stroke="#1D3452" stroke-width="1"/>
+  <circle cx="700" cy="29" r="6" stroke="#5E7A9D" stroke-width="1.5" fill="none"/>
+  <line x1="704" y1="33" x2="710" y2="39" stroke="#5E7A9D" stroke-width="1.5"/>
+  <text x="720" y="33" fill="#64748B" font-size="12">Search branches, areas, codes...</text>
+  <rect x="1025" y="19" width="24" height="20" rx="4" fill="#132438"/>
+  <text x="1030" y="33" fill="#64748B" font-size="10" font-family="monospace">⌘K</text>
+
+  <!-- Right Header Controls -->
+  <!-- Tour Button -->
+  <rect x="1440" y="14" width="70" height="30" rx="6" fill="#0E1E33" stroke="#223E63" stroke-width="1"/>
+  <circle cx="1456" cy="29" r="6" stroke="#38BDF8" stroke-width="1.5" fill="none"/>
+  <text x="1470" y="33" fill="#94A3B8" font-size="12" font-weight="500">Tour</text>
+
+  <!-- Config Button (Active) -->
+  <rect x="1520" y="14" width="80" height="30" rx="6" fill="#183457" stroke="#38BDF8" stroke-width="1"/>
+  <text x="1534" y="33" fill="#38BDF8" font-size="12" font-weight="600">⚙ Config</text>
+
+  <!-- Ask Advisor Button -->
+  <rect x="1610" y="14" width="110" height="30" rx="6" fill="url(#accentCyan)"/>
+  <text x="1624" y="33" fill="#FFFFFF" font-size="12" font-weight="600">✨ Ask Advisor</text>
+
+  <!-- User Profile -->
+  <circle cx="1742" cy="29" r="14" fill="#1E3A5F" stroke="#38BDF8" stroke-width="1"/>
+  <text x="1734" y="33" fill="#38BDF8" font-size="11" font-weight="700">RZ</text>
+  <text x="1764" y="33" fill="#CBD5E1" font-size="12" font-weight="500">Ridha</text>
+
+  <!-- LEFT NAVIGATION RAIL (48px) -->
+  <rect x="0" y="58" width="48" height="902" fill="#08111D" stroke="#192F4D" stroke-width="1"/>
+  <!-- Map Nav -->
+  <rect x="6" y="70" width="36" height="42" rx="6" fill="#132742"/>
+  <text x="16" y="90" fill="#38BDF8" font-size="14">🗺</text>
+  <text x="12" y="103" fill="#38BDF8" font-size="9" font-weight="600">MAP</text>
+  <!-- Branches Nav -->
+  <text x="16" y="138" fill="#64748B" font-size="14">🏢</text>
+  <text x="6" y="152" fill="#64748B" font-size="8">BRANCHES</text>
+  <!-- Growth Nav -->
+  <text x="16" y="188" fill="#64748B" font-size="14">📈</text>
+  <text x="9" y="202" fill="#64748B" font-size="8">GROWTH</text>
+  <!-- Summary Nav -->
+  <text x="16" y="238" fill="#64748B" font-size="14">📊</text>
+  <text x="6" y="252" fill="#64748B" font-size="8">SUMMARY</text>
+
+  <!-- TOP KPI STATUS BAR -->
+  <g transform="translate(64, 68)">
+    <text x="0" y="16" fill="#64748B" font-size="11" font-weight="700" letter-spacing="1">PORTFOLIO HEALTH</text>
+    
+    <!-- Badges -->
+    <rect x="135" y="2" width="85" height="20" rx="10" fill="#063528" stroke="#10B981" stroke-width="1"/>
+    <circle cx="147" cy="12" r="3.5" fill="#10B981"/>
+    <text x="156" y="16" fill="#6EE7B7" font-size="11" font-weight="600">Protect 19</text>
+
+    <rect x="230" y="2" width="70" height="20" rx="10" fill="#332205" stroke="#F59E0B" stroke-width="1"/>
+    <circle cx="242" cy="12" r="3.5" fill="#F59E0B"/>
+    <text x="250" y="16" fill="#FCD34D" font-size="11" font-weight="600">Hold 4</text>
+
+    <rect x="310" y="2" width="75" height="20" rx="10" fill="#301317" stroke="#EF4444" stroke-width="1"/>
+    <circle cx="322" cy="12" r="3.5" fill="#EF4444"/>
+    <text x="330" y="16" fill="#FCA5A5" font-size="11" font-weight="600">Shrink 0</text>
+
+    <rect x="395" y="2" width="72" height="20" rx="10" fill="#0C2540" stroke="#0284C7" stroke-width="1"/>
+    <circle cx="407" cy="12" r="3.5" fill="#38BDF8"/>
+    <text x="415" y="16" fill="#BAE6FD" font-size="11" font-weight="600">Grow 6</text>
+
+    <text x="1200" y="16" fill="#64748B" font-size="12">Network Health: <tspan fill="#FFFFFF" font-weight="700">80/100</tspan></text>
+    <circle cx="1340" cy="12" r="3.5" fill="#10B981"/>
+    <text x="1350" y="16" fill="#64748B" font-size="11">data 2h ago</text>
+  </g>
+
+  <!-- 3 EXECUTIVE METRIC CARDS -->
+  <!-- Card 1: Protect Allocation -->
+  <g transform="translate(64, 106)" filter="url(#shadow)">
+    <rect width="455" height="150" rx="12" fill="url(#cardGrad)" stroke="#1A3353" stroke-width="1"/>
+    <circle cx="34" cy="34" r="14" fill="#063528" stroke="#10B981" stroke-width="1"/>
+    <path d="M29 34 L33 38 L40 29" stroke="#10B981" stroke-width="2" fill="none"/>
+    <text x="56" y="26" fill="#64748B" font-size="10" font-weight="700" letter-spacing="1">PROTECT ALLOCATION</text>
+    <text x="56" y="52" fill="#FFFFFF" font-size="28" font-weight="800">19 <tspan fill="#64748B" font-size="14" font-weight="500">/ 23 Lounges</tspan></text>
+    
+    <rect x="345" y="20" width="95" height="22" rx="6" fill="#063528" stroke="#10B981" stroke-width="1"/>
+    <text x="354" y="35" fill="#34D399" font-size="11" font-weight="700">83% High-Moat</text>
+
+    <text x="34" y="88" fill="#94A3B8" font-size="12">14 Abu Dhabi · 5 Dubai · 2 Sharjah · 1 FUJ · 1 RAK</text>
+    
+    <line x1="20" y1="112" x2="435" y2="112" stroke="#162942" stroke-width="1"/>
+    <circle cx="34" cy="130" r="4" fill="#10B981"/>
+    <text x="44" y="134" fill="#34D399" font-size="11" font-weight="600">Zero Sister Conflict</text>
+    <text x="320" y="134" fill="#64748B" font-size="11">Safe Cashflow Moat</text>
+  </g>
+
+  <!-- Card 2: Cannibalization Alerts -->
+  <g transform="translate(535, 106)" filter="url(#shadow)">
+    <rect width="455" height="150" rx="12" fill="url(#cardGrad)" stroke="#1A3353" stroke-width="1"/>
+    <circle cx="34" cy="34" r="14" fill="#3B1219" stroke="#F43F5E" stroke-width="1"/>
+    <text x="29" y="39" fill="#F43F5E" font-size="14" font-weight="900">!</text>
+    <text x="56" y="26" fill="#F43F5E" font-size="10" font-weight="700" letter-spacing="1">CANNIBALIZATION ALERTS</text>
+    <text x="56" y="52" fill="#FFFFFF" font-size="28" font-weight="800">8 <tspan fill="#F43F5E" font-size="14" font-weight="600">(&lt;4.0km Sister Buffer)</tspan></text>
+    
+    <rect x="360" y="20" width="80" height="22" rx="6" fill="#3B1219" stroke="#F43F5E" stroke-width="1"/>
+    <text x="372" y="35" fill="#FB7185" font-size="11" font-weight="700">8 Conflicts</text>
+
+    <text x="34" y="80" fill="#94A3B8" font-size="11">Overlapping catchment radii diluting chair utilization</text>
+    
+    <!-- Tags -->
+    <rect x="34" y="90" width="80" height="18" rx="4" fill="#1A283D"/>
+    <text x="40" y="103" fill="#94A3B8" font-size="10">Al (2.41km)</text>
+
+    <rect x="122" y="90" width="95" height="18" rx="4" fill="#1A283D"/>
+    <text x="128" y="103" fill="#94A3B8" font-size="10">Delma (1.9km)</text>
+
+    <rect x="225" y="90" width="105" height="18" rx="4" fill="#1A283D"/>
+    <text x="231" y="103" fill="#94A3B8" font-size="10">Khaleej (1.9km)</text>
+
+    <line x1="20" y1="116" x2="435" y2="116" stroke="#162942" stroke-width="1"/>
+    <text x="34" y="135" fill="#F43F5E" font-size="11" font-weight="600">⤹ View on Map →</text>
+    <text x="345" y="135" fill="#64748B" font-size="11">Downsize chairs</text>
+  </g>
+
+  <!-- Card 3: Expansion Pipeline -->
+  <g transform="translate(1006, 106)" filter="url(#shadow)">
+    <rect width="455" height="150" rx="12" fill="url(#cardGrad)" stroke="#1A3353" stroke-width="1"/>
+    <circle cx="34" cy="34" r="14" fill="#0C2540" stroke="#0284C7" stroke-width="1"/>
+    <text x="27" y="39" fill="#38BDF8" font-size="14">✦</text>
+    <text x="56" y="26" fill="#0284C7" font-size="10" font-weight="700" letter-spacing="1">EXPANSION PIPELINE</text>
+    <text x="56" y="52" fill="#FFFFFF" font-size="28" font-weight="800">+56 Chairs <tspan fill="#64748B" font-size="13" font-weight="500">(Target Capacity)</tspan></text>
+    
+    <rect x="345" y="20" width="95" height="22" rx="6" fill="#0C2540" stroke="#0284C7" stroke-width="1"/>
+    <text x="354" y="35" fill="#38BDF8" font-size="11" font-weight="700">6 GROW Targets</text>
+
+    <text x="34" y="80" fill="#94A3B8" font-size="11">10 UAE Candidates Analyzed · Unmet demand catchments</text>
+
+    <!-- Candidate Tags -->
+    <rect x="34" y="90" width="105" height="18" rx="4" fill="#1A283D"/>
+    <text x="40" y="103" fill="#38BDF8" font-size="10">Dubai (Score 84)</text>
+
+    <rect x="146" y="90" width="115" height="18" rx="4" fill="#1A283D"/>
+    <text x="152" y="103" fill="#34D399" font-size="10">Saadiyat (Score 94)</text>
+
+    <rect x="268" y="90" width="105" height="18" rx="4" fill="#1A283D"/>
+    <text x="274" y="103" fill="#38BDF8" font-size="10">Dubai (Score 82)</text>
+
+    <line x1="20" y1="116" x2="435" y2="116" stroke="#162942" stroke-width="1"/>
+    <text x="34" y="135" fill="#38BDF8" font-size="11" font-weight="600">↗ View Growth Pipeline →</text>
+    <text x="320" y="135" fill="#64748B" font-size="11">Dubai Hills, Saadiyat</text>
+  </g>
+
+  <!-- GEOSPATIAL MAP VIEWPORT (Center/Left) -->
+  <g transform="translate(64, 270)">
+    <!-- Map Canvas Outer Frame -->
+    <rect width="1397" height="660" rx="10" fill="#070F1C" stroke="#162B45" stroke-width="1"/>
+    
+    <!-- Map Ambient Radial Light -->
+    <rect width="1397" height="660" rx="10" fill="url(#mapGlow)"/>
+
+    <!-- UAE Geographic Stylized Landmass & Coastline -->
+    <!-- Persian Gulf Water / Land Boundary -->
+    <path d="M 120 180 Q 280 260, 480 320 T 780 430 T 920 380 T 1050 260 T 1150 140 L 1397 120 L 1397 660 L 0 660 L 0 200 Z" fill="#0C1726"/>
+    
+    <!-- Coastline Glow Vector -->
+    <path d="M 0 240 Q 240 280, 520 370 T 780 430 T 890 380 T 1020 280 T 1120 160" fill="none" stroke="#163456" stroke-width="2"/>
+    <path d="M 780 430 Q 820 400, 890 380 T 1000 300 T 1080 200" fill="none" stroke="#1E4878" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+    <!-- Map City Labels -->
+    <text x="340" y="440" fill="#334B68" font-size="13" font-weight="700" letter-spacing="2">ABU DHABI</text>
+    <text x="890" y="320" fill="#334B68" font-size="13" font-weight="700" letter-spacing="2">DUBAI</text>
+    <text x="960" y="270" fill="#293D55" font-size="11" font-weight="600" letter-spacing="1.5">SHARJAH</text>
+    <text x="1030" y="200" fill="#24374E" font-size="10" font-weight="600">RAS AL KHAIMAH</text>
+    <text x="1100" y="320" fill="#24374E" font-size="10" font-weight="600">FUJAIRAH</text>
+    <text x="920" y="520" fill="#24374E" font-size="10" font-weight="600">AL AIN</text>
+
+    <!-- Red Sister Cannibalization Connection Vectors -->
+    <line x1="560" y1="460" x2="590" y2="440" stroke="#F43F5E" stroke-width="2" stroke-dasharray="4,3" opacity="0.85"/>
+    <line x1="590" y1="440" x2="620" y2="470" stroke="#F43F5E" stroke-width="2" stroke-dasharray="4,3" opacity="0.85"/>
+    <line x1="620" y1="470" x2="635" y2="455" stroke="#F43F5E" stroke-width="2" stroke-dasharray="4,3" opacity="0.85"/>
+
+    <!-- Catchment Buffers (3km radii circles) -->
+    <circle cx="560" cy="460" r="32" stroke="#0EA5E9" stroke-width="1" fill="#0EA5E9" fill-opacity="0.08"/>
+    <circle cx="590" cy="440" r="32" stroke="#0EA5E9" stroke-width="1" fill="#0EA5E9" fill-opacity="0.08"/>
+    <circle cx="620" cy="470" r="32" stroke="#F43F5E" stroke-width="1" fill="#F43F5E" fill-opacity="0.1"/>
+    <circle cx="880" cy="330" r="30" stroke="#0EA5E9" stroke-width="1" fill="#0EA5E9" fill-opacity="0.08"/>
+    <circle cx="910" cy="310" r="30" stroke="#0EA5E9" stroke-width="1" fill="#0EA5E9" fill-opacity="0.08"/>
+    <circle cx="930" cy="290" r="30" stroke="#0EA5E9" stroke-width="1" fill="#0EA5E9" fill-opacity="0.08"/>
+    <circle cx="1010" cy="220" r="28" stroke="#0EA5E9" stroke-width="1" fill="#0EA5E9" fill-opacity="0.08"/>
+
+    <!-- Branch Markers with Scores (Abu Dhabi Cluster) -->
+    <g transform="translate(530, 430)">
+      <circle cx="0" cy="0" r="13" fill="#D97706" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">69</text>
+    </g>
+    <g transform="translate(560, 460)">
+      <circle cx="0" cy="0" r="13" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">87</text>
+    </g>
+    <g transform="translate(570, 480)">
+      <circle cx="0" cy="0" r="13" fill="#D97706" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">70</text>
+    </g>
+    <g transform="translate(590, 440)">
+      <circle cx="0" cy="0" r="14" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">84</text>
+    </g>
+    <g transform="translate(620, 470)">
+      <circle cx="0" cy="0" r="13" fill="#D97706" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">79</text>
+    </g>
+
+    <!-- Branch Markers (Dubai Cluster) -->
+    <g transform="translate(860, 350)">
+      <circle cx="0" cy="0" r="13" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">87</text>
+    </g>
+    <g transform="translate(880, 330)">
+      <circle cx="0" cy="0" r="13" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">75</text>
+    </g>
+    <g transform="translate(905, 310)">
+      <circle cx="0" cy="0" r="13" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">83</text>
+    </g>
+    <g transform="translate(930, 290)">
+      <circle cx="0" cy="0" r="13" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" filter="url(#shadow)"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">87</text>
+    </g>
+
+    <!-- Candidate Growth Diamonds -->
+    <g transform="translate(950, 270)">
+      <polygon points="0,-12 12,0 0,12 -12,0" fill="#059669" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">83</text>
+    </g>
+    <g transform="translate(1015, 210)">
+      <polygon points="0,-12 12,0 0,12 -12,0" fill="#059669" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">82</text>
+    </g>
+    <g transform="translate(1085, 305)">
+      <polygon points="0,-12 12,0 0,12 -12,0" fill="#059669" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">81</text>
+    </g>
+    <g transform="translate(990, 430)">
+      <polygon points="0,-12 12,0 0,12 -12,0" fill="#059669" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">85</text>
+    </g>
+    <g transform="translate(420, 580)">
+      <polygon points="0,-12 12,0 0,12 -12,0" fill="#059669" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="0" y="4" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">84</text>
+    </g>
+
+    <!-- FLOATING MAP LAYERS PANEL (Top Left of Map) -->
+    <g transform="translate(20, 20)" filter="url(#shadow)">
+      <rect width="210" height="320" rx="8" fill="#0A1628" stroke="#1D3654" stroke-width="1" fill-opacity="0.95"/>
+      <text x="14" y="24" fill="#FFFFFF" font-size="11" font-weight="700" letter-spacing="1">MAP LAYERS</text>
+      <rect x="90" y="12" width="32" height="15" rx="3" fill="#132742"/>
+      <text x="96" y="23" fill="#38BDF8" font-size="9">UAE</text>
+
+      <text x="14" y="52" fill="#64748B" font-size="9" font-weight="700">FOCUS EMIRATE:</text>
+      <text x="140" y="52" fill="#38BDF8" font-size="9">Auto-center</text>
+      
+      <!-- Emirate Dropdown Mock -->
+      <rect x="14" y="60" width="180" height="24" rx="4" fill="#0E1E34" stroke="#223E63" stroke-width="1"/>
+      <text x="24" y="76" fill="#E2E8F0" font-size="10">All Emirates (UAE)</text>
+      <text x="175" y="76" fill="#64748B" font-size="9">▼</text>
+
+      <!-- Emirate Chips -->
+      <g transform="translate(14, 92)">
+        <rect x="0" y="0" width="28" height="18" rx="3" fill="#0284C7"/>
+        <text x="5" y="13" fill="#FFFFFF" font-size="9" font-weight="600">UAE</text>
+        <rect x="33" y="0" width="24" height="18" rx="3" fill="#14263D"/>
+        <text x="38" y="13" fill="#94A3B8" font-size="9">AD</text>
+        <rect x="62" y="0" width="26" height="18" rx="3" fill="#14263D"/>
+        <text x="66" y="13" fill="#94A3B8" font-size="9">DXB</text>
+        <rect x="93" y="0" width="26" height="18" rx="3" fill="#14263D"/>
+        <text x="97" y="13" fill="#94A3B8" font-size="9">SHJ</text>
+        <rect x="124" y="0" width="24" height="18" rx="3" fill="#14263D"/>
+        <text x="128" y="13" fill="#94A3B8" font-size="9">FUJ</text>
+        <rect x="153" y="0" width="26" height="18" rx="3" fill="#14263D"/>
+        <text x="157" y="13" fill="#94A3B8" font-size="9">RAK</text>
+      </g>
+
+      <!-- Layer Checkboxes -->
+      <g transform="translate(14, 126)" font-size="10" fill="#CBD5E1">
+        <rect x="0" y="0" width="12" height="12" rx="2" fill="#0284C7"/>
+        <text x="2" y="10" fill="#FFF" font-size="9">✓</text>
+        <text x="20" y="10">Existing Branches</text>
+        <circle cx="170" cy="6" r="4" fill="#38BDF8"/>
+
+        <g transform="translate(0, 20)">
+          <rect x="0" y="0" width="12" height="12" rx="2" stroke="#475569" fill="none"/>
+          <text x="20" y="10">Candidates</text>
+          <polygon points="170,2 174,6 170,10 166,6" fill="#34D399"/>
+        </g>
+
+        <g transform="translate(0, 40)">
+          <rect x="0" y="0" width="12" height="12" rx="2" fill="#0284C7"/>
+          <text x="2" y="10" fill="#FFF" font-size="9">✓</text>
+          <text x="20" y="10">3km Catchment Buffers</text>
+          <circle cx="170" cy="6" r="4" stroke="#38BDF8" fill="none"/>
+        </g>
+
+        <g transform="translate(0, 60)">
+          <rect x="0" y="0" width="12" height="12" rx="2" stroke="#475569" fill="none"/>
+          <text x="20" y="10">Cannibalization (&lt;4km)</text>
+          <line x1="165" y1="6" x2="175" y2="6" stroke="#F43F5E" stroke-width="2"/>
+        </g>
+
+        <g transform="translate(0, 80)">
+          <rect x="0" y="0" width="12" height="12" rx="2" stroke="#475569" fill="none"/>
+          <text x="20" y="10">Thermal Saturation</text>
+          <rect x="165" y="4" width="10" height="4" fill="#F59E0B" rx="1"/>
+        </g>
+
+        <g transform="translate(0, 100)">
+          <rect x="0" y="0" width="12" height="12" rx="2" stroke="#475569" fill="none"/>
+          <text x="20" y="10">Coverage Gaps</text>
+          <circle cx="170" cy="6" r="4" stroke="#2DD4BF" stroke-dasharray="2,2" fill="none"/>
+        </g>
+      </g>
+
+      <!-- Legend -->
+      <line x1="14" y1="262" x2="194" y2="262" stroke="#1D3654" stroke-width="1"/>
+      <g transform="translate(14, 274)" font-size="9" fill="#94A3B8">
+        <circle cx="4" cy="4" r="3.5" fill="#10B981"/>
+        <text x="14" y="7">Protect / Grow</text>
+        <circle cx="4" cy="18" r="3.5" fill="#F59E0B"/>
+        <text x="14" y="21">Hold / Watch</text>
+        <circle cx="4" cy="32" r="3.5" fill="#EF4444"/>
+        <text x="14" y="35">Shrink / Skip</text>
+      </g>
+    </g>
+
+    <!-- Map Full View Button (Top Right) -->
+    <rect x="1290" y="18" width="90" height="28" rx="6" fill="#0A182C" stroke="#223E63" stroke-width="1"/>
+    <text x="1302" y="36" fill="#38BDF8" font-size="11" font-weight="600">↗ Full View</text>
+
+    <!-- Map Zoom Controls (Bottom Right) -->
+    <g transform="translate(1350, 560)">
+      <rect x="0" y="0" width="28" height="56" rx="4" fill="#0A1628" stroke="#1D3654" stroke-width="1"/>
+      <text x="9" y="20" fill="#E2E8F0" font-size="16" font-weight="bold">+</text>
+      <line x1="4" y1="28" x2="24" y2="28" stroke="#1D3654" stroke-width="1"/>
+      <text x="11" y="46" fill="#E2E8F0" font-size="16" font-weight="bold">-</text>
+    </g>
+    <text x="1160" y="640" fill="#475569" font-size="10">🇺🇦 Leaflet | © OpenStreetMap contributors © CARTO</text>
+  </g>
+
+  <!-- RIGHT CONFIG DECISION MODEL DRAWER (395px) -->
+  <g transform="translate(1480, 58)" filter="url(#shadow)">
+    <!-- Drawer Container -->
+    <rect width="440" height="902" fill="#081322" stroke="#192F4D" stroke-width="1"/>
+    
+    <!-- Drawer Header -->
+    <text x="24" y="34" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="1">⚙ CONFIG · DECISION MODEL</text>
+    <text x="400" y="34" fill="#64748B" font-size="15">✕</text>
+    
+    <!-- Drawer Tabs -->
+    <g transform="translate(20, 54)">
+      <rect x="0" y="0" width="115" height="28" rx="5" fill="#132742" stroke="#0284C7" stroke-width="1"/>
+      <text x="20" y="18" fill="#38BDF8" font-size="11" font-weight="600">Branches (23)</text>
+      
+      <rect x="125" y="0" width="105" height="28" rx="5" fill="#0A182C"/>
+      <text x="145" y="18" fill="#64748B" font-size="11">Growth (10)</text>
+
+      <rect x="240" y="0" width="85" height="28" rx="5" fill="#0A182C"/>
+      <text x="260" y="18" fill="#64748B" font-size="11">Cutoffs</text>
+    </g>
+
+    <!-- Branch Scoring Weights Section -->
+    <g transform="translate(20, 115)">
+      <text x="0" y="0" fill="#64748B" font-size="10" font-weight="700" letter-spacing="0.5">BRANCH SCORING WEIGHTS (0.00 – 1.00)</text>
+      <rect x="320" y="-12" width="65" height="18" rx="4" fill="#063528" stroke="#10B981" stroke-width="1"/>
+      <text x="328" y="0" fill="#34D399" font-size="10" font-weight="700">Sum: 1.00</text>
+    </g>
+
+    <!-- Slider 1: Google Star Reputation -->
+    <g transform="translate(20, 145)">
+      <text x="0" y="0" fill="#E2E8F0" font-size="12" font-weight="600">Google Star Reputation</text>
+      <text x="350" y="0" fill="#38BDF8" font-size="13" font-weight="700" font-family="monospace">0.25</text>
+      <text x="0" y="16" fill="#64748B" font-size="10">Google star rating (4.1–4.8★) scaled with Bayesian volume credibility.</text>
+      
+      <!-- Slider Track & Thumb -->
+      <rect x="0" y="26" width="385" height="4" rx="2" fill="#14263D"/>
+      <rect x="0" y="26" width="96" height="4" rx="2" fill="#0284C7"/>
+      <circle cx="96" cy="28" r="7" fill="#38BDF8" filter="url(#shadow)"/>
+    </g>
+
+    <!-- Slider 2: Catchment Affluence -->
+    <g transform="translate(20, 220)">
+      <text x="0" y="0" fill="#E2E8F0" font-size="12" font-weight="600">Catchment Affluence</text>
+      <text x="350" y="0" fill="#38BDF8" font-size="13" font-weight="700" font-family="monospace">0.35</text>
+      <text x="0" y="16" fill="#64748B" font-size="10">Disposable income index (0–100) based on residential rental brackets.</text>
+      
+      <!-- Slider Track & Thumb -->
+      <rect x="0" y="26" width="385" height="4" rx="2" fill="#14263D"/>
+      <rect x="0" y="26" width="135" height="4" rx="2" fill="#0284C7"/>
+      <circle cx="135" cy="28" r="7" fill="#38BDF8" filter="url(#shadow)"/>
+    </g>
+
+    <!-- Slider 3: Sister Proximity Safety -->
+    <g transform="translate(20, 295)">
+      <text x="0" y="0" fill="#E2E8F0" font-size="12" font-weight="600">Sister Proximity Safety</text>
+      <text x="350" y="0" fill="#38BDF8" font-size="13" font-weight="700" font-family="monospace">0.20</text>
+      <text x="0" y="16" fill="#64748B" font-size="10">Penalizes overlapping catchments within the sister buffer.</text>
+      
+      <!-- Slider Track & Thumb -->
+      <rect x="0" y="26" width="385" height="4" rx="2" fill="#14263D"/>
+      <rect x="0" y="26" width="77" height="4" rx="2" fill="#0284C7"/>
+      <circle cx="77" cy="28" r="7" fill="#38BDF8" filter="url(#shadow)"/>
+    </g>
+
+    <!-- Slider 4: Competitor Moat -->
+    <g transform="translate(20, 370)">
+      <text x="0" y="0" fill="#E2E8F0" font-size="12" font-weight="600">Competitor Moat</text>
+      <text x="350" y="0" fill="#38BDF8" font-size="13" font-weight="700" font-family="monospace">0.20</text>
+      <text x="0" y="16" fill="#64748B" font-size="10">Moat resilience against 3km beauty salon saturation density.</text>
+      
+      <!-- Slider Track & Thumb -->
+      <rect x="0" y="26" width="385" height="4" rx="2" fill="#14263D"/>
+      <rect x="0" y="26" width="77" height="4" rx="2" fill="#0284C7"/>
+      <circle cx="77" cy="28" r="7" fill="#38BDF8" filter="url(#shadow)"/>
+    </g>
+
+    <!-- Live Impact Status Box -->
+    <g transform="translate(20, 470)">
+      <text x="0" y="0" fill="#64748B" font-size="10" font-weight="700">LIVE IMPACT ON BRANCHES:</text>
+      <text x="0" y="20" fill="#E2E8F0" font-size="12" font-weight="600">19 Protect · 4 Hold · 0 Shrink</text>
+      <text x="0" y="38" fill="#64748B" font-size="11">Network average health score: <tspan fill="#38BDF8" font-weight="700">80/100</tspan></text>
+    </g>
+
+    <!-- Action Buttons -->
+    <g transform="translate(20, 540)">
+      <rect x="0" y="0" width="260" height="38" rx="6" fill="#0284C7"/>
+      <text x="60" y="24" fill="#FFFFFF" font-size="12" font-weight="700">⟳ Recompute network</text>
+      
+      <rect x="270" y="0" width="115" height="38" rx="6" fill="#0A182C" stroke="#223E63" stroke-width="1"/>
+      <text x="290" y="24" fill="#94A3B8" font-size="12" font-weight="600">↺ Reset All</text>
+    </g>
+  </g>
+</svg>

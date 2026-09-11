@@ -4,6 +4,11 @@
 
 > **Geospatial decision-support system and portfolio optimization engine for Bedashing Beauty Lounge's 23-store network across the United Arab Emirates.**
 
+<div align="center">
+  <img src="./docs/decision-space-dashboard.png" alt="Decision Space - Retail Geospatial Intelligence Platform Executive Dashboard" width="100%" />
+  <p><em>Decision Space Executive Geospatial Interface: UAE network health, cannibalization overlap monitoring, thermal competitor saturation, and sensitivity decision drawer.</em></p>
+</div>
+
 ---
 
 ## 1. Business Context & Strategic Purpose
@@ -36,6 +41,8 @@
   Dual-path executive briefing engine powered by Google Gemini 3.8 Flash with a zero-downtime deterministic fallback. Generates formal Board of Directors strategic memoranda and natural-language branch rationales rendered through a high-contrast, fully formatted Markdown presentation pipeline (`react-markdown` + `remark-gfm`). Features per-location session isolation with browser `localStorage` caching (`/src/services/aiStorage.ts`) and active real-time processing indicators with pulsing radar states and shimmering skeleton rows.
 - **Built-In Architecture & Methodology Documentation**:
   Interactive technical reference with complete data provenance and mathematical proofs served directly at \`/docs\` and embedded within the app.
+- **Guided Tour Workflow Cards**:
+  An interactive 6-step executive onboarding tour that seamlessly walks users through the core capabilities of the platform (Interactive Geospatial Map with sister cannibalization monitoring, Saturation & Portfolio Summary, Deterministic Branch Evaluation, Growth Greenfield Pipeline, Sensitivity Modeling, and Grounded AI Strategic Advisor), automatically transitioning the active map viewports, data tables, sensitivity sliders, and AI panels in real time. Can be dismissed at any time, navigated via keyboard arrows, or relaunched anytime via the top header \`Tour\` button or user menu.
 
 ---
 
@@ -66,7 +73,7 @@ npm install
 
 ---
 
-### Step 3: Configure Environment Variables & API Keys
+### Step 3: Configure Environment Variables & API Keys (Optional)
 
 Copy the sample environment file:
 \`\`\`bash
@@ -75,18 +82,18 @@ cp .env.example .env
 
 Open \`.env\` in your text editor:
 \`\`\`env
-# Google Gemini API Key (Optional)
-# Required for natural-language AI Advisor chat & Board Memo LLM generation.
-# If omitted, the platform uses its built-in deterministic briefing generator.
+#### Google Gemini API Key (Optional)
+Required for natural-language AI Advisor chat & Board Memo LLM generation.
+If omitted, the platform uses its built-in deterministic briefing generator.
 GEMINI_API_KEY=
 
-# Google Drive Sync (Optional)
+#### Google Drive Sync (Optional)
 GOOGLE_DRIVE_FOLDER_ID=1fjPVxav6Zp-I9U0sPh1uHVEgqJwXt-cA
 GOOGLE_DRIVE_SERVICE_ACCOUNT_KEY=
 
-# CARTO Basemap API Key (Optional)
-# CARTO appends a watermark flag on raster tiles without an authenticated key.
-# A default key is pre-configured in the codebase; you can override it here.
+#### CARTO Basemap API Key (Optional)
+CARTO appends a watermark flag on raster tiles without an authenticated key.
+A default key is pre-configured in the codebase; you can override it here.
 CARTO_API_KEY=
 VITE_CARTO_API_KEY=
 \`\`\`

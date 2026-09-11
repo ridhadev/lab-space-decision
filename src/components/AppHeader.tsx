@@ -13,6 +13,7 @@ import {
   Check,
   BookOpen,
   ExternalLink,
+  Compass,
 } from "lucide-react";
 import { BranchEvaluation, CandidateEvaluation } from "../types";
 
@@ -28,6 +29,8 @@ interface AppHeaderProps {
   onSelectBranch: (b: BranchEvaluation) => void;
   onSelectCandidate: (c: CandidateEvaluation) => void;
   onFocusMapLocation?: (lat: number, lng: number) => void;
+  onStartTour?: () => void;
+  isTourOpen?: boolean;
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({
@@ -39,6 +42,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onSelectBranch,
   onSelectCandidate,
   onFocusMapLocation,
+  onStartTour,
+  isTourOpen,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -251,6 +256,24 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           id="config-advisor-switcher"
           className="border border-[#1D3452] rounded-[10px] p-[3px] bg-[#0A1424] flex items-center gap-1 shadow-xs"
         >
+          {/* Guided Tour Trigger Button */}
+          {onStartTour && (
+            <button
+              type="button"
+              onClick={onStartTour}
+              aria-label="Start Guided Tour"
+              title="Start Guided Tour (6 Core Capabilities)"
+              className={`h-[28px] px-2 rounded-[7px] text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer select-none ${
+                isTourOpen
+                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-xs"
+                  : "text-[#8BA2C1] hover:text-white hover:bg-[#142842]/80 border border-transparent"
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5 text-cyan-400 stroke-[1.8]" />
+              <span className="hidden lg:inline">Tour</span>
+            </button>
+          )}
+
           {/* Config Button (Secondary / Ghost) */}
           <button
             type="button"
@@ -358,6 +381,26 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
               {/* GROUP 3: DOCUMENTATION & SESSION */}
               <div className="p-2.5 pt-1.5">
+                {/* Guided Tour Trigger */}
+                {onStartTour && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAvatarMenuOpen(false);
+                      onStartTour();
+                    }}
+                    className="w-full text-left flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-[#193152] transition-colors text-[#8BA2C1] hover:text-white cursor-pointer mb-0.5"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Compass className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Guided Tour</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-cyan-400 font-bold bg-cyan-500/15 px-1.5 py-0.5 rounded border border-cyan-500/30">
+                      6 Steps
+                    </span>
+                  </button>
+                )}
+
                 {/* Developer Documentation */}
                 <a
                   href="/docs/index.html"

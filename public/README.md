@@ -1,6 +1,13 @@
 # Decision Space | Retail Geospatial Intelligence Platform
 
+**Current Release: V.01 (Baseline Snapshot)** | [Version Changelog](./VERSIONS.md)
+
 > **Geospatial decision-support system and portfolio optimization engine for Bedashing Beauty Lounge's 23-store network across the United Arab Emirates.**
+
+<div align="center">
+  <img src="./docs/decision-space-dashboard.png" alt="Decision Space - Retail Geospatial Intelligence Platform Executive Dashboard" width="100%" />
+  <p><em>Decision Space Executive Geospatial Interface: UAE network health, cannibalization overlap monitoring, thermal competitor saturation, and sensitivity decision drawer.</em></p>
+</div>
 
 ---
 
@@ -19,7 +26,9 @@
 ## 2. Core Capabilities & Features
 
 - **Interactive Geospatial Network Map**:
-  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, and dynamic sister-proximity lines.
+  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, dynamic sister-proximity lines, a **Thermal Competition Density & Saturation Heatmap** (Blue-to-Red thermal gradient mapping local salon saturation from low-density moats to hyper-saturated retail corridors), a **Coverage Gap & "White Space" Analysis Layer** (cyan/teal opportunity auras and directional reach vectors highlighting unserved high-affluence trade pockets), and an **Expandable/Collapsible Map Layers Panel** with one-click hide/show controls and automated **Center of Gravity Camera Navigation** that centers and scales map viewports directly on the weighted geographic centroid of any selected emirate (`UAE`, `AD`, `DXB`, `SHJ`, `FUJ`, `RAK`).
+- **Market Saturation Metric in Summary Badges & Tables**:
+  4-tier competitive saturation classification (`Monopolistic Moat 1–4`, `Balanced 5–9`, `Saturated 10–17`, `Hyper-Saturated 18+`). Integrated into the Executive Summary portfolio banner strip, interactive filter chips, and sortable table columns across all 23 branches and 10 candidate growth zones, with deep-dive audit tooltips and modal breakdowns.
 - **Deterministic Multi-Factor Scoring Engine**:
   Auditable, mathematically transparent evaluation:
   - **Existing Branches**: Classified into \`PROTECT\` (≥ 85), \`HOLD\` (70–84), or \`SHRINK\` (< 70) based on reputation, catchment affluence, sister distance, and competitor saturation.
@@ -29,9 +38,11 @@
 - **Dynamic What-If Sensitivity Modeling**:
   Interactive slider controls enabling executives to adjust weighting matrices in real time, with instant client-side recalculation.
 - **Grounded AI Advisor & Board Memorandum**:
-  Dual-path executive briefing engine powered by Google Gemini 3.8 Flash with a zero-downtime deterministic fallback. Generates formal Board of Directors strategic memoranda.
+  Dual-path executive briefing engine powered by Google Gemini 3.8 Flash with a zero-downtime deterministic fallback. Generates formal Board of Directors strategic memoranda and natural-language branch rationales rendered through a high-contrast, fully formatted Markdown presentation pipeline (`react-markdown` + `remark-gfm`). Features per-location session isolation with browser `localStorage` caching (`/src/services/aiStorage.ts`) and active real-time processing indicators with pulsing radar states and shimmering skeleton rows.
 - **Built-In Architecture & Methodology Documentation**:
   Interactive technical reference with complete data provenance and mathematical proofs served directly at \`/docs\` and embedded within the app.
+- **Guided Tour Workflow Cards**:
+  An interactive 6-step executive onboarding tour that seamlessly walks users through the core capabilities of the platform (Interactive Geospatial Map with sister cannibalization monitoring, Saturation & Portfolio Summary, Deterministic Branch Evaluation, Growth Greenfield Pipeline, Sensitivity Modeling, and Grounded AI Strategic Advisor), automatically transitioning the active map viewports, data tables, sensitivity sliders, and AI panels in real time. Can be dismissed at any time, navigated via keyboard arrows, or relaunched anytime via the top header \`Tour\` button or user menu.
 
 ---
 
@@ -62,7 +73,7 @@ npm install
 
 ---
 
-### Step 3: Configure Environment Variables & API Keys
+### Step 3: Configure Environment Variables & API Keys (Optional)
 
 Copy the sample environment file:
 \`\`\`bash
@@ -71,18 +82,18 @@ cp .env.example .env
 
 Open \`.env\` in your text editor:
 \`\`\`env
-# Google Gemini API Key (Optional)
-# Required for natural-language AI Advisor chat & Board Memo LLM generation.
-# If omitted, the platform uses its built-in deterministic briefing generator.
+#### Google Gemini API Key (Optional)
+Required for natural-language AI Advisor chat & Board Memo LLM generation.
+If omitted, the platform uses its built-in deterministic briefing generator.
 GEMINI_API_KEY=
 
-# Google Drive Sync (Optional)
+#### Google Drive Sync (Optional)
 GOOGLE_DRIVE_FOLDER_ID=1fjPVxav6Zp-I9U0sPh1uHVEgqJwXt-cA
 GOOGLE_DRIVE_SERVICE_ACCOUNT_KEY=
 
-# CARTO Basemap API Key (Optional)
-# CARTO appends a watermark flag on raster tiles without an authenticated key.
-# A default key is pre-configured in the codebase; you can override it here.
+#### CARTO Basemap API Key (Optional)
+CARTO appends a watermark flag on raster tiles without an authenticated key.
+A default key is pre-configured in the codebase; you can override it here.
 CARTO_API_KEY=
 VITE_CARTO_API_KEY=
 \`\`\`
@@ -135,7 +146,8 @@ decision-space/
 ├── package.json               # Node.js project manifest & script commands
 ├── server.ts                  # Express backend: Gemini AI proxy, Drive sync, and static docs
 ├── docs/                      # Static technical & strategic documentation
-│   └── index.html             # Standalone searchable documentation web page
+│   ├── index.html             # Standalone searchable documentation web page
+│   └── video_transcript_walkthrough.md # 5-minute executive demo video transcript & feature guide
 ├── public/                    # Static assets served directly
 │   └── docs/index.html        # Production mirror of the documentation web page
 └── src/                       # Client-side React 19 application
@@ -149,22 +161,34 @@ decision-space/
     │   ├── scoringEngine.ts   # Pure deterministic math: Haversine, scores, classifications
     │   └── firebaseAuth.ts    # Authentication and user session handler
     └── components/
-        ├── GeospatialMap.tsx  # Leaflet map with 3km catchments & custom markers
-        ├── BranchTable.tsx    # Interactive sorting and filtering table of branches
-        ├── CandidateTable.tsx # Expansion ranking and ROI prioritization table
-        ├── AiAdvisor.tsx      # Grounded strategic advisory dialogue
-        ├── BoardMemoModal.tsx # Formal C-Suite & Board memo generator
-        └── Header.tsx         # Navigation bar with quick link to documentation
+        ├── LeftNavRail.tsx       # Fixed 74px left navigation rail (Map, Growth, Branches, Overview)
+        ├── AppHeader.tsx         # 60px app header with search (⌘K), view switchers & avatar menu
+        ├── KpiBand.tsx           # Collapsible portfolio health band with decision distribution pills
+        ├── RightDrawerPanel.tsx  # Full-height right panel (Config, Advisor, Data, Dev, Branch deep-dive)
+        ├── OverviewView.tsx      # Strategic portfolio overview & pending decisions
+        ├── GrowthView.tsx        # Expansion candidate cards & suitability rankings
+        ├── BranchesView.tsx      # Comprehensive 23-lounge audit table with density controls
+        ├── GeospatialMap.tsx     # Leaflet map with 3km catchments, thermal saturation & white spaces
+        ├── BoardMemoModal.tsx    # Formal C-Suite & Board memo generator
+        └── DriveSyncModal.tsx    # Google Drive real-time workspace sync modal
 \`\`\`
 
 ---
 
 ## 5. Data Provenance & Grounding Notice
 
-- **Collected Data**: Store names, physical street addresses, geocodes (lat/lng), and Google star ratings/review counts are collected from public records and geocoded via Google Maps.
-- **Calculated Math**: Distance matrices between all branches and candidate areas are derived using the spherical Haversine formula ($R=6,371\\text{ km}$).
-- **Modeled Proxies**: Local competitor density counts within 3 km, catchment affluence indices, chair counts, and visitor volumes are modeled benchmarks (Bedashing internal POS records remain confidential).
-- For complete audit details, view the **Provenance Matrix** in the documentation at \`/docs\`.
+Decision Space strictly audits and classifies all data dimensions into three distinct tiers:
+
+1. **Real API & Web Extracted**: Store names, physical street addresses, geocodes (lat/lng via Google Geocoding API), Google star ratings, and review counts (via Google Places API) are verified ground truth extracted from public directories and Google Maps Platform.
+2. **Deterministic In-Code Math**: Distance matrices between all branches and candidate zones are calculated in memory via the spherical Haversine formula ($R=6,371\text{ km}$), with local cannibalization decay curves and multi-attribute scoring.
+3. **AI-Curated & Modeled Proxies**: 
+   - **What "Curated" Means**: Generated by the AI assistant using its internal parametric training knowledge (training cutoff: March 2026) and commercial beauty space-planning heuristics.
+   - **No Live Database / Private Access**: No automated API or live query was run against the UAE Federal Competitiveness and Statistics Centre (FCSC), and no confidential corporate Point-of-Sale (POS) accounting ledgers or architectural CAD blueprints were accessed.
+   - **Catchment Affluence Index (0–100)**: Curated heuristic based on public residential rental brackets (Bayut/PropertyFinder medians: Ultra-Prime 90–95, Affluent Communities 80–86, Outer Suburban 72–78).
+   - **Chair Counts & GLA**: Modeled heuristic based on commercial beauty industry space-planning standards (~100–120 sq ft GLA per styling station; 10 to 18 chairs by venue format).
+   - **Monthly Visitors**: Modeled throughput equation derived from simulated chairs ($\text{Chairs} \times \text{Daily Turns} \times 30 \times \text{Utilization Rate}$).
+
+For complete audit details, view the interactive **Provenance Matrix** in the documentation at `/docs` (or `/docs/index.html`).
 
 ---
 
