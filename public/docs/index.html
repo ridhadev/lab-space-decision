@@ -172,8 +172,56 @@
         </div>
 
         <p class="text-xs text-slate-400 leading-relaxed">
-          Every dimension used in Decision Space is classified into <strong>Collected / Fetched</strong> (real-world API/public records), <strong>Generated Math</strong> (deterministic algorithms), or <strong>Synthetic / Modeled</strong> (calibrated proxies).
+          Every dimension used in Decision Space is auditable and classified into three strict tiers: <strong>Real API &amp; Web Extracted</strong>, <strong>Deterministic In-Code Math</strong>, and <strong>AI-Curated &amp; Modeled Proxies</strong>.
         </p>
+
+        <!-- Provenance Classification Callout -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 rounded-lg bg-emerald-950/20 border border-emerald-500/30 space-y-1.5">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <h4 class="font-bold text-emerald-300 text-xs uppercase tracking-wider">1. Real API &amp; Web Extracted</h4>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Extracted directly via public web scraping (Bedashing store directory) and Google Maps APIs (Geocoding API coordinates, Places Public Star Ratings &amp; Review Counts). 100% verified ground truth.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-blue-950/20 border border-blue-500/30 space-y-1.5">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+              <h4 class="font-bold text-blue-300 text-xs uppercase tracking-wider">2. Deterministic In-Code Math</h4>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Calculated locally on-the-fly using the spherical Haversine geodesic distance formula ($R=6,371\text{ km}$), continuous cannibalization penalty curves, and multi-factor weighted scoring. No external network I/O.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-950/20 border border-amber-500/30 space-y-1.5">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <h4 class="font-bold text-amber-300 text-xs uppercase tracking-wider">3. AI-Curated &amp; Modeled Proxies</h4>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Synthesized by the AI assistant from parametric training knowledge (training cutoff: March 2026). <strong>No live FCSC database or API was queried</strong>, and <strong>no confidential POS ledgers or CAD blueprints were accessed</strong>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Deep-Dive Note on Curated / Modeled Data -->
+        <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2 text-xs">
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider text-amber-400 flex items-center gap-2">
+            <span>⚠️ Transparency Note: What "AI-Curated" Means in This Dataset</span>
+          </h4>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            "Curated" means the data was synthesized using the AI's internal pre-trained domain knowledge and industry heuristics, rather than an automated database integration:
+          </p>
+          <ul class="list-disc list-inside text-slate-400 text-[11px] space-y-1.5">
+            <li><strong class="text-slate-200">Catchment Affluence Index (0–100):</strong> There is no public programmatic API for the UAE Federal Competitiveness and Statistics Centre (FCSC). Instead, this score is a heuristic benchmark based on general UAE residential lease brackets (Bayut/PropertyFinder market medians: Ultra-Prime 90–95, Affluent Communities 80–86, Outer Suburban 72–78).</li>
+            <li><strong class="text-slate-200">Chair Counts &amp; Square Footage:</strong> Private lease agreements, architectural CAD floorplans, and municipality trade licenses are confidential. Counts (10 to 18 chairs) were assigned using commercial beauty industry space-planning standards (~100–120 sq ft GLA per styling station) mapped to visible venue types (boutique villas = 10–12, community centers = 14–16, regional flagships = 18).</li>
+            <li><strong class="text-slate-200">Monthly Visitors:</strong> Modeled mathematically from the simulated chairs ($\text{Chairs} \times \text{Daily Turns} \times 30 \times \text{Utilization Rate}$). Actual internal POS transaction ledgers are strictly confidential.</li>
+          </ul>
+        </div>
 
         <!-- Provenance Table -->
         <div class="overflow-x-auto border border-dark-600 rounded-lg">
@@ -188,33 +236,33 @@
             </thead>
             <tbody class="divide-y divide-dark-600 font-mono text-[11px]">
               <tr class="hover:bg-dark-800/40">
-                <td class="p-3 font-sans font-medium text-slate-200">23 Bedashing Store Names & Emirates</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
-                <td class="p-3 text-slate-400">Bedashing Directory: <a href="https://www.bedashingbeauty.com/lounges/" target="_blank" class="text-indigo-400 hover:underline">bedashingbeauty.com/lounges</a></td>
+                <td class="p-3 font-sans font-medium text-slate-200">23 Bedashing Store Names &amp; Emirates</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API / Scraped</span></td>
+                <td class="p-3 text-slate-400">Bedashing Public Directory: <a href="https://www.bedashingbeauty.com/lounges/" target="_blank" class="text-indigo-400 hover:underline">bedashingbeauty.com/lounges</a></td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Branch Physical Addresses</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
-                <td class="p-3 text-slate-400">Mall directories & Google Places (e.g. Yas Mall, Al Maqta)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API / Scraped</span></td>
+                <td class="p-3 text-slate-400">Mall directories &amp; Google Places verified street locations</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">GPS Coordinates (Lat, Lng)</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API Extracted</span></td>
                 <td class="p-3 text-slate-400">Google Geocoding API: maps.googleapis.com</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Google Star Ratings (4.1 – 4.8★)</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
-                <td class="p-3 text-slate-400">Google Maps Places Public Reviews</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API Extracted</span></td>
+                <td class="p-3 text-slate-400">Google Places API Public Ratings</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Google Review Counts (280 – 1,420)</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
-                <td class="p-3 text-slate-400">Google Maps Places Review Volume</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API Extracted</span></td>
+                <td class="p-3 text-slate-400">Google Places API Public Review Volume</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
@@ -225,42 +273,42 @@
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Competitor Density (3km Buffer)</td>
-                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
-                <td class="p-3 text-slate-400">Google Places POI density baseline (2 to 26 competitors)</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Modeled Baseline</span></td>
+                <td class="p-3 text-slate-400">Google Places nearby search baseline (2 to 26 salons)</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Catchment Affluence Index (0–100)</td>
-                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
-                <td class="p-3 text-slate-400">UAE Federal FCSC stats & residential rental brackets</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">AI-Curated Proxy</span></td>
+                <td class="p-3 text-slate-400">AI-curated rental tier heuristic (Bayut medians; no direct FCSC API)</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
-                <td class="p-3 font-sans font-medium text-slate-200">Chair Count & Monthly Visitors</td>
-                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
-                <td class="p-3 text-slate-400">Operational salon floorplate simulation (POS is confidential)</td>
+                <td class="p-3 font-sans font-medium text-slate-200">Chair Count &amp; Monthly Visitors</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">AI-Curated Heuristic</span></td>
+                <td class="p-3 text-slate-400">Industry floorplate heuristic (~100–120 sq ft/station; POS confidential)</td>
                 <td class="p-3 text-indigo-300">/src/data/branches.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">10 Candidate Centroids (Lat/Lng)</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
-                <td class="p-3 text-slate-400">Emaar / Aldar Master Developers (Dubai Hills, Saadiyat)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API / Public</span></td>
+                <td class="p-3 text-slate-400">Emaar / Aldar Master Developer Public Centroids (Dubai Hills, Saadiyat)</td>
                 <td class="p-3 text-indigo-300">/src/data/candidates.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Unmet Demand Index (0–100)</td>
-                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Synthetic / Modeled</span></td>
-                <td class="p-3 text-slate-400">Target female population growth vs. current luxury chair deficit</td>
+                <td class="p-3"><span class="badge-synthetic px-2 py-0.5 rounded text-[10px] font-sans font-bold">AI-Curated Proxy</span></td>
+                <td class="p-3 text-slate-400">Simulated demand heuristic based on luxury chair deficit</td>
                 <td class="p-3 text-indigo-300">/src/data/candidates.ts</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
                 <td class="p-3 font-sans font-medium text-slate-200">Geospatial Vector Map Tiles</td>
-                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">Collected</span></td>
-                <td class="p-3 text-slate-400">CartoDB Dark Matter: basemaps.cartocdn.com (authenticated key eliminates watermark flag)</td>
+                <td class="p-3"><span class="badge-collected px-2 py-0.5 rounded text-[10px] font-sans font-bold">API Extracted</span></td>
+                <td class="p-3 text-slate-400">CartoDB Dark Matter: basemaps.cartocdn.com</td>
                 <td class="p-3 text-indigo-300">/src/components/GeospatialMap.tsx</td>
               </tr>
               <tr class="hover:bg-dark-800/40">
-                <td class="p-3 font-sans font-medium text-slate-200">Branch Scores & Classifications</td>
+                <td class="p-3 font-sans font-medium text-slate-200">Branch Scores &amp; Classifications</td>
                 <td class="p-3"><span class="badge-deterministic px-2 py-0.5 rounded text-[10px] font-sans font-bold">Deterministic</span></td>
                 <td class="p-3 text-slate-400">Mathematical scoring engine calibrated with user weights</td>
                 <td class="p-3 text-indigo-300">/src/services/scoringEngine.ts</td>
@@ -530,6 +578,10 @@
                 <td class="p-3 font-sans text-slate-400">Master GitHub repository guide: Business context, local 1-minute quick start, API key guidelines, and commands.</td>
               </tr>
               <tr>
+                <td class="p-3 text-indigo-300">/docs/video_transcript_walkthrough.md</td>
+                <td class="p-3 font-sans text-slate-400">5-minute executive video walkthrough script, feature narrative, and requirement traceability guide.</td>
+              </tr>
+              <tr>
                 <td class="p-3 text-indigo-300">/VERSIONS.md</td>
                 <td class="p-3 font-sans text-slate-400">Release registry and changelog recording all version snapshots (starting with active baseline <code class="text-slate-200">V.01</code>) and manifest artifacts.</td>
               </tr>
@@ -556,6 +608,22 @@
               <tr>
                 <td class="p-3 text-indigo-300">/src/components/MarkdownRenderer.tsx</td>
                 <td class="p-3 font-sans text-slate-400">Reusable Markdown presenter using <code class="text-slate-200">react-markdown</code> and <code class="text-slate-200">remark-gfm</code> for executive briefings, rationales, and chat.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/components/LeftNavRail.tsx</td>
+                <td class="p-3 font-sans text-slate-400">Fixed 74px vertical navigation rail answering &ldquo;where am I&rdquo; across Map, Growth, Branches, and Overview.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/components/AppHeader.tsx</td>
+                <td class="p-3 font-sans text-slate-400">60px header answering &ldquo;what can I do&rdquo; with global ⌘K search, grouped Config/Advisor switcher, and avatar actions.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/components/KpiBand.tsx</td>
+                <td class="p-3 font-sans text-slate-400">Collapsible summary strip showing portfolio decision distribution pills and auto-fit metric cards.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-indigo-300">/src/components/RightDrawerPanel.tsx</td>
+                <td class="p-3 font-sans text-slate-400">Full-height context drawer hosting Config, AI Advisor, Data sources, Dev specs, and Branch/Candidate deep dives.</td>
               </tr>
               <tr>
                 <td class="p-3 text-indigo-300">/server.ts</td>

@@ -334,18 +334,49 @@ app.get(["/README.md", "/readme", "/README"], (_req: Request, res: Response) => 
   res.sendFile(path.join(process.cwd(), "README.md"));
 });
 
-// Grounded AI explanation endpoint
-app.post("/api/ai/explain", async (req: Request, res: Response) => {
+// Grounded AI explanation and interactive chat endpoints
+app.post(["/api/ai/explain", "/api/ai/chat"], async (req: Request, res: Response) => {
   const {
     query,
-    subjectType, // 'branch' | 'candidate' | 'network' | 'weights'
-    subjectData,
-    modelContext,
+    subjectType: rawSubjectType,
+    subjectData: rawSubjectData,
+    modelContext: rawModelContext,
+    contextData,
   } = req.body;
 
   if (!query) {
     res.status(400).json({ error: "Missing required field: query" });
     return;
+  }
+
+  // Normalize subjectType and data across /api/ai/explain and /api/ai/chat
+  let subjectType = rawSubjectType;
+  let subjectData = rawSubjectData;
+  let modelContext = rawModelContext;
+
+  if (!subjectType && contextData?.subjectType) {
+    subjectType = contextData.subjectType;
+  }
+  if (!subjectData && contextData?.subjectData) {
+    subjectData = contextData.subjectData;
+  }
+  if (!modelContext && contextData?.weights) {
+    modelContext = {
+      weights: contextData.weights,
+      summary: contextData.summary,
+      keyBranches: contextData.keyBranches,
+    };
+  }
+
+  // Infer subjectType if subjectData contains specific objects
+  if (!subjectType) {
+    if (subjectData?.branch || subjectData?.googleRating) {
+      subjectType = "branch";
+    } else if (subjectData?.candidate || subjectData?.unmetDemandIndex) {
+      subjectType = "candidate";
+    } else {
+      subjectType = "network";
+    }
   }
 
   try {
@@ -363,7 +394,7 @@ CRITICAL DIRECTIVE:
 Current Context:
 Subject Type: ${subjectType || "network"}
 Data Provided:
-${JSON.stringify(subjectData || {}, null, 2)}
+${JSON.stringify(subjectData || contextData || {}, null, 2)}
 
 Active Model Parameters & Network Summary:
 ${JSON.stringify(modelContext || {}, null, 2)}
@@ -378,6 +409,7 @@ Provide your grounded analysis and strategic rationale based strictly on these m
     if (explanation) {
       res.json({
         explanation,
+        response: explanation,
         grounded: true,
         source: "gemini",
         timestamp: new Date().toISOString(),
@@ -398,6 +430,7 @@ Provide your grounded analysis and strategic rationale based strictly on these m
 
   res.json({
     explanation: fallbackExplanation,
+    response: fallbackExplanation,
     grounded: true,
     source: "deterministic-engine",
     timestamp: new Date().toISOString(),

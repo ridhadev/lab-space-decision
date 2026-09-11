@@ -32,13 +32,13 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
 
-  // Layer Toggles
+  // Layer Toggles - By default, only Existing Branches and 3km Catchment are active
   const [showBranches, setShowBranches] = useState(true);
-  const [showCandidates, setShowCandidates] = useState(true);
+  const [showCandidates, setShowCandidates] = useState(false);
   const [showBuffers, setShowBuffers] = useState(true);
-  const [showCannibalizationLinks, setShowCannibalizationLinks] = useState(true);
-  const [showCompetitionHeatmap, setShowCompetitionHeatmap] = useState(true);
-  const [showCoverageGaps, setShowCoverageGaps] = useState(true);
+  const [showCannibalizationLinks, setShowCannibalizationLinks] = useState(false);
+  const [showCompetitionHeatmap, setShowCompetitionHeatmap] = useState(false);
+  const [showCoverageGaps, setShowCoverageGaps] = useState(false);
   const [activeEmirate, setActiveEmirate] = useState<string>("All");
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isPanelExpanded, setIsPanelExpanded] = useState(true);
@@ -382,6 +382,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
         // High Density Dark Popup
         const popupContent = document.createElement("div");
         popupContent.className = "p-1 font-sans text-xs text-slate-200";
+        popupContent.style.width = "min(280px, calc(100% - 32px))";
+        popupContent.style.maxWidth = "280px";
         popupContent.innerHTML = `
           <div style="font-weight: 700; font-size: 13px; color: #FFFFFF; margin-bottom: 2px;">
             ${branch.name}
@@ -605,6 +607,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
 
         const popupContent = document.createElement("div");
         popupContent.className = "p-1 font-sans text-xs text-slate-200";
+        popupContent.style.width = "min(280px, calc(100% - 32px))";
+        popupContent.style.maxWidth = "280px";
         popupContent.innerHTML = `
           <div style="font-weight: 700; font-size: 13px; color: #FFFFFF; margin-bottom: 2px;">
             ${candidate.name}
@@ -868,25 +872,25 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
         {/* Floating Map Controls & Legend - Expandable Panel */}
         {isPanelExpanded && (
           <div
-            className={`absolute z-[1000] bg-[#0C182A]/95 backdrop-blur-md p-3 rounded-lg border border-[#1D3452] shadow-2xl max-w-xs text-xs space-y-2.5 text-slate-200 transition-all ${
+            className={`absolute z-[1000] bg-[#0C182A]/95 backdrop-blur-md p-3 rounded-lg border border-[#1D3452] shadow-2xl w-[272px] max-w-[272px] shrink-0 text-xs space-y-2.5 text-slate-200 transition-all ${
               isFullScreen ? "top-4 left-4" : "top-3 left-3"
             }`}
           >
-            <div className="flex items-center justify-between pb-1.5 border-b border-[#1D3452]">
+            <div className="flex items-center justify-between pb-1.5 border-b border-[#1D3452] gap-1">
               <div
-                className="flex items-center space-x-1.5 cursor-pointer select-none group"
+                className="flex items-center space-x-1.5 cursor-pointer select-none group min-w-0"
                 onClick={() => setIsPanelExpanded(false)}
                 title="Click to collapse panel"
               >
-                <img src="/bedashing-icon.svg" alt="Bedashing Icon" className="h-3.5 w-auto" />
-                <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest group-hover:text-cyan-200 transition-colors">
+                <img src="/bedashing-icon.svg" alt="Bedashing Icon" className="h-3.5 w-auto shrink-0" />
+                <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest group-hover:text-cyan-200 transition-colors shrink-0">
                   MAP LAYERS
                 </span>
-                <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/15 text-cyan-300 font-mono border border-cyan-500/30">
+                <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/15 text-cyan-300 font-mono border border-cyan-500/30 shrink-0">
                   {activeEmirate === "All" ? "UAE" : activeEmirate}
                 </span>
               </div>
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1 shrink-0 ml-1.5">
                 <button
                   onClick={resetMapZoom}
                   className="p-1 text-[#8BA2C1] hover:text-white rounded hover:bg-[#142842] transition-colors cursor-pointer"
@@ -915,29 +919,29 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
 
             {/* Emirate filter with Center of Gravity dynamic centering */}
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between whitespace-nowrap">
                 <label className="text-[10px] font-bold text-[#8BA2C1] uppercase tracking-wider block">
                   Focus Emirate:
                 </label>
                 <span className="text-[9px] text-cyan-400 font-mono">
-                  Auto-centers on gravity
+                  Auto-center
                 </span>
               </div>
               <select
                 value={activeEmirate}
                 onChange={(e) => setActiveEmirate(e.target.value)}
-                className="w-full text-xs py-1 px-2 border border-[#1D3452] rounded bg-[#0A1424] text-slate-200 focus:outline-hidden focus:border-cyan-500 cursor-pointer"
+                className="w-full text-xs py-1 px-2 border border-[#1D3452] rounded bg-[#0A1424] text-slate-200 focus:outline-hidden focus:border-cyan-500 cursor-pointer truncate"
               >
-                <option value="All">All Emirates (23 Branches • UAE Overview)</option>
-                <option value="Abu Dhabi">Abu Dhabi (14 Branches)</option>
-                <option value="Dubai">Dubai (5 Branches)</option>
-                <option value="Sharjah">Sharjah (2 Branches)</option>
-                <option value="Fujairah">Fujairah (1 Branch)</option>
-                <option value="Ras Al Khaimah">Ras Al Khaimah (1 Branch)</option>
+                <option value="All">All Emirates (UAE)</option>
+                <option value="Abu Dhabi">Abu Dhabi (14)</option>
+                <option value="Dubai">Dubai (5)</option>
+                <option value="Sharjah">Sharjah (2)</option>
+                <option value="Fujairah">Fujairah (1)</option>
+                <option value="Ras Al Khaimah">Ras Al Khaimah (1)</option>
               </select>
 
               {/* Quick-select interactive emirate chips */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 whitespace-nowrap">
                 {(
                   [
                     { id: "All", label: "UAE" },
@@ -957,7 +961,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                         ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-xs"
                         : "bg-[#0A1424] text-[#8BA2C1] border-[#1D3452] hover:text-slate-200 hover:border-slate-500"
                     }`}
-                    title={`Focus ${em.id} and center map on its center of gravity`}
+                    title={`Focus ${em.id}`}
                   >
                     {em.label}
                   </button>
@@ -965,8 +969,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
               </div>
             </div>
 
-            {/* Layer checkboxes */}
-            <div className="space-y-1.5 pt-1.5 border-t border-[#1D3452] text-[11px]">
+            {/* Layer checkboxes with whitespace-nowrap */}
+            <div className="space-y-1.5 pt-1.5 border-t border-[#1D3452] text-[11px] whitespace-nowrap">
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -974,7 +978,10 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   onChange={(e) => setShowBranches(e.target.checked)}
                   className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
-                <span className="text-slate-300">Existing Branches (Circles)</span>
+                <span className="text-slate-300 flex items-center justify-between w-full pr-1">
+                  <span className="truncate">Existing Branches</span>
+                  <span className="w-2.5 h-2.5 rounded-full border border-cyan-300 bg-cyan-400 inline-block shrink-0 shadow-xs ml-1"></span>
+                </span>
               </label>
 
               <label className="flex items-center space-x-2 cursor-pointer">
@@ -984,7 +991,10 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   onChange={(e) => setShowCandidates(e.target.checked)}
                   className="rounded-xs text-teal-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
-                <span className="text-slate-300">Expansion Candidates (Diamonds)</span>
+                <span className="text-slate-300 flex items-center justify-between w-full pr-1">
+                  <span className="truncate">Candidates</span>
+                  <span className="w-2.5 h-2.5 rotate-45 border border-teal-300 bg-teal-400 inline-block shrink-0 shadow-xs ml-1"></span>
+                </span>
               </label>
 
               <label className="flex items-center space-x-2 cursor-pointer">
@@ -994,7 +1004,10 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   onChange={(e) => setShowBuffers(e.target.checked)}
                   className="rounded-xs text-cyan-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
-                <span className="text-slate-300">3km Catchment Buffers</span>
+                <span className="text-slate-300 flex items-center justify-between w-full pr-1">
+                  <span className="truncate">3km Catchment Buffers</span>
+                  <span className="w-2.5 h-2.5 rounded-full border border-cyan-400/80 bg-cyan-500/20 inline-block shrink-0 ml-1"></span>
+                </span>
               </label>
 
               <label className="flex items-center space-x-2 cursor-pointer">
@@ -1004,7 +1017,10 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   onChange={(e) => setShowCannibalizationLinks(e.target.checked)}
                   className="rounded-xs text-rose-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
-                <span className="text-slate-300">Cannibalization Vectors (&lt;4km)</span>
+                <span className="text-slate-300 flex items-center justify-between w-full pr-1">
+                  <span className="truncate">Cannibalization (&lt;4km)</span>
+                  <span className="w-3 h-0.5 bg-rose-500 rounded-full inline-block shrink-0 ml-1"></span>
+                </span>
               </label>
 
               <label className="flex items-center space-x-2 cursor-pointer">
@@ -1015,8 +1031,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   className="rounded-xs text-orange-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
                 <span className="text-slate-300 flex items-center justify-between w-full pr-1">
-                  <span>Saturation Heatmap (Thermal)</span>
-                  <span className="inline-block w-3.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-yellow-400 to-rose-500 shadow-xs"></span>
+                  <span className="truncate">Thermal Saturation</span>
+                  <span className="inline-block w-3.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-yellow-400 to-rose-500 shadow-xs ml-1 shrink-0"></span>
                 </span>
               </label>
 
@@ -1028,8 +1044,8 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   className="rounded-xs text-cyan-400 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
                 <span className="text-slate-300 flex items-center justify-between w-full pr-1">
-                  <span>Coverage Gaps (White Spaces)</span>
-                  <span className="inline-block w-2.5 h-2.5 rounded-full border border-dashed border-cyan-400 bg-cyan-500/30"></span>
+                  <span className="truncate">Coverage Gaps</span>
+                  <span className="inline-block w-2.5 h-2.5 rounded-full border border-dashed border-cyan-400 bg-cyan-500/30 ml-1 shrink-0"></span>
                 </span>
               </label>
             </div>
