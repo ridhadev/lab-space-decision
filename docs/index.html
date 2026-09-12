@@ -473,44 +473,343 @@
       <section id="section-5" class="scroll-mt-20 space-y-6">
         <div class="flex items-center justify-between border-b border-dark-700 pb-2">
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <span class="text-indigo-400 font-mono">05.</span> Deterministic Scoring Engine
+            <span class="text-indigo-400 font-mono">05.</span> Deterministic Scoring Engine &amp; Panel-by-Panel Decision Matrix
           </h2>
-          <span class="text-xs text-slate-400 font-mono">Classification Rules</span>
+          <span class="text-xs text-slate-400 font-mono">Explicit Mathematical Formulas</span>
         </div>
 
+        <p class="text-xs text-slate-400 leading-relaxed">
+          This section details the exhaustive mathematical formulation, data origin, and algorithmic execution across all four application panels: <strong>Map</strong>, <strong>Branches</strong>, <strong>Growth Pipeline</strong>, and <strong>Configuration Engine</strong>.
+        </p>
+
+        <!-- Panel 1: The Geospatial Map -->
         <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-3 text-xs">
-          <h4 class="font-bold text-white text-sm">Branch Health Index Formula</h4>
-          <p class="text-slate-400">
-            Calculated as a calibrated weighted sum across 4 dimensions:
-          </p>
-          <div class="p-3 bg-dark-900 rounded font-mono text-indigo-300 text-xs">
-            Final Score = (Reputation × W_rep + Affluence × W_aff + Distance × W_dist + Competition × W_comp) / TotalWeight
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+              Panel 1: The Geospatial Map (Layers, Rings, &amp; Spatial Vectors)
+            </h4>
+            <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 text-[10px] font-mono">Leaflet + GeoMath</span>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-            <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
-              <span class="font-bold text-emerald-400 block text-sm">PROTECT (Score ≥ 85)</span>
-              <span class="text-slate-400 text-[11px]">Crown-jewel flagships with strong moats and high ratings. Defend with priority CapEx.</span>
+
+          <div class="space-y-3 pt-2">
+            <!-- 1. Thermal Rings -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-cyan-300 text-xs">1. Thermal Saturation Rings (Market Density Plumes)</div>
+              <p class="text-slate-400 leading-normal">
+                Thermal rings visualize local beauty salon competition around each salon. For each active Bedashing branch geocode $(\text{lat}, \text{lng})$, Leaflet renders a multi-tier concentric radial plume based on <code class="text-slate-300">competitorDensity3km</code>:
+              </p>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+                <li><strong>Outer Plume Ring (Radius: 3,800m):</strong> Dissipation halo (opacity 0.08–0.12, stroke weight 1) representing secondary retail catchment pull.</li>
+                <li><strong>Mid Plume Ring (Radius: 2,200m):</strong> Core competition zone (opacity 0.15–0.22, stroke weight 1.5) delineating primary drive-time friction.</li>
+                <li><strong>Nucleus Ring (Radius: 1,000m):</strong> High-density epicenter (opacity 0.28–0.40, stroke weight 2) marking direct footfall capture territory.</li>
+                <li><strong>Color Gradient Mapping:</strong>
+                  <span class="text-cyan-400">Monopolistic Moat (1–4 salons: #06b6d4)</span>,
+                  <span class="text-yellow-400">Balanced (5–9 salons: #eab308)</span>,
+                  <span class="text-amber-400">Saturated (10–17 salons: #f97316)</span>,
+                  <span class="text-rose-400">Hyper-Saturated (18+ salons: #f43f5e)</span>.
+                </li>
+                <li><strong>Data Origin:</strong> Baseline count extracted via Google Places nearby queries (<code class="text-slate-300">type=beauty_salon|hair_care|spa</code> within $r=3,000\text{m}$).</li>
+              </ul>
             </div>
-            <div class="p-3 rounded bg-amber-500/10 border border-amber-500/20">
-              <span class="font-bold text-amber-400 block text-sm">HOLD (Score 70 – 84)</span>
-              <span class="text-slate-400 text-[11px]">Stable neighborhood earners. Optimize chair throughput and appointment efficiency.</span>
+
+            <!-- 2. Coverage Gaps -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-teal-300 text-xs">2. Coverage Gap Layer ("White Space" Opportunity Auras)</div>
+              <p class="text-slate-400 leading-normal">
+                Identifies prime unserved retail territories ripe for greenfield salon expansion without cannibalizing existing stores:
+              </p>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+                <li><strong>Trigger Rule:</strong> A candidate zone is classified as a Coverage Gap if and only if:
+                  <div class="p-2 my-1 bg-black/50 rounded font-mono text-teal-300 text-[11px]">
+                    (UnmetDemandIndex ≥ 80) &amp;&amp; (CatchmentAffluence ≥ 80) &amp;&amp; (NearestSisterDistance ≥ 3.0 km)
+                  </div>
+                </li>
+                <li><strong>Opportunity Aura (Radius: 3,500m):</strong> Dashed teal ring (<code class="text-slate-300">#06b6d4</code>, dashArray 6,6) depicting the unserved high-yield primary trade territory.</li>
+                <li><strong>Concentration Core (Radius: 1,400m):</strong> Concentric filled nucleus representing master-planned retail/residential density.</li>
+                <li><strong>Dotted Vector (Network Gap Reach Vector):</strong> Dashed directional vector (<code class="text-slate-300">#06b6d4</code>) drawn between candidate centroid and the closest existing Bedashing store. The line label displays exact geodesic distance in km, mathematically certifying the unserved buffer.</li>
+              </ul>
             </div>
-            <div class="p-3 rounded bg-rose-500/10 border border-rose-500/20">
-              <span class="font-bold text-rose-400 block text-sm">SHRINK (Score &lt; 70)</span>
-              <span class="text-slate-400 text-[11px]">Underperforming or heavily cannibalized sites. Downsize chairs or consolidate lease.</span>
+
+            <!-- 3. Cannibalism Defense -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-rose-300 text-xs">3. Cannibalism Defense &amp; Overlap Resolution</div>
+              <p class="text-slate-400 leading-normal">
+                Detects and resolves inter-store revenue cannibalization between sister lounges:
+              </p>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+                <li><strong>Detection Criteria:</strong> Flagged whenever the Haversine distance $d_{\text{sister}}$ to the closest sister lounge is less than the configurable <code class="text-slate-300">Sister Buffer</code> (default: <strong>4.0 km</strong>).</li>
+                <li><strong>Visual Alert:</strong> Rendered as an animated pulsing rose line (<code class="text-slate-300">#f43f5e</code>, dashArray 4,6) connecting the two conflicting stores, accompanied by an Alert Triangle tag in tables.</li>
+                <li><strong>Mathematical Penalty:</strong> If $d_{\text{sister}} &lt; 1.5\text{ km}$, cannibalization score collapses to $0/100$. Between $1.5\text{km}$ and $4.0\text{km}$, score scales linearly: $\text{Score} = \frac{d - 1.5}{2.5} \times 100$.</li>
+                <li><strong>Operational Resolution:</strong> Stores under cannibalization stress receiving a <code class="text-rose-400">SHRINK</code> verdict are recommended for chair downsizing (e.g. from 16 to 10–12 chairs) or lease consolidation (e.g. Al Wasl Jumeirah lease renegotiation).</li>
+              </ul>
             </div>
           </div>
         </div>
 
+        <!-- Panel 2: Branches Panel -->
         <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-3 text-xs">
-          <h4 class="font-bold text-white text-sm">Candidate Expansion Model</h4>
-          <p class="text-slate-400">
-            Assesses candidate growth zones across <strong>Unmet Demand (35%)</strong>, <strong>Demographic Affluence (25%)</strong>, <strong>Retail Gravity (20%)</strong>, and <strong>Cannibalization Safety (20%)</strong>:
-          </p>
-          <div class="flex flex-wrap gap-2 pt-1 font-mono text-[11px]">
-            <span class="px-2.5 py-1 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">GROW (Score ≥ 80): Dubai Hills Mall, Saadiyat</span>
-            <span class="px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">WATCH (Score 65–79): Track residential handovers</span>
-            <span class="px-2.5 py-1 rounded bg-slate-700 text-slate-400">SKIP (Score &lt; 65): De-prioritize</span>
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Panel 2: Branches (Portfolio Audit &amp; Health Scoring)
+            </h4>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-[10px] font-mono">Branch Audit Engine</span>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <!-- 1. Catchment Affluence -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-1.5">
+              <div class="font-semibold text-amber-300 text-xs">1. Catchment Affluence Index (0–100)*</div>
+              <p class="text-slate-400 leading-normal">
+                <strong>Origin:</strong> Modeled demographic proxy calibrated against average annual residential rental rates within a 3km trade radius (benchmarked to Bayut/PropertyFinder rental indices):
+              </p>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+                <li><strong class="text-slate-200">Ultra-Prime Luxury (Index 90–95):</strong> Saadiyat Island (95), City Walk (94), Downtown Dubai (93), Al Bateen (92).</li>
+                <li><strong class="text-slate-200">Affluent Urban (Index 80–89):</strong> Dubai Hills (88), Yas Bay (87), Marina Mall AD (85), Al Khalidiya (86).</li>
+                <li><strong class="text-slate-200">Established Suburban (Index 70–79):</strong> Al Dhafra (76), Al Ain (78), Motor City (81).</li>
+              </ul>
+            </div>
+
+            <!-- 2. Health Score Formula -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-indigo-300 text-xs">2. Branch Health Score Formula (Deterministic Weighted Sum)</div>
+              <div class="p-3 bg-black/60 rounded font-mono text-indigo-200 text-xs leading-relaxed">
+                Health Score = (R · W_rep + D · W_aff + C_dist · W_dist + M_comp · W_comp) / (W_rep + W_aff + W_dist + W_comp)
+              </div>
+              <p class="text-slate-400">Component normalizations (each strictly scaled to $0–100$):</p>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+                <li><strong class="text-slate-200">Reputation Component ($R$):</strong>
+                  <code class="text-slate-300">R = min(100, GoogleRating × 20 + min(10, ReviewCount / 150))</code>. Blends 5-star baseline with statistical volume confidence.
+                </li>
+                <li><strong class="text-slate-200">Catchment Demand Component ($D$):</strong>
+                  <code class="text-slate-300">D = CatchmentAffluenceIndex</code> (Direct 0–100 scale).
+                </li>
+                <li><strong class="text-slate-200">Sister Proximity Separation ($C_{\text{dist}}$):</strong>
+                  If $d &lt; 1.5\text{km} \implies 0$. If $d \ge 4.0\text{km} \implies 100$. Otherwise $\frac{d - 1.5}{2.5} \times 100$.
+                </li>
+                <li><strong class="text-slate-200">Competitor Moat Resilience ($M_{\text{comp}}$):</strong>
+                  <code class="text-slate-300">M_comp = max(20, 100 - (Competitors3km × 3.0))</code>. Lower competitor saturation rewards higher pricing power.
+                </li>
+                <li><strong class="text-slate-200">Default Calibration Weights:</strong>
+                  Reputation: <strong>30%</strong>, Affluence: <strong>25%</strong>, Sister Proximity: <strong>25%</strong>, Competitor Moat: <strong>20%</strong>.
+                </li>
+              </ul>
+            </div>
+
+            <!-- 3. Verdict Calculation -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-emerald-300 text-xs">3. Verdict Decision Classification Rules</div>
+              <p class="text-slate-400">
+                The final strategic action is computed strictly from calibrated health score thresholds:
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-[11px]">
+                <div class="p-2.5 rounded bg-emerald-500/10 border border-emerald-500/25">
+                  <span class="font-bold text-emerald-400 block">PROTECT (Score ≥ 85)</span>
+                  <span class="text-slate-400 text-[10px] font-sans">Flagship crown jewels. Maintain priority marketing, assign best technicians, upgrade VIP suites.</span>
+                </div>
+                <div class="p-2.5 rounded bg-amber-500/10 border border-amber-500/25">
+                  <span class="font-bold text-amber-400 block">HOLD (Score 70–84)</span>
+                  <span class="text-slate-400 text-[10px] font-sans">Solid steady earners. Maintain operational baseline, optimize appointment turn rate to 3.2 turns/chair.</span>
+                </div>
+                <div class="p-2.5 rounded bg-rose-500/10 border border-rose-500/25">
+                  <span class="font-bold text-rose-400 block">SHRINK (Score &lt; 70)</span>
+                  <span class="text-slate-400 text-[10px] font-sans">Marginalized or cannibalized sites. Downsize chairs or consolidate lease to eliminate margin drag.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Expansion Plan & Chairs -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-1.5">
+              <div class="font-semibold text-cyan-300 text-xs">4. Chair Capacity &amp; Expansion Plan Estimation</div>
+              <p class="text-slate-400 leading-normal">
+                <strong>Current Capacity:</strong> Stores are configured with 10 to 20 styling chairs based on retail gross leasable area (GLA) standards (~100–120 sq ft per service chair).
+              </p>
+              <p class="text-slate-400 leading-normal">
+                <strong>Capacity Recommendations:</strong>
+                PROTECT stores with high catchment demand receive recommendations to add +2 to +4 express chairs or VIP manicure stations. SHRINK stores under cannibalization pressure (e.g. Al Wasl Jumeirah) are recommended for 2–4 chair reductions to align payroll with trade capacity.
+              </p>
+            </div>
+
+            <!-- 5. 3km Competitors Data Source -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-1.5">
+              <div class="font-semibold text-amber-300 text-xs">5. Source of "3Km Competitors" Data*</div>
+              <p class="text-slate-400 leading-normal">
+                <strong>Extraction Method:</strong> Extracted using Google Places API circular radius queries (<code class="text-slate-300">radius=3000</code>) around each store GPS coordinate. Stores range from 2 competitors (monopoly moats like Al Dhafra) up to 26 competitors (hyper-saturated zones like Downtown Dubai and Jumeirah).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Growth Pipeline Panel -->
+        <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-3 text-xs">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+              Panel 3: Growth Pipeline (Greenfield Expansion Engine)
+            </h4>
+            <span class="px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20 text-[10px] font-mono">Expansion Model</span>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <!-- 1. Metrics Measurement -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-teal-300 text-xs">1. Growth Attribute Formulations &amp; Measurement</div>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+                <li><strong class="text-slate-200">Unmet Demand Index (0–100)*:</strong> Ratio of high-income female population within 5km to existing premium salon chair supply. Scores &gt;80 represent major capacity deficits (e.g. Dubai Hills Mall 94, Saadiyat Grove 92).</li>
+                <li><strong class="text-slate-200">Catchment Affluence (0–100)*:</strong> Target luxury beauty disposable income proxy calculated for the candidate development master plan.</li>
+                <li><strong class="text-slate-200">Retail Gravity (0–100)*:</strong> Evaluates commercial anchor strength, luxury mall presence, and guaranteed footfall (e.g. Dubai Hills Mall 96, Saadiyat Grove 91).</li>
+                <li><strong class="text-slate-200">Sister Proximity Safety ($S_{\text{safe}}$):</strong>
+                  Computed from Haversine distance $d$ to nearest operating Bedashing lounge:
+                  <div class="p-2 my-1 bg-black/50 rounded font-mono text-teal-300 text-[11px]">
+                    d &lt; 2.0 km ⟹ 20 (High Cannibalization Danger)<br />
+                    2.0 km ≤ d &lt; 6.0 km ⟹ 20 + ((d - 2.0) / 4.0) × 80<br />
+                    d ≥ 6.0 km ⟹ 100 (Zero Network Cannibalization)
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- 2. Candidate Score and Verdict -->
+            <div class="p-3 bg-dark-900 rounded border border-dark-700 space-y-2">
+              <div class="font-semibold text-indigo-300 text-xs">2. Expansion Score &amp; GROW / WATCH / SKIP Decision Rules</div>
+              <div class="p-3 bg-black/60 rounded font-mono text-indigo-200 text-xs leading-relaxed">
+                Expansion Score = (UnmetDemand · W_unmet + Affluence · W_aff + RetailGravity · W_retail + SisterSafety · W_safe) / W_total
+              </div>
+              <p class="text-slate-400">Default weights: <strong>Unmet Demand: 35%</strong>, <strong>Affluence: 25%</strong>, <strong>Retail Gravity: 20%</strong>, <strong>Sister Safety: 20%</strong>.</p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-[11px]">
+                <div class="p-2.5 rounded bg-teal-500/10 border border-teal-500/25">
+                  <span class="font-bold text-teal-400 block">GROW (Score ≥ 80)</span>
+                  <span class="text-slate-400 text-[10px] font-sans">Immediate commercial rollout target (e.g. Dubai Hills Mall 88, Saadiyat Grove 87). Allocate CapEx and sign lease.</span>
+                </div>
+                <div class="p-2.5 rounded bg-amber-500/10 border border-amber-500/25">
+                  <span class="font-bold text-amber-400 block">WATCH (Score 65–79)</span>
+                  <span class="text-slate-400 text-[10px] font-sans">Promising emerging zones (e.g. Meydan One, Aljada). Track residential handovers and anchor openings.</span>
+                </div>
+                <div class="p-2.5 rounded bg-slate-700/40 border border-slate-600/30">
+                  <span class="font-bold text-slate-400 block">SKIP (Score &lt; 65)</span>
+                  <span class="text-slate-400 text-[10px] font-sans">Inadequate demand density, high competitor saturation, or excessive sister proximity friction. De-prioritize.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 4: Config Panel Matrix -->
+        <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-3 text-xs">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+              Panel 4: Configuration Engine (Parameters &amp; Origin Matrix)
+            </h4>
+            <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-[10px] font-mono">Parameters &amp; Calibration</span>
+          </div>
+
+          <div class="overflow-x-auto pt-1">
+            <table class="w-full text-left border-collapse font-sans text-xs">
+              <thead>
+                <tr class="border-b border-dark-600 text-slate-400 font-mono text-[10px] uppercase">
+                  <th class="py-2 px-2.5">Parameter</th>
+                  <th class="py-2 px-2.5">Category</th>
+                  <th class="py-2 px-2.5">Default</th>
+                  <th class="py-2 px-2.5">Origin &amp; Extraction Method</th>
+                  <th class="py-2 px-2.5">Mathematical Impact</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-dark-700 text-[11px] text-slate-300">
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-cyan-300 font-bold">Reputation Weight</td>
+                  <td class="py-2 px-2.5">Branch Weights</td>
+                  <td class="py-2 px-2.5 font-mono">30%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies Google Star Rating &amp; Review confidence score in Branch Health Index</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-cyan-300 font-bold">Catchment Affluence Weight</td>
+                  <td class="py-2 px-2.5">Branch Weights</td>
+                  <td class="py-2 px-2.5 font-mono">25%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies Catchment Affluence Index (0–100) in Branch Health Index</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-cyan-300 font-bold">Sister Distance Weight</td>
+                  <td class="py-2 px-2.5">Branch Weights</td>
+                  <td class="py-2 px-2.5 font-mono">25%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies Haversine separation score in Branch Health Index</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-cyan-300 font-bold">Competitor Moat Weight</td>
+                  <td class="py-2 px-2.5">Branch Weights</td>
+                  <td class="py-2 px-2.5 font-mono">20%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies competitor resilience score in Branch Health Index</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-teal-300 font-bold">Unmet Demand Weight</td>
+                  <td class="py-2 px-2.5">Growth Pipeline</td>
+                  <td class="py-2 px-2.5 font-mono">35%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Primary driver of Candidate Expansion Score</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-teal-300 font-bold">Target Affluence Weight</td>
+                  <td class="py-2 px-2.5">Growth Pipeline</td>
+                  <td class="py-2 px-2.5 font-mono">25%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies demographic spend index in Expansion Score</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-teal-300 font-bold">Retail Gravity Weight</td>
+                  <td class="py-2 px-2.5">Growth Pipeline</td>
+                  <td class="py-2 px-2.5 font-mono">20%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies commercial anchor score in Expansion Score</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-teal-300 font-bold">Sister Safety Weight</td>
+                  <td class="py-2 px-2.5">Growth Pipeline</td>
+                  <td class="py-2 px-2.5 font-mono">20%</td>
+                  <td class="py-2 px-2.5">User Calibration / Empirical Default</td>
+                  <td class="py-2 px-2.5">Multiplies network isolation score in Expansion Score</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-indigo-300 font-bold">Protect Cutoff</td>
+                  <td class="py-2 px-2.5">Cutoffs &amp; Buffers</td>
+                  <td class="py-2 px-2.5 font-mono">85</td>
+                  <td class="py-2 px-2.5">Executive Governance Cutoff</td>
+                  <td class="py-2 px-2.5">Branches with Health Score ≥ Protect Cutoff receive PROTECT verdict</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-indigo-300 font-bold">Hold Cutoff</td>
+                  <td class="py-2 px-2.5">Cutoffs &amp; Buffers</td>
+                  <td class="py-2 px-2.5 font-mono">70</td>
+                  <td class="py-2 px-2.5">Executive Governance Cutoff</td>
+                  <td class="py-2 px-2.5">Branches with Score between Hold and Protect receive HOLD; below receive SHRINK</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-indigo-300 font-bold">Grow Cutoff</td>
+                  <td class="py-2 px-2.5">Cutoffs &amp; Buffers</td>
+                  <td class="py-2 px-2.5 font-mono">80</td>
+                  <td class="py-2 px-2.5">Executive Governance Cutoff</td>
+                  <td class="py-2 px-2.5">Candidate zones with Expansion Score ≥ Grow Cutoff receive GROW recommendation</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-indigo-300 font-bold">Watch Cutoff</td>
+                  <td class="py-2 px-2.5">Cutoffs &amp; Buffers</td>
+                  <td class="py-2 px-2.5 font-mono">65</td>
+                  <td class="py-2 px-2.5">Executive Governance Cutoff</td>
+                  <td class="py-2 px-2.5">Candidates between Watch and Grow receive WATCH; below receive SKIP</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2.5 font-mono text-rose-300 font-bold">Sister Buffer Distance</td>
+                  <td class="py-2 px-2.5">Cutoffs &amp; Buffers</td>
+                  <td class="py-2 px-2.5 font-mono">4.0 km</td>
+                  <td class="py-2 px-2.5">Spatial Friction Hypothesis</td>
+                  <td class="py-2 px-2.5">Triggers cannibalization warning lines and penalties for branches spaced closer than buffer</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -543,6 +842,20 @@
             <h4 class="font-bold text-white text-sm">Rich Markdown Presentation Pipeline</h4>
             <p class="text-slate-400 leading-normal">
               All AI generated output (natural language strategic explanations, board memorandums, and chat conversations) are parsed via <code class="text-indigo-300">MarkdownRenderer.tsx</code> leveraging <code class="text-slate-200">react-markdown</code> and GitHub Flavored Markdown (<code class="text-slate-200">remark-gfm</code>). Replaces raw text dumps with high-contrast typography, styled H1&ndash;H4 hierarchy, structured tables, formatted bulleted lists, and monospace code blocks.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">Dual-Mode Executive Presentation: Report &amp; Slides Carousel</h4>
+            <p class="text-slate-400 leading-normal">
+              The Executive Board Decision Memorandum features an instant segmented view switcher between a formal written <strong>Strategic Report</strong> and an interactive 6-slide <strong>Board Slideshow / Carousel</strong>. The slide deck delivers structured, board-ready presentation views covering: <em>(1) Executive Portfolio Diagnosis, (2) Ratified Directives &amp; Pinned Decisions, (3) Portfolio Defense (PROTECT Moats), (4) Operational Rightsizing &amp; Cannibalization (SHRINK), (5) Greenfield Expansion Pipeline (GROW Vector), and (6) Sensitivity Analysis &amp; 90-Day Execution Roadmap</em>. The carousel supports intuitive forward/backward navigation buttons, indicator jump pills, and native keyboard arrow keys (<kbd class="px-1 py-0.5 rounded bg-dark-900 border border-dark-600 font-mono text-[10px]">ArrowLeft</kbd> / <kbd class="px-1 py-0.5 rounded bg-dark-900 border border-dark-600 font-mono text-[10px]">ArrowRight</kbd>).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-dark-800 border border-dark-600 space-y-2">
+            <h4 class="font-bold text-white text-sm">AI Advisor Decision Pinning Protocol (<code class="text-amber-300">PinnedDecision</code>)</h4>
+            <p class="text-slate-400 leading-normal">
+              Leadership can bookmark and ratify specific strategic recommendations produced during AI Advisor dialogues by clicking the <strong>"Pin to Memo"</strong> action button on any assistant message. Pinned decisions are stored in <code class="text-indigo-300">localStorage</code> with timestamps and source question context, automatically surfaced via an active counter in the AI Advisor header, and forwarded to <code class="text-indigo-300">/api/ai/executive-briefing</code>. Both the Gemini AI briefing prompt and the offline deterministic generator incorporate these ratified directives directly into the executive decisions section of the written report and the dedicated board presentation slide.
             </p>
           </div>
 

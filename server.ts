@@ -255,13 +255,18 @@ function generateDeterministicExecutiveMemo(
   protectBranches: any[],
   holdBranches: any[],
   shrinkBranches: any[],
-  topGrowCandidates: any[]
+  topGrowCandidates: any[],
+  pinnedDecisions?: any[]
 ): string {
   const dateStr = new Date().toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
+
+  const pinnedSection = pinnedDecisions && pinnedDecisions.length > 0
+    ? `\n─────────────────────────────────────────────────────────────────────────────\n\n📌 STRATEGIC DIRECTIVES & PINNED EXECUTIVE DECISIONS\nThe following strategic directives were formally pinned during AI Advisor deliberation and ratified for execution:\n\n${pinnedDecisions.map((d: any, idx: number) => `${idx + 1}. "${d.content.trim()}"\n   • Directive Source: ${d.sourceQuestion ? `Query: "${d.sourceQuestion}"` : "Executive Session"}\n   • Status: Confirmed for Capital Allocation & Operational Roadmap`).join("\n\n")}\n`
+    : "";
 
   return `MEMORANDUM TO THE BOARD OF DIRECTORS
 
@@ -271,7 +276,7 @@ DATE: ${dateStr}
 SUBJECT: GEOSPATIAL NETWORK RESTRUCTURING & EXPANSION PLAN (CONFIDENTIAL)
 
 ─────────────────────────────────────────────────────────────────────────────
-
+${pinnedSection}
 1. EXECUTIVE SUMMARY & STRATEGIC DIAGNOSIS
 Bedashing operates 23 women's beauty lounges across five Emirates: 14 in Abu Dhabi, 5 in Dubai, 2 in Sharjah, 1 in Fujairah, and 1 in Ras Al Khaimah.
 A comprehensive deterministic geospatial audit reveals three structural dynamics:
@@ -439,24 +444,29 @@ Provide your grounded analysis and strategic rationale based strictly on these m
 
 // Executive Board Memorandum endpoint
 app.post("/api/ai/executive-briefing", async (req: Request, res: Response) => {
-  const { networkSummary, protectBranches, holdBranches, shrinkBranches, topGrowCandidates, activeWeights } = req.body;
+  const { networkSummary, protectBranches, holdBranches, shrinkBranches, topGrowCandidates, activeWeights, pinnedDecisions } = req.body;
 
   try {
+    const hasPinned = Array.isArray(pinnedDecisions) && pinnedDecisions.length > 0;
     const systemPrompt = `You are a Principal Geospatial Strategy Consultant drafting an Executive Decision Memorandum for Bedashing's Board of Directors and C-Suite.
 Your memorandum must be grounded strictly in the provided computed scores, weights, and network classifications.
 Include:
 1. Executive Summary & Network Health Diagnosis (23 branches across 5 Emirates: 14 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)
-2. Existing Network Realignment:
+${hasPinned ? "2. Formal Ratification of Pinned Executive Decisions & Directives (explicitly enumerate and incorporate each pinned decision into strategy)" : ""}
+${hasPinned ? "3" : "2"}. Existing Network Realignment:
    - PROTECT Priorities (Why protect, capital allocation, moat defense)
    - HOLD Strategy (Operational monitoring, efficiency improvements)
    - SHRINK / Rationalization Targets (Identify sister-branch cannibalization, downsize or lease consolidation rationale)
-3. Expansion Vector: Top GROW Opportunities vs WATCH/SKIP risks
-4. Immediate 90-Day Action Roadmap
+${hasPinned ? "4" : "3"}. Expansion Vector: Top GROW Opportunities vs WATCH/SKIP risks
+${hasPinned ? "5" : "4"}. Immediate 90-Day Action Roadmap
 Tone: Authoritative, strategic, strictly objective, grounded in data.`;
 
     const payloadText = `
 Network Summary:
 ${JSON.stringify(networkSummary, null, 2)}
+
+Pinned Executive Directives from AI Advisor:
+${hasPinned ? JSON.stringify(pinnedDecisions, null, 2) : "None pinned in this session."}
 
 PROTECT Branches:
 ${JSON.stringify(protectBranches, null, 2)}
@@ -498,7 +508,8 @@ ${JSON.stringify(activeWeights, null, 2)}
     protectBranches,
     holdBranches,
     shrinkBranches,
-    topGrowCandidates
+    topGrowCandidates,
+    pinnedDecisions
   );
 
   res.json({

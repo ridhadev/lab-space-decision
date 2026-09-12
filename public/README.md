@@ -42,7 +42,7 @@
 - **Built-In Architecture & Methodology Documentation**:
   Interactive technical reference with complete data provenance and mathematical proofs served directly at \`/docs\` and embedded within the app.
 - **Guided Tour Workflow Cards**:
-  An interactive 6-step executive onboarding tour that seamlessly walks users through the core capabilities of the platform (Interactive Geospatial Map with sister cannibalization monitoring, Saturation & Portfolio Summary, Deterministic Branch Evaluation, Growth Greenfield Pipeline, Sensitivity Modeling, and Grounded AI Strategic Advisor), automatically transitioning the active map viewports, data tables, sensitivity sliders, and AI panels in real time. Can be dismissed at any time, navigated via keyboard arrows, or relaunched anytime via the top header \`Tour\` button or user menu.
+  An interactive 6-step executive onboarding tour that seamlessly walks users through the core capabilities of the platform (Interactive Geospatial Map with sister cannibalization monitoring, Saturation & Portfolio Summary, Deterministic Branch Evaluation, Growth Greenfield Pipeline, Sensitivity Modeling, and Grounded AI Strategic Advisor), automatically transitioning the active map viewports, data tables, sensitivity sliders, and AI panels in real time. Can be dismissed at any time, navigated via keyboard arrows, or relaunched anytime via the user menu (Avatar dropdown).
 
 ---
 

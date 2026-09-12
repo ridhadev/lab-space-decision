@@ -265,15 +265,60 @@ export const BranchTable: React.FC<BranchTableProps> = ({
         <table className="w-full text-left border-collapse">
           <thead className={isFullScreen ? "sticky top-0 z-10 shadow-xs" : ""}>
             <tr className="ds-card-subtle border-b ds-border ds-text-secondary text-[10px] font-bold uppercase tracking-wider">
-              <th className="py-2.5 px-3">Branch & Location</th>
-              <th className="py-2.5 px-2.5">Emirate</th>
-              <th className="py-2.5 px-2.5 text-center">Reputation</th>
-              <th className="py-2.5 px-2.5 text-center">Catchment Affluence</th>
-              <th className="py-2.5 px-2.5 text-center">Sister Distance</th>
-              <th className="py-2.5 px-2.5 text-center">Competitors (3km)</th>
-              <th className="py-2.5 px-2.5 text-center">Market Saturation</th>
-              <th className="py-2.5 px-2.5 text-center">Health Score</th>
-              <th className="py-2.5 px-3 text-center">Decision</th>
+              <th className="py-2.5 px-3" title="Real verified store names, trade zones, and physical addresses collected from Bedashing directory and Google Places">
+                <div className="flex items-center space-x-1 cursor-help">
+                  <span>Branch & Location</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5" title="Real administrative UAE Emirate classification">
+                <div className="flex items-center space-x-1 cursor-help">
+                  <span>Emirate</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Real Google Places API star rating (4.1–4.8★) and public review count (280–1,420 reviews)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Reputation</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="* AI-curated demographic proxy (0–100) benchmarked against average annual residential rental brackets within a 3km trade radius">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-amber-300/90">
+                  <span>Catchment Affluence*</span>
+                  <Info className="w-2.5 h-2.5 text-amber-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Mathematically computed geodesic distance to the closest sister Bedashing lounge via spherical Haversine formula (R=6,371 km)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Sister Distance</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="* Modeled baseline salon density count from Google Places nearby queries for beauty salons and spas within a 3km radius">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-amber-300/90">
+                  <span>Competitors (3km)*</span>
+                  <Info className="w-2.5 h-2.5 text-amber-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Computed market saturation tier: Monopolistic Moat (1–4), Balanced (5–9), Saturated (10–17), Hyper-Saturated (18+)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Market Saturation</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Computed weighted health score (0–100) combining Reputation, Affluence, Sister Separation, and Competitor Moat">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-cyan-300">
+                  <span>Health Score</span>
+                  <Info className="w-2.5 h-2.5 text-cyan-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-3 text-center" title="Computed strategic verdict based on Health Score cutoffs: PROTECT (≥85), HOLD (70–84), SHRINK (<70)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Decision</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
               <th className="py-2.5 px-3 text-right">Audit</th>
             </tr>
           </thead>
@@ -421,11 +466,11 @@ export const BranchTable: React.FC<BranchTableProps> = ({
           </tbody>
         </table>
       </div>
-      <div className="p-2.5 ds-card-subtle border-t ds-border text-[11px] ds-text-secondary flex items-center justify-between shrink-0">
+      <div className="p-2.5 ds-card-subtle border-t ds-border text-[11px] ds-text-secondary flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div className="flex items-center space-x-2">
-          <Info className="w-3 h-3 ds-text-muted" />
+          <Info className="w-3.5 h-3.5 ds-text-muted shrink-0" />
           <span>
-            Click any row for mathematical formula verification and AI strategic explanation.
+            <strong className="text-amber-300 font-normal">*</strong> Indicates AI-curated/synthetic modeled estimates (Affluence, Competitors). Unmarked columns are verified real-world or mathematically computed values.
             {isFullScreen && (
               <span className="ml-2 font-mono text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">
                 [Esc] to Exit Full View
@@ -433,7 +478,7 @@ export const BranchTable: React.FC<BranchTableProps> = ({
             )}
           </span>
         </div>
-        <div className="font-mono ds-text-secondary">
+        <div className="font-mono ds-text-secondary shrink-0">
           Showing {filteredBranches.length} of {evaluations.length} branches
         </div>
       </div>

@@ -19,6 +19,7 @@ import {
   FileSpreadsheet,
   Check,
   Loader2,
+  Pin,
 } from "lucide-react";
 import {
   BranchEvaluation,
@@ -27,6 +28,7 @@ import {
   CandidateScoringWeights,
   ThresholdConfig,
   NetworkSummary,
+  PinnedDecision,
 } from "../types";
 import {
   DEFAULT_BRANCH_WEIGHTS,
@@ -59,6 +61,9 @@ interface RightDrawerPanelProps {
   onOpenDriveModal: () => void;
   branchEvals: BranchEvaluation[];
   candidateEvals: CandidateEvaluation[];
+  pinnedDecisions?: PinnedDecision[];
+  onTogglePinDecision?: (content: string, sourceQuestion?: string) => void;
+  onRemovePinnedDecision?: (id: string) => void;
 }
 
 interface ChatMessage {
@@ -87,6 +92,9 @@ export const RightDrawerPanel: React.FC<RightDrawerPanelProps> = ({
   onOpenDriveModal,
   branchEvals,
   candidateEvals,
+  pinnedDecisions = [],
+  onTogglePinDecision,
+  onRemovePinnedDecision,
 }) => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1280
@@ -1040,6 +1048,28 @@ Ask any strategic question or choose a suggested inquiry below.`,
                   </div>
                 </div>
 
+                {/* Pinned Decisions Status Bar */}
+                {pinnedDecisions && pinnedDecisions.length > 0 && (
+                  <div className="p-2.5 rounded-lg bg-cyan-950/30 border border-cyan-500/30 flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded bg-amber-400/20 border border-amber-400/30 flex items-center justify-center">
+                        <Pin className="w-3 h-3 text-amber-400 fill-amber-400" />
+                      </div>
+                      <span className="text-[11px] font-medium text-cyan-200">
+                        {pinnedDecisions.length} {pinnedDecisions.length === 1 ? "Directive" : "Directives"} Pinned to Board Memo
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenMemoModal}
+                      className="text-[10px] font-semibold text-cyan-400 hover:text-cyan-300 hover:underline flex items-center gap-0.5 cursor-pointer"
+                    >
+                      <span>View Deck</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+
                 {/* 3 Suggested Question Rows */}
                 <div className="space-y-1.5 pt-1">
                   <span className="text-[10px] font-bold text-[#8BA2C1] uppercase tracking-wider block">
@@ -1064,25 +1094,59 @@ Ask any strategic question or choose a suggested inquiry below.`,
 
                 {/* Message Stream */}
                 <div className="space-y-3 pt-2">
-                  {advisorMessages.map((msg, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex flex-col ${
-                        msg.role === "user" ? "items-end" : "items-start"
-                      }`}
-                    >
+                  {advisorMessages.map((msg, idx) => {
+                    const isPinned = pinnedDecisions.some((p) => p.content.trim() === msg.content.trim());
+                    return (
                       <div
-                        className={`p-3 rounded-lg max-w-[92%] leading-relaxed ${
-                          msg.role === "user"
-                            ? "bg-cyan-600 text-white shadow-xs"
-                            : "bg-[#0F1F35] border border-[#1D3452] text-slate-200"
+                        key={idx}
+                        className={`flex flex-col ${
+                          msg.role === "user" ? "items-end" : "items-start"
                         }`}
                       >
-                        <MarkdownRenderer content={msg.content} />
+                        <div
+                          className={`p-3 rounded-lg max-w-[92%] leading-relaxed ${
+                            msg.role === "user"
+                              ? "bg-cyan-600 text-white shadow-xs"
+                              : "bg-[#0F1F35] border border-[#1D3452] text-slate-200"
+                          }`}
+                        >
+                          <MarkdownRenderer content={msg.content} />
+                        </div>
+                        
+                        {/* Assistant Footer with Pin Button */}
+                        {msg.role === "assistant" && idx > 0 ? (
+                          <div className="flex items-center justify-between w-full max-w-[92%] mt-1 px-1">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const precedingQuery = advisorMessages
+                                  .slice(0, idx)
+                                  .reverse()
+                                  .find((m) => m.role === "user")?.content;
+                                onTogglePinDecision?.(msg.content, precedingQuery);
+                              }}
+                              className={`inline-flex items-center gap-1.5 text-[10px] font-medium px-2 py-0.5 rounded transition-all cursor-pointer ${
+                                isPinned
+                                  ? "bg-amber-400/20 text-amber-300 border border-amber-400/40 shadow-xs"
+                                  : "text-[#8BA2C1] hover:text-white hover:bg-[#142842] border border-transparent"
+                              }`}
+                              title={
+                                isPinned
+                                  ? "Click to unpin from Executive Memo & Slides"
+                                  : "Pin this recommendation into Board Memo & Slides"
+                              }
+                            >
+                              <Pin className={`w-3 h-3 ${isPinned ? "fill-amber-400 text-amber-400" : ""}`} />
+                              <span>{isPinned ? "Pinned to Board Memo" : "Pin to Memo"}</span>
+                            </button>
+                            <span className="text-[9px] text-[#536F93]">{msg.time}</span>
+                          </div>
+                        ) : (
+                          <span className="text-[9px] text-[#536F93] mt-1 px-1">{msg.time}</span>
+                        )}
                       </div>
-                      <span className="text-[9px] text-[#536F93] mt-1 px-1">{msg.time}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {isAdvisorLoading && (
                     <div className="p-3 rounded-lg bg-[#0F1F35] border border-[#1D3452] text-slate-400 flex items-center gap-2">
                       <Bot className="w-3.5 h-3.5 text-cyan-400 animate-spin" />

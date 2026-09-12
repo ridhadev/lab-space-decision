@@ -256,24 +256,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           id="config-advisor-switcher"
           className="border border-[#1D3452] rounded-[10px] p-[3px] bg-[#0A1424] flex items-center gap-1 shadow-xs"
         >
-          {/* Guided Tour Trigger Button */}
-          {onStartTour && (
-            <button
-              type="button"
-              onClick={onStartTour}
-              aria-label="Start Guided Tour"
-              title="Start Guided Tour (6 Core Capabilities)"
-              className={`h-[28px] px-2 rounded-[7px] text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer select-none ${
-                isTourOpen
-                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-xs"
-                  : "text-[#8BA2C1] hover:text-white hover:bg-[#142842]/80 border border-transparent"
-              }`}
-            >
-              <Compass className="w-3.5 h-3.5 text-cyan-400 stroke-[1.8]" />
-              <span className="hidden lg:inline">Tour</span>
-            </button>
-          )}
-
           {/* Config Button (Secondary / Ghost) */}
           <button
             type="button"

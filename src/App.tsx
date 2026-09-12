@@ -15,6 +15,7 @@ import {
   BranchScoringWeights,
   CandidateScoringWeights,
   ThresholdConfig,
+  PinnedDecision,
 } from "./types";
 import { LeftNavRail, NavView } from "./components/LeftNavRail";
 import { AppHeader, RightPanelType } from "./components/AppHeader";
@@ -54,6 +55,53 @@ export default function App() {
   const [isMemoModalOpen, setIsMemoModalOpen] = useState<boolean>(false);
   const [isDriveModalOpen, setIsDriveModalOpen] = useState<boolean>(false);
   const [initialAdvisorPrompt, setInitialAdvisorPrompt] = useState<string | null>(null);
+
+  // Pinned Strategic Decisions (captured from AI Advisor for Executive Memo & Slides)
+  const [pinnedDecisions, setPinnedDecisions] = useState<PinnedDecision[]>(() => {
+    try {
+      const saved = localStorage.getItem("decisionspace_pinned_decisions");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const handleTogglePinDecision = useCallback((content: string, sourceQuestion?: string) => {
+    setPinnedDecisions((prev) => {
+      const normalized = content.trim();
+      const existing = prev.find((p) => p.content.trim() === normalized);
+      let updated: PinnedDecision[];
+      if (existing) {
+        updated = prev.filter((p) => p.id !== existing.id);
+      } else {
+        const newDecision: PinnedDecision = {
+          id: `pin-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          content: normalized,
+          timestamp: new Date().toISOString(),
+          sourceQuestion,
+        };
+        updated = [...prev, newDecision];
+      }
+      try {
+        localStorage.setItem("decisionspace_pinned_decisions", JSON.stringify(updated));
+      } catch (e) {
+        console.error("Failed to save pinned decisions to localStorage", e);
+      }
+      return updated;
+    });
+  }, []);
+
+  const handleRemovePinnedDecision = useCallback((id: string) => {
+    setPinnedDecisions((prev) => {
+      const updated = prev.filter((p) => p.id !== id);
+      try {
+        localStorage.setItem("decisionspace_pinned_decisions", JSON.stringify(updated));
+      } catch (e) {
+        console.error("Failed to save pinned decisions to localStorage", e);
+      }
+      return updated;
+    });
+  }, []);
 
   // Guided Tour State
   const [isTourOpen, setIsTourOpen] = useState<boolean>(() => {
@@ -301,6 +349,9 @@ export default function App() {
             onOpenDriveModal={() => setIsDriveModalOpen(true)}
             branchEvals={branchEvals}
             candidateEvals={candidateEvals}
+            pinnedDecisions={pinnedDecisions}
+            onTogglePinDecision={handleTogglePinDecision}
+            onRemovePinnedDecision={handleRemovePinnedDecision}
           />
         </div>
       </div>
@@ -313,6 +364,9 @@ export default function App() {
         candidateEvals={candidateEvals}
         summary={summary}
         branchWeights={branchWeights}
+        pinnedDecisions={pinnedDecisions}
+        onTogglePinDecision={handleTogglePinDecision}
+        onRemovePinnedDecision={handleRemovePinnedDecision}
       />
 
       {/* Auxiliary Drive Sync Modal */}

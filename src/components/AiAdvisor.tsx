@@ -4,6 +4,7 @@ import {
   CandidateEvaluation,
   BranchScoringWeights,
   NetworkSummary,
+  PinnedDecision,
 } from "../types";
 import {
   Bot,
@@ -11,6 +12,7 @@ import {
   Copy,
   Check,
   X,
+  Pin,
 } from "lucide-react";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
@@ -21,6 +23,8 @@ interface AiAdvisorProps {
   candidateEvals: CandidateEvaluation[];
   summary: NetworkSummary;
   branchWeights: BranchScoringWeights;
+  pinnedDecisions?: PinnedDecision[];
+  onTogglePinDecision?: (content: string, sourceQuestion?: string) => void;
 }
 
 interface Message {
@@ -36,6 +40,8 @@ export const AiAdvisor: React.FC<AiAdvisorProps> = ({
   candidateEvals,
   summary,
   branchWeights,
+  pinnedDecisions = [],
+  onTogglePinDecision,
 }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -213,17 +219,48 @@ Ask me any strategic question, or select a suggested prompt below to analyze net
                     <MarkdownRenderer content={m.content} />
                   )}
                   {!isUser && (
-                    <button
-                      onClick={() => copyToClipboard(m.content, idx)}
-                      className="absolute top-2 right-2 p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-slate-800 transition-colors"
-                      title="Copy response"
-                    >
-                      {copiedIndex === idx ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5" />
+                    <div className="absolute top-2 right-2 flex items-center gap-1">
+                      {idx > 0 && onTogglePinDecision && (
+                        <button
+                          onClick={() => {
+                            const precedingQuery = messages
+                              .slice(0, idx)
+                              .reverse()
+                              .find((msg) => msg.role === "user")?.content;
+                            onTogglePinDecision(m.content, precedingQuery);
+                          }}
+                          className={`p-1 rounded transition-colors ${
+                            pinnedDecisions.some((p) => p.content.trim() === m.content.trim())
+                              ? "text-amber-400 bg-amber-400/20"
+                              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                          }`}
+                          title={
+                            pinnedDecisions.some((p) => p.content.trim() === m.content.trim())
+                              ? "Unpin from Board Memo"
+                              : "Pin to Board Memo & Slides"
+                          }
+                        >
+                          <Pin
+                            className={`w-3.5 h-3.5 ${
+                              pinnedDecisions.some((p) => p.content.trim() === m.content.trim())
+                                ? "fill-amber-400 text-amber-400"
+                                : ""
+                            }`}
+                          />
+                        </button>
                       )}
-                    </button>
+                      <button
+                        onClick={() => copyToClipboard(m.content, idx)}
+                        className="p-1 text-slate-400 hover:text-slate-200 rounded hover:bg-slate-800 transition-colors"
+                        title="Copy response"
+                      >
+                        {copiedIndex === idx ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

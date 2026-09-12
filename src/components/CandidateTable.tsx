@@ -225,15 +225,60 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
         <table className="w-full text-left border-collapse">
           <thead className={isFullScreen ? "sticky top-0 z-10 shadow-xs" : ""}>
             <tr className="ds-card-subtle border-b ds-border ds-text-secondary text-[10px] font-bold uppercase tracking-wider">
-              <th className="py-2.5 px-3">Candidate Area</th>
-              <th className="py-2.5 px-2.5">Emirate & Type</th>
-              <th className="py-2.5 px-2.5 text-center">Target Pop (5km)</th>
-              <th className="py-2.5 px-2.5 text-center">Unmet Demand</th>
-              <th className="py-2.5 px-2.5 text-center">Retail Gravity</th>
-              <th className="py-2.5 px-2.5 text-center">Sister Distance</th>
-              <th className="py-2.5 px-2.5 text-center">Market Saturation</th>
-              <th className="py-2.5 px-2.5 text-center">Expansion Score</th>
-              <th className="py-2.5 px-3 text-center">Recommendation</th>
+              <th className="py-2.5 px-3" title="Real candidate zone names and master plan centroids (e.g. Emaar, Aldar master developer project centroids)">
+                <div className="flex items-center space-x-1 cursor-help">
+                  <span>Candidate Area</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5" title="Administrative UAE Emirate and zoning archetype (Super-Regional Mall, Affluent Waterfront, Emerging Community)">
+                <div className="flex items-center space-x-1 cursor-help">
+                  <span>Emirate & Type</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="* AI-curated demographic proxy of high-income target female residents within a 5km radius">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-amber-300/90">
+                  <span>Target Pop (5km)*</span>
+                  <Info className="w-2.5 h-2.5 text-amber-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="* AI-curated proxy (0–100) estimating unmet beauty salon demand based on luxury chair deficit">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-amber-300/90">
+                  <span>Unmet Demand*</span>
+                  <Info className="w-2.5 h-2.5 text-amber-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="* AI-curated commercial anchor strength, luxury mall presence, and organic pedestrian footfall index (0–100)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-amber-300/90">
+                  <span>Retail Gravity*</span>
+                  <Info className="w-2.5 h-2.5 text-amber-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Mathematically computed geodesic distance to nearest existing Bedashing lounge via spherical Haversine formula (R=6,371 km)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Sister Distance</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Computed market saturation tier derived from local competitor count (Monopolistic, Balanced, Saturated, Hyper-Saturated)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Market Saturation</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
+              <th className="py-2.5 px-2.5 text-center" title="Computed weighted expansion score (0–100) combining Unmet Demand, Catchment Affluence, Retail Gravity, and Network Separation Safety">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help text-teal-300">
+                  <span>Expansion Score</span>
+                  <Info className="w-2.5 h-2.5 text-teal-400 opacity-80" />
+                </div>
+              </th>
+              <th className="py-2.5 px-3 text-center" title="Computed recommendation verdict: GROW (≥80), WATCH (65–79), SKIP (<65)">
+                <div className="inline-flex items-center justify-center space-x-1 cursor-help">
+                  <span>Recommendation</span>
+                  <Info className="w-2.5 h-2.5 opacity-60" />
+                </div>
+              </th>
               <th className="py-2.5 px-3 text-right">Action</th>
             </tr>
           </thead>
@@ -356,11 +401,11 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
           </tbody>
         </table>
       </div>
-      <div className="p-2.5 ds-card-subtle border-t ds-border text-[11px] ds-text-secondary flex items-center justify-between shrink-0">
+      <div className="p-2.5 ds-card-subtle border-t ds-border text-[11px] ds-text-secondary flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div className="flex items-center space-x-2">
-          <Info className="w-3 h-3 ds-text-muted" />
+          <Info className="w-3.5 h-3.5 ds-text-muted shrink-0" />
           <span>
-            Click any candidate for expansion feasibility audit and AI strategic evaluation.
+            <strong className="text-amber-300 font-normal">*</strong> Indicates AI-curated/synthetic modeled proxies (Target Pop, Unmet Demand, Retail Gravity). Unmarked columns are verified centroids or mathematically computed values.
             {isFullScreen && (
               <span className="ml-2 font-mono text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">
                 [Esc] to Exit Full View
@@ -368,7 +413,7 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
             )}
           </span>
         </div>
-        <div className="font-mono ds-text-secondary">
+        <div className="font-mono ds-text-secondary shrink-0">
           Showing {filteredCandidates.length} of {evaluations.length} candidate zones
         </div>
       </div>

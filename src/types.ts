@@ -129,3 +129,11 @@ export interface DriveResourceFile {
   id?: string;
   size?: string;
 }
+
+export interface PinnedDecision {
+  id: string;
+  content: string;
+  timestamp: string;
+  sourceQuestion?: string;
+  category?: "Defend" | "Growth" | "Rightsizing" | "Operational";
+}
