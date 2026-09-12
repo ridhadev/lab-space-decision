@@ -34,6 +34,7 @@ import {
   DEFAULT_BRANCH_WEIGHTS,
   DEFAULT_CANDIDATE_WEIGHTS,
   DEFAULT_THRESHOLDS,
+  SIMULATION_SCENARIOS,
 } from "../services/scoringEngine";
 import { RightPanelType } from "./AppHeader";
 import { MarkdownRenderer } from "./MarkdownRenderer";
@@ -477,6 +478,50 @@ Ask any strategic question or choose a suggested inquiry below.`,
           {/* ========================================================================= */}
           {activePanel === "config" && (
             <div className="p-4 space-y-4">
+              {/* Executive Simulation Scenarios Header */}
+              <div className="bg-[#0A1424] p-3 rounded-lg border border-[#1D3452] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Executive Simulation Scenarios</span>
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-rose-500/15 text-rose-400 border border-rose-500/25">
+                    {summary.shrinkCount} SHRINK Cases Active
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 pt-1">
+                  {Object.values(SIMULATION_SCENARIOS).map((sc) => {
+                    const isSelected =
+                      thresholds.holdCutoff === sc.thresholds.holdCutoff &&
+                      thresholds.protectCutoff === sc.thresholds.protectCutoff;
+                    return (
+                      <button
+                        key={sc.id}
+                        type="button"
+                        onClick={() => {
+                          setBranchWeights(sc.branchWeights);
+                          setCandidateWeights(sc.candidateWeights);
+                          setThresholds(sc.thresholds);
+                        }}
+                        className={`p-2 rounded border text-left transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-cyan-950/60 border-cyan-400 text-white shadow-xs"
+                            : "bg-[#0F1F35] border-[#1D3452] text-slate-300 hover:border-slate-400"
+                        }`}
+                      >
+                        <div className="font-bold text-[11px] leading-tight text-white flex items-center justify-between">
+                          <span>{sc.shortLabel}</span>
+                          {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />}
+                        </div>
+                        <div className="text-[9.5px] text-[#8BA2C1] mt-0.5 line-clamp-1">
+                          {sc.shrinkTarget === "None" ? "0 Shrink (Permissive)" : `Target: ${sc.shrinkTarget}`}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Sub-tab Switcher: Branches | Growth | Thresholds */}
               <div className="flex items-center bg-[#0A1424] p-1 rounded-lg border border-[#1D3452] text-xs">
                 <button
@@ -832,8 +877,8 @@ Ask any strategic question or choose a suggested inquiry below.`,
                       </p>
                       <input
                         type="range"
-                        min={60}
-                        max={85}
+                        min={65}
+                        max={90}
                         step={1}
                         value={thresholds.protectCutoff}
                         onChange={(e) =>
@@ -860,7 +905,7 @@ Ask any strategic question or choose a suggested inquiry below.`,
                       <input
                         type="range"
                         min={40}
-                        max={65}
+                        max={78}
                         step={1}
                         value={thresholds.holdCutoff}
                         onChange={(e) =>

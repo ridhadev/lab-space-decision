@@ -780,9 +780,6 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       {isFullScreen && (
         <div className="h-12 bg-[#0C182A] border-b border-[#1D3452] px-4 z-20 flex items-center justify-between shadow-md shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="w-7 h-7 rounded-lg bg-[#142842] border border-[#1D3452] flex items-center justify-center p-1">
-              <img src="/bedashing-icon.svg" alt="Bedashing" className="w-full h-full object-contain" />
-            </div>
             <div>
               <div className="flex items-center space-x-2">
                 <h2 className="text-xs font-bold tracking-tight text-white uppercase">
@@ -882,7 +879,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                 onClick={() => setIsPanelExpanded(false)}
                 title="Click to collapse panel"
               >
-                <img src="/bedashing-icon.svg" alt="Bedashing Icon" className="h-3.5 w-auto shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
                 <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest group-hover:text-cyan-200 transition-colors shrink-0">
                   MAP LAYERS
                 </span>
@@ -1112,7 +1109,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
 
         {/* High Density Status Pill in Bottom Left */}
         <div className="absolute bottom-3 left-3 bg-[#0C182A]/90 border border-[#1D3452] px-2.5 py-1 rounded text-[10px] text-[#8BA2C1] shadow-md hidden sm:flex items-center gap-1.5 z-[1000] backdrop-blur-md">
-          <img src="/bedashing-icon.svg" alt="Bedashing" className="h-3 w-auto opacity-70" />
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
           <span>UAE Dark Map | Saturation Heatmap &amp; Coverage Gaps</span>
         </div>
       </div>

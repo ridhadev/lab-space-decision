@@ -29,10 +29,17 @@
   Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, dynamic sister-proximity lines, a **Thermal Competition Density & Saturation Heatmap** (Blue-to-Red thermal gradient mapping local salon saturation from low-density moats to hyper-saturated retail corridors), a **Coverage Gap & "White Space" Analysis Layer** (cyan/teal opportunity auras and directional reach vectors highlighting unserved high-affluence trade pockets), and an **Expandable/Collapsible Map Layers Panel** with one-click hide/show controls and automated **Center of Gravity Camera Navigation** that centers and scales map viewports directly on the weighted geographic centroid of any selected emirate (`UAE`, `AD`, `DXB`, `SHJ`, `FUJ`, `RAK`).
 - **Market Saturation Metric in Summary Badges & Tables**:
   4-tier competitive saturation classification (`Monopolistic Moat 1–4`, `Balanced 5–9`, `Saturated 10–17`, `Hyper-Saturated 18+`). Integrated into the Executive Summary portfolio banner strip, interactive filter chips, and sortable table columns across all 23 branches and 10 candidate growth zones, with deep-dive audit tooltips and modal breakdowns.
-- **Deterministic Multi-Factor Scoring Engine**:
+- **Deterministic Multi-Factor Scoring Engine & Live Simulation Switcher**:
   Auditable, mathematically transparent evaluation:
-  - **Existing Branches**: Classified into \`PROTECT\` (≥ 85), \`HOLD\` (70–84), or \`SHRINK\` (< 70) based on reputation, catchment affluence, sister distance, and competitor saturation.
-  - **Candidate Zones**: Ranked into \`GROW\` (≥ 80), \`WATCH\` (65–79), or \`SKIP\` (< 65) based on unmet demand, affluence, retail anchors, and safety buffers.
+  - **Existing Branches**: Classified into `PROTECT` (≥ 80), `HOLD` (70–79), or `SHRINK` (< 70) based on reputation, catchment affluence, sister distance, and competitor saturation.
+  - **Candidate Zones**: Ranked into `GROW` (≥ 80), `WATCH` (65–79), or `SKIP` (< 65) based on unmet demand, affluence, retail anchors, and safety buffers.
+  - **Executive Simulation Scenarios**: 4 one-click presets accessible from the top header and configuration drawer:
+    - *Portfolio Rightsizing (3 Shrink - Default)*: Identifies 3 sister branches (Delma, Khaleej Al Arabi, Ministries Complex) suffering from cannibalization and margin drag for station reduction and lease consolidation.
+    - *Strict Cannibalization (4 Shrink - Stress Test)*: Expands sister-conflict radius to 4.5km, adding Baniyas East to the SHRINK list.
+    - *Targeted Downsizing (1 Shrink)*: Isolates intervention strictly to the lowest-scoring lounge (Delma, 64/100).
+    - *Legacy Baseline (0 Shrink)*: Permissive historical baseline where all branches remain HOLD or PROTECT.
+- **Brand Identity & Dual Vector/Raster Assets**:
+  Bedashing brand icon (`/bedashing-logo.svg` & `/bedashing-logo.png`) positioned in the top application header alongside the "Decision Space" title mark, board presentation modal, and browser favicon.
 - **Automated Cannibalization Detection**:
   Continuous monitoring of sister-store proximity using spherical Haversine calculations ($R=6,371\\text{ km}$). Lounges with < 4.0 km separation are flagged with revenue-at-risk dilution alerts.
 - **Dynamic What-If Sensitivity Modeling**:

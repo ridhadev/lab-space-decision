@@ -39,12 +39,15 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
           {/* Brand & Reference Info */}
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 bg-[#0C182A] border border-[#1D3452] rounded-lg flex items-center justify-center p-1.5 shadow-xs shrink-0">
-              <img
-                src="/bedashing-icon.svg"
-                alt="Bedashing Icon"
-                className="w-full h-full object-contain"
-              />
+            <div className="w-9 h-9 bg-white border border-[#1D3452] rounded-lg flex items-center justify-center p-0.5 shadow-xs shrink-0 overflow-hidden">
+              <picture className="w-full h-full flex items-center justify-center">
+                <source type="image/svg+xml" srcSet="/bedashing-logo.svg?v=20260912" />
+                <img
+                  src="/bedashing-logo.png?v=20260912"
+                  alt="Bedashing Icon"
+                  className="w-full h-full object-contain"
+                />
+              </picture>
             </div>
             <div>
               <div className="flex items-center space-x-2">
@@ -56,11 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-0.5">
-                <img
-                  src="/bedashing-logo-white.svg"
-                  alt="Bedashing Beauty Lounge"
-                  className="h-3.5 w-auto object-contain opacity-90 transition-all"
-                />
+                <span className="text-xs font-semibold text-slate-200 tracking-wide">Bedashing Beauty Lounge</span>
                 <span className="text-[#536F93] text-[10px]">•</span>
                 <p className="text-[11px] ds-text-secondary">
                   <span className="font-semibold ds-text-primary">23 Branches</span> (14 AD, 5 DXB, 2 SHJ, 1 FUJ, 1 RAK)

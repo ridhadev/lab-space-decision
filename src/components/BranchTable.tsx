@@ -119,9 +119,6 @@ export const BranchTable: React.FC<BranchTableProps> = ({
       {isFullScreen && (
         <div className="flex items-center justify-between pb-3 mb-2.5 border-b ds-border shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-[#0A1424] border border-[#1D3452] flex items-center justify-center p-1.5 shadow-xs shrink-0">
-              <img src="/bedashing-icon.svg" alt="Bedashing" className="w-full h-full object-contain" />
-            </div>
             <div>
               <div className="flex items-center space-x-2">
                 <h2 className="text-sm font-bold tracking-tight ds-text-primary uppercase">
@@ -184,19 +181,30 @@ export const BranchTable: React.FC<BranchTableProps> = ({
           <div className="h-3.5 w-px bg-[#1D3452] mx-1 hidden sm:block" />
 
           {/* Classification Filter */}
-          {(["All", "PROTECT", "HOLD", "SHRINK"] as const).map((cls) => (
-            <button
-              key={cls}
-              onClick={() => setSelectedClassification(cls)}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors border ${
-                selectedClassification === cls
-                  ? "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
-                  : "ds-card-subtle ds-text-secondary hover:ds-text-primary"
-              }`}
-            >
-              {cls}
-            </button>
-          ))}
+          {(["All", "PROTECT", "HOLD", "SHRINK"] as const).map((cls) => {
+            const count =
+              cls === "All"
+                ? evaluations.length
+                : evaluations.filter((e) => e.classification === cls).length;
+            return (
+              <button
+                key={cls}
+                onClick={() => setSelectedClassification(cls)}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors border flex items-center gap-1 ${
+                  selectedClassification === cls
+                    ? cls === "SHRINK"
+                      ? "bg-rose-500/20 text-rose-300 border-rose-500/40 font-bold shadow-xs"
+                      : cls === "PROTECT"
+                      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold shadow-xs"
+                      : "bg-[#142842] text-white border-cyan-500/40 shadow-xs"
+                    : "ds-card-subtle ds-text-secondary hover:ds-text-primary"
+                }`}
+              >
+                <span>{cls}</span>
+                <span className="text-[10px] font-mono opacity-80">({count})</span>
+              </button>
+            );
+          })}
 
           <div className="h-3.5 w-px bg-[#1D3452] mx-1 hidden sm:block" />
 
@@ -419,9 +427,9 @@ export const BranchTable: React.FC<BranchTableProps> = ({
                     <td className="py-2.5 px-2.5 text-center">
                       <div
                         className={`text-xs font-mono font-bold ${
-                          finalScore >= 70
+                          classification === "PROTECT"
                             ? "text-emerald-400"
-                            : finalScore >= 50
+                            : classification === "HOLD"
                             ? "text-amber-400"
                             : "text-rose-400"
                         }`}

@@ -8,6 +8,7 @@ import {
   DEFAULT_BRANCH_WEIGHTS,
   DEFAULT_CANDIDATE_WEIGHTS,
   DEFAULT_THRESHOLDS,
+  SIMULATION_SCENARIOS,
 } from "./services/scoringEngine";
 import {
   BranchEvaluation,
@@ -152,6 +153,16 @@ export default function App() {
     setSelectedBranchEval(null);
   }, []);
 
+  // Scenario Switcher Handler (Live simulation)
+  const handleApplyScenario = useCallback((scenarioId: string) => {
+    const sc = SIMULATION_SCENARIOS[scenarioId];
+    if (sc) {
+      setBranchWeights(sc.branchWeights);
+      setCandidateWeights(sc.candidateWeights);
+      setThresholds(sc.thresholds);
+    }
+  }, []);
+
   // Guided Tour Step Handler: Automatically switches views, panels, and maps
   const handleTourStepChange = useCallback((stepIdx: number) => {
     setTourStepIndex(stepIdx);
@@ -233,6 +244,9 @@ export default function App() {
           onFocusMapLocation={handleFocusMapLocation}
           onStartTour={handleStartTour}
           isTourOpen={isTourOpen}
+          currentThresholds={thresholds}
+          onApplyScenario={handleApplyScenario}
+          shrinkCount={summary.shrinkCount}
         />
 
         {/* Flex Row starting directly under 60px header containing Content + Sibling Drawer */}

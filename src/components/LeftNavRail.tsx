@@ -34,17 +34,8 @@ export const LeftNavRail: React.FC<LeftNavRailProps> = ({
     <aside
       id="left-nav-rail"
       aria-label="Primary Navigation"
-      className="w-[74px] shrink-0 h-screen sticky top-0 bg-[#050B14] border-r border-[#1D3452] flex flex-col items-center py-3.5 z-30 select-none transition-colors"
+      className="w-[74px] shrink-0 h-screen sticky top-0 bg-[#050B14] border-r border-[#1D3452] flex flex-col items-center py-5 z-30 select-none transition-colors"
     >
-      {/* Top: 'BE' Brand Square (38px, rounded ~9px, bordered) */}
-      <div className="w-[38px] h-[38px] rounded-[9px] border border-[#1D3452] bg-[#0C182A] flex items-center justify-center p-1.5 shadow-xs mb-6 shrink-0 group">
-        <img
-          src="/bedashing-icon.svg"
-          alt="BE Brand Mark"
-          className="w-full h-full object-contain filter drop-shadow-xs"
-        />
-      </div>
-
       {/* Nav items in exact order: Map, Branches, Growth, Summary */}
       <nav className="flex flex-col items-center gap-2 w-full px-2" role="tablist">
         {NAV_ITEMS.map((item) => {

@@ -26,11 +26,94 @@ export const DEFAULT_CANDIDATE_WEIGHTS: CandidateScoringWeights = {
 };
 
 export const DEFAULT_THRESHOLDS: ThresholdConfig = {
-  protectCutoff: 72,
-  holdCutoff: 52,
+  protectCutoff: 80,
+  holdCutoff: 70,
   growCutoff: 76,
   watchCutoff: 56,
   sisterBufferKm: 4.0,
+};
+
+export interface SimulationScenario {
+  id: string;
+  name: string;
+  shortLabel: string;
+  description: string;
+  shrinkTarget: string;
+  branchWeights: BranchScoringWeights;
+  candidateWeights: CandidateScoringWeights;
+  thresholds: ThresholdConfig;
+}
+
+export const SIMULATION_SCENARIOS: Record<string, SimulationScenario> = {
+  rightsizing: {
+    id: "rightsizing",
+    name: "Portfolio Rightsizing (3 Shrink Cases)",
+    shortLabel: "3 Shrink (Recommended)",
+    description: "Applies governance capital discipline (Hold Cutoff: 70). Classifies 3 overlapping sister branches in Abu Dhabi core (Delma, Khaleej Al Arabi, Ministries Complex) into SHRINK for station downsizing.",
+    shrinkTarget: "Delma, Khaleej Al Arabi, Ministries Complex",
+    branchWeights: DEFAULT_BRANCH_WEIGHTS,
+    candidateWeights: DEFAULT_CANDIDATE_WEIGHTS,
+    thresholds: {
+      protectCutoff: 80,
+      holdCutoff: 70,
+      growCutoff: 76,
+      watchCutoff: 56,
+      sisterBufferKm: 4.0,
+    },
+  },
+  strict_cannibalization: {
+    id: "strict_cannibalization",
+    name: "Strict Cannibalization Defense (4 Shrink Cases)",
+    shortLabel: "4 Shrink (Stress Test)",
+    description: "Applies 4.5km sister buffer radius and elevated hold cutoff (71). Delma, Khaleej Al Arabi, Ministries Complex, and Baniyas East are designated SHRINK.",
+    shrinkTarget: "Delma, Khaleej Al Arabi, Ministries Complex, Baniyas East",
+    branchWeights: {
+      reputationWeight: 20,
+      catchmentDemandWeight: 30,
+      cannibalizationWeight: 30,
+      competitionWeight: 20,
+    },
+    candidateWeights: DEFAULT_CANDIDATE_WEIGHTS,
+    thresholds: {
+      protectCutoff: 82,
+      holdCutoff: 71,
+      growCutoff: 78,
+      watchCutoff: 58,
+      sisterBufferKm: 4.5,
+    },
+  },
+  delma_only: {
+    id: "delma_only",
+    name: "Targeted Downsizing (1 Shrink Case)",
+    shortLabel: "1 Shrink (Delma Only)",
+    description: "Isolated intervention on the single lowest-scoring branch in the network. Delma (Score 64) is designated SHRINK; other branches remain protected or held.",
+    shrinkTarget: "Delma",
+    branchWeights: DEFAULT_BRANCH_WEIGHTS,
+    candidateWeights: DEFAULT_CANDIDATE_WEIGHTS,
+    thresholds: {
+      protectCutoff: 78,
+      holdCutoff: 66,
+      growCutoff: 76,
+      watchCutoff: 56,
+      sisterBufferKm: 4.0,
+    },
+  },
+  baseline: {
+    id: "baseline",
+    name: "Legacy Lenient Baseline (0 Shrink Cases)",
+    shortLabel: "0 Shrink (Baseline)",
+    description: "Legacy calibration with permissive cutoffs (Hold Cutoff: 52). All 23 branches receive HOLD or PROTECT verdicts.",
+    shrinkTarget: "None",
+    branchWeights: DEFAULT_BRANCH_WEIGHTS,
+    candidateWeights: DEFAULT_CANDIDATE_WEIGHTS,
+    thresholds: {
+      protectCutoff: 72,
+      holdCutoff: 52,
+      growCutoff: 76,
+      watchCutoff: 56,
+      sisterBufferKm: 4.0,
+    },
+  },
 };
 
 /**

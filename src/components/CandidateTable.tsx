@@ -103,9 +103,6 @@ export const CandidateTable: React.FC<CandidateTableProps> = ({
       {isFullScreen && (
         <div className="flex items-center justify-between pb-3 mb-2.5 border-b ds-border shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-[#0A1424] border border-[#1D3452] flex items-center justify-center p-1.5 shadow-xs shrink-0">
-              <img src="/bedashing-icon.svg" alt="Bedashing" className="w-full h-full object-contain" />
-            </div>
             <div>
               <div className="flex items-center space-x-2">
                 <h2 className="text-sm font-bold tracking-tight ds-text-primary uppercase">

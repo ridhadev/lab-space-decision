@@ -15,7 +15,8 @@ import {
   ExternalLink,
   Compass,
 } from "lucide-react";
-import { BranchEvaluation, CandidateEvaluation } from "../types";
+import { BranchEvaluation, CandidateEvaluation, ThresholdConfig } from "../types";
+import { SIMULATION_SCENARIOS } from "../services/scoringEngine";
 
 export type RightPanelType = "config" | "advisor" | "data" | "dev" | "branch" | null;
 
@@ -31,6 +32,9 @@ interface AppHeaderProps {
   onFocusMapLocation?: (lat: number, lng: number) => void;
   onStartTour?: () => void;
   isTourOpen?: boolean;
+  currentThresholds?: ThresholdConfig;
+  onApplyScenario?: (scenarioId: string) => void;
+  shrinkCount?: number;
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({
@@ -44,13 +48,26 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onFocusMapLocation,
   onStartTour,
   isTourOpen,
+  currentThresholds,
+  onApplyScenario,
+  shrinkCount,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
+  const [isScenarioMenuOpen, setIsScenarioMenuOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
   const avatarMenuRef = useRef<HTMLDivElement | null>(null);
+  const scenarioMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // Determine active scenario name
+  const currentScenario = Object.values(SIMULATION_SCENARIOS).find(
+    (sc) =>
+      currentThresholds?.holdCutoff === sc.thresholds.holdCutoff &&
+      currentThresholds?.protectCutoff === sc.thresholds.protectCutoff
+  );
+  const activeScenarioLabel = currentScenario ? currentScenario.shortLabel : "Custom Mode";
 
   // Global ⌘K shortcut handler
   useEffect(() => {
@@ -62,6 +79,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       } else if (e.key === "Escape") {
         setIsSearchOpen(false);
         setIsAvatarMenuOpen(false);
+        setIsScenarioMenuOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -82,6 +100,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         !avatarMenuRef.current.contains(e.target as Node)
       ) {
         setIsAvatarMenuOpen(false);
+      }
+      if (
+        scenarioMenuRef.current &&
+        !scenarioMenuRef.current.contains(e.target as Node)
+      ) {
+        setIsScenarioMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -115,19 +139,31 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       id="app-header"
       className="h-[60px] w-full bg-[#0C182A] border-b border-[#1D3452] px-4 sm:px-6 flex items-center justify-between gap-3 shrink-0 z-30 select-none relative"
     >
-      {/* 1. Left Zone: Identity (not interactive) */}
-      <div className="flex flex-col justify-center min-w-0 shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs sm:text-sm font-bold tracking-tight text-white uppercase whitespace-nowrap">
-            Decision Space
-          </span>
-          <span className="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-            UAE Retail
-          </span>
+      {/* 1. Left Zone: Identity with Single Bedashing Brand Icon */}
+      <div className="flex items-center gap-2.5 min-w-0 shrink-0">
+        <div className="w-[36px] h-[36px] rounded-lg bg-white border border-[#1D3452] p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
+          <picture className="w-full h-full flex items-center justify-center">
+            <source type="image/svg+xml" srcSet="/bedashing-logo.svg?v=20260912" />
+            <img
+              src="/bedashing-logo.png?v=20260912"
+              alt="Bedashing Logo"
+              className="w-full h-full object-contain"
+            />
+          </picture>
         </div>
-        <p className="text-[11px] text-[#8BA2C1] truncate">
-          {totalBranches} Bedashing Lounges · 2026 Q1 Cycle
-        </p>
+        <div className="flex flex-col justify-center min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-xs sm:text-sm font-bold tracking-tight text-white uppercase whitespace-nowrap">
+              Decision Space
+            </span>
+            <span className="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+              UAE Retail
+            </span>
+          </div>
+          <p className="text-[11px] text-[#8BA2C1] truncate">
+            {totalBranches} Bedashing Lounges · 2026 Q1 Cycle
+          </p>
+        </div>
       </div>
 
       {/* 2. Center Zone: Inset Search with ⌘K Hint */}
@@ -251,6 +287,96 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
       {/* 3. Right Zone: Grouped Switcher & Avatar Button */}
       <div className="flex items-center gap-2.5 shrink-0">
+        {/* Simulation Scenario Switcher Button */}
+        {onApplyScenario && (
+          <div ref={scenarioMenuRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setIsScenarioMenuOpen((prev) => !prev)}
+              aria-expanded={isScenarioMenuOpen}
+              className={`h-[34px] px-2.5 rounded-lg border flex items-center gap-1.5 cursor-pointer transition-all ${
+                isScenarioMenuOpen
+                  ? "border-cyan-400 bg-[#142842] text-white"
+                  : "border-[#1D3452] bg-[#0A1424] text-slate-200 hover:bg-[#102036] hover:border-slate-500"
+              }`}
+              title="Switch Portfolio Simulation Scenario"
+            >
+              <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+              <span className="text-xs font-semibold text-white hidden xl:inline">
+                Simulation:
+              </span>
+              <span className="text-xs font-medium text-cyan-300">
+                {activeScenarioLabel}
+              </span>
+              <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                {shrinkCount ?? 3} SHRINK
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#8BA2C1]" />
+            </button>
+
+            {isScenarioMenuOpen && (
+              <div className="absolute right-0 mt-1.5 w-80 bg-[#0C182A] border border-[#1D3452] rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95">
+                <div className="px-2 py-1.5 border-b border-[#1D3452] flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase text-[#8BA2C1] tracking-wider">
+                    Simulation Scenarios
+                  </span>
+                  <span className="text-[10px] font-mono text-cyan-400">
+                    Live Reactive
+                  </span>
+                </div>
+                <div className="py-1 space-y-1">
+                  {Object.values(SIMULATION_SCENARIOS).map((sc) => {
+                    const isCurrent =
+                      currentThresholds?.holdCutoff === sc.thresholds.holdCutoff &&
+                      currentThresholds?.protectCutoff === sc.thresholds.protectCutoff;
+                    return (
+                      <button
+                        key={sc.id}
+                        type="button"
+                        onClick={() => {
+                          onApplyScenario(sc.id);
+                          setIsScenarioMenuOpen(false);
+                        }}
+                        className={`w-full text-left p-2 rounded-lg transition-colors cursor-pointer border ${
+                          isCurrent
+                            ? "bg-cyan-950/60 border-cyan-400 text-white"
+                            : "bg-[#0A1424] border-transparent hover:bg-[#142842] text-slate-300 hover:text-white"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-xs font-bold">
+                          <span className={isCurrent ? "text-cyan-300" : "text-white"}>
+                            {sc.name}
+                          </span>
+                          {isCurrent && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                        </div>
+                        <p className="text-[10.5px] text-[#8BA2C1] mt-0.5 leading-snug">
+                          {sc.description}
+                        </p>
+                        <div className="text-[9.5px] font-mono mt-1 text-rose-300/90">
+                          {sc.shrinkTarget === "None" ? "0 Shrink / 4 Hold" : `Target Shrink: ${sc.shrinkTarget}`}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="pt-1.5 mt-1 border-t border-[#1D3452] flex justify-between items-center px-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsScenarioMenuOpen(false);
+                      onTogglePanel("config");
+                    }}
+                    className="text-[11px] text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1 cursor-pointer"
+                  >
+                    <Sliders className="w-3 h-3" />
+                    <span>Customize Sliders in Config...</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* a. Grouped Config / Advisor Switcher Container */}
         <div
           id="config-advisor-switcher"
@@ -383,7 +509,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
                   </button>
                 )}
 
-                {/* Developer Documentation */}
+                {/* Documentation */}
                 <a
                   href="/docs/index.html"
                   target="_blank"
@@ -393,7 +519,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
                 >
                   <span className="flex items-center gap-2">
                     <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Developer Documentation</span>
+                    <span>Documentation</span>
                   </span>
                   <ExternalLink className="w-3 h-3 text-[#536F93]" />
                 </a>

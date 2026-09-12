@@ -182,12 +182,15 @@ export const BoardMemoModal: React.FC<BoardMemoModalProps> = ({
         {/* Header Bar */}
         <div className="p-3.5 border-b border-[#1E3352] bg-[#0A1322] flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 border border-[#1E3352] p-1 flex items-center justify-center">
-              <img
-                src="/bedashing-icon.svg"
-                alt="Bedashing Icon"
-                className="w-full h-full object-contain"
-              />
+            <div className="w-8 h-8 rounded-lg bg-white border border-[#1E3352] p-0.5 flex items-center justify-center overflow-hidden shrink-0">
+              <picture className="w-full h-full flex items-center justify-center">
+                <source type="image/svg+xml" srcSet="/bedashing-logo.svg?v=20260912" />
+                <img
+                  src="/bedashing-logo.png?v=20260912"
+                  alt="Bedashing Logo"
+                  className="w-full h-full object-contain"
+                />
+              </picture>
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -205,11 +208,7 @@ export const BoardMemoModal: React.FC<BoardMemoModalProps> = ({
                 )}
               </div>
               <div className="flex items-center gap-2 mt-0.5">
-                <img
-                  src="/bedashing-logo-white.svg"
-                  alt="Bedashing Beauty Lounge"
-                  className="h-3 w-auto object-contain opacity-80"
-                />
+                <span className="text-xs font-semibold text-slate-200 tracking-wide">Bedashing Beauty Lounge</span>
                 <span className="text-slate-600 text-[10px]">•</span>
                 <p className="text-[11px] text-[#8BA2C1]">
                   UAE Network Optimization &amp; Capital Allocation Blueprint

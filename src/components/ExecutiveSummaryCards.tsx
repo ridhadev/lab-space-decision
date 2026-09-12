@@ -26,6 +26,7 @@ export const ExecutiveSummaryCards: React.FC<ExecutiveSummaryCardsProps> = ({
   onSelectCandidate,
 }) => {
   const cannibalizedBranches = branchEvals.filter((b) => b.cannibalizationWarning);
+  const shrinkBranches = branchEvals.filter((b) => b.classification === "SHRINK");
   const topGrowCandidates = candidateEvals.filter((c) => c.classification === "GROW");
 
   return (
@@ -148,30 +149,32 @@ export const ExecutiveSummaryCards: React.FC<ExecutiveSummaryCardsProps> = ({
               {/* Spaced Metric Caption (Image Style) */}
               <div className="mt-3">
                 <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                  CANNIBALIZATION ALERTS
+                  {shrinkBranches.length > 0 ? "SHRINK & CANNIBALIZATION" : "CANNIBALIZATION ALERTS"}
                 </span>
-                <div className="text-3xl font-bold tracking-tight ds-text-primary mt-0.5">
-                  {cannibalizedBranches.length}{" "}
-                  <span className="text-xs font-normal text-rose-400 font-mono">
-                    (&lt;4.0km sister buffer)
+                <div className="text-3xl font-bold tracking-tight ds-text-primary mt-0.5 flex items-baseline gap-2">
+                  <span className="text-rose-400 font-bold">{shrinkBranches.length}</span>
+                  <span className="text-xs font-semibold text-rose-300 font-mono">
+                    SHRINK ({cannibalizedBranches.length} &lt;4.0km)
                   </span>
                 </div>
                 <p className="text-[11px] ds-text-secondary mt-1">
-                  Overlapping catchment radii diluting revenue per chair
+                  {shrinkBranches.length > 0
+                    ? `${shrinkBranches.map((s) => s.branch.name.split(" ")[0]).join(", ")} designated for rightsizing`
+                    : "Overlapping catchment radii diluting revenue per chair"}
                 </p>
               </div>
 
-              {/* Quick interactive mini-chips for cannibalized branches */}
+              {/* Quick interactive mini-chips for shrink / cannibalized branches */}
               <div className="mt-2.5 flex flex-wrap gap-1.5">
-                {cannibalizedBranches.slice(0, 3).map((item) => (
+                {(shrinkBranches.length > 0 ? shrinkBranches : cannibalizedBranches.slice(0, 3)).map((item) => (
                   <button
                     key={item.branch.id}
                     onClick={() => onSelectBranch(item)}
-                    className="px-2 py-1 rounded-lg ds-card-subtle hover:border-rose-500/50 border text-[10px] ds-text-secondary flex items-center gap-1 transition-colors"
-                    title="Click to audit sister cannibalization"
+                    className="px-2 py-1 rounded-lg ds-card-subtle hover:border-rose-500/50 border text-[10px] ds-text-secondary flex items-center gap-1 transition-colors cursor-pointer"
+                    title="Click to audit branch rightsizing"
                   >
                     <span className="font-semibold text-rose-400">{item.branch.name.split(" ")[0]}</span>
-                    <span>({item.branch.nearestSisterDistanceKm}km)</span>
+                    <span className="font-mono text-rose-300 font-bold">({item.finalScore} / SHRINK)</span>
                   </button>
                 ))}
               </div>
