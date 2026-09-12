@@ -34,8 +34,8 @@ export default function App() {
   // Navigation State: Map, Branches, Growth, Summary
   const [activeView, setActiveView] = useState<NavView>("map");
 
-  // KPI Band expanded state: collapsed on Map by default, expanded on the other three views
-  const [isKpiOpen, setIsKpiOpen] = useState<boolean>(false);
+  // KPI Band expanded state: expanded by default across all views (including Map)
+  const [isKpiOpen, setIsKpiOpen] = useState<boolean>(true);
 
   // Right Drawer Panel State: 'config' | 'advisor' | 'data' | 'dev' | 'branch' | null
   const [activePanel, setActivePanel] = useState<RightPanelType>(null);
@@ -127,18 +127,17 @@ export default function App() {
     return calculateNetworkSummary(branchEvals, candidateEvals);
   }, [branchEvals, candidateEvals]);
 
-  // Handle View Navigation: switches view and sets KPI band open status
+  // Handle View Navigation: switches view and keeps KPI band expanded
   const handleSelectView = useCallback((view: NavView) => {
     setActiveView(view);
-    // Section 2 Requirement: KPI band starts collapsed when view is Map, expanded on other three views
-    setIsKpiOpen(view !== "map");
+    setIsKpiOpen(true);
   }, []);
 
   // Handle Location Focus from anywhere (Header search, Table, Growth cards)
   const handleFocusMapLocation = useCallback((lat: number, lng: number) => {
     setFocusedLocation({ lat, lng });
     setActiveView("map");
-    setIsKpiOpen(false);
+    setIsKpiOpen(true);
   }, []);
 
   // Branch Selection Handler
@@ -170,7 +169,7 @@ export default function App() {
       case 0: // 1. Interactive Geospatial Network Map
         setActiveView("map");
         setActivePanel(null);
-        setIsKpiOpen(false);
+        setIsKpiOpen(true);
         break;
       case 1: // 2. Market Saturation & Portfolio Summary
         setActiveView("overview");
@@ -252,7 +251,7 @@ export default function App() {
         {/* Flex Row starting directly under 60px header containing Content + Sibling Drawer */}
         <div className="flex-1 flex min-h-0 relative overflow-hidden">
           {/* Main Content Column */}
-          <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+          <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-y-auto">
             {/* KPI Band (Clickable disclosure, decision pills, auto-fit cards when open) */}
             <KpiBand
               isOpen={isKpiOpen}
@@ -263,7 +262,7 @@ export default function App() {
               onOpenDataPanel={() => setActivePanel("data")}
               onNavigateToMap={() => {
                 setActiveView("map");
-                setIsKpiOpen(false);
+                setIsKpiOpen(true);
               }}
               onNavigateToGrowth={() => {
                 setActiveView("growth");
@@ -283,17 +282,32 @@ export default function App() {
             <main className="flex-1 min-h-0 flex flex-col p-4 sm:p-5 overflow-auto">
               {/* VIEW 1: MAP */}
               {activeView === "map" && (
-                <div className="flex-1 min-h-[560px] flex flex-col min-w-[400px]">
+                <div className="flex-1 min-h-[480px] flex flex-col min-w-[400px] h-full">
                   <GeospatialMap
                     branchEvals={branchEvals}
                     candidateEvals={candidateEvals}
                     onSelectBranch={(b) => {
                       handleSelectBranch(b);
+                    }}
+                    onInspectBranch={(b) => {
+                      handleSelectBranch(b);
                       setActivePanel("branch");
                     }}
                     onSelectCandidate={(c) => {
                       handleSelectCandidate(c);
+                    }}
+                    onInspectCandidate={(c) => {
+                      handleSelectCandidate(c);
                       setActivePanel("branch");
+                    }}
+                    onOpenAdvisorWithPrompt={(prompt, b, c) => {
+                      if (b) {
+                        handleSelectBranch(b);
+                      } else if (c) {
+                        handleSelectCandidate(c);
+                      }
+                      setInitialAdvisorPrompt(prompt);
+                      setActivePanel("advisor");
                     }}
                     focusedLocation={focusedLocation}
                   />
@@ -350,12 +364,17 @@ export default function App() {
             thresholds={thresholds}
             setThresholds={setThresholds}
             summary={summary}
-            selectedBranch={selectedBranchEval || branchEvals[0] || null}
+            selectedBranch={selectedBranchEval}
             selectedCandidate={selectedCandidateEval}
             initialAdvisorPrompt={initialAdvisorPrompt}
             onClearInitialAdvisorPrompt={() => setInitialAdvisorPrompt(null)}
             onFocusLocation={handleFocusMapLocation}
-            onOpenAdvisorWithPrompt={(prompt) => {
+            onOpenAdvisorWithPrompt={(prompt, branch, candidate) => {
+              if (branch) {
+                handleSelectBranch(branch);
+              } else if (candidate) {
+                handleSelectCandidate(candidate);
+              }
               setInitialAdvisorPrompt(prompt);
               setActivePanel("advisor");
             }}

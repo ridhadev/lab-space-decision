@@ -57,7 +57,7 @@ interface RightDrawerPanelProps {
   initialAdvisorPrompt?: string | null;
   onClearInitialAdvisorPrompt?: () => void;
   onFocusLocation: (lat: number, lng: number) => void;
-  onOpenAdvisorWithPrompt: (prompt: string) => void;
+  onOpenAdvisorWithPrompt: (prompt: string, branch?: BranchEvaluation, candidate?: CandidateEvaluation) => void;
   onOpenMemoModal: () => void;
   onOpenDriveModal: () => void;
   branchEvals: BranchEvaluation[];
@@ -109,7 +109,57 @@ export const RightDrawerPanel: React.FC<RightDrawerPanelProps> = ({
     score: number;
     branchEval?: BranchEvaluation;
     candidateEval?: CandidateEvaluation;
-  } | null>(null);
+  } | null>(() => {
+    if (selectedBranch) {
+      return {
+        type: "branch",
+        name: selectedBranch.branch.name,
+        classification: selectedBranch.classification,
+        score: selectedBranch.finalScore,
+        branchEval: selectedBranch,
+      };
+    }
+    if (selectedCandidate) {
+      return {
+        type: "candidate",
+        name: selectedCandidate.candidate.name,
+        classification: selectedCandidate.classification,
+        score: selectedCandidate.finalScore,
+        candidateEval: selectedCandidate,
+      };
+    }
+    return null;
+  });
+
+  // Keep advisorSubject synchronized whenever a new branch is selected
+  useEffect(() => {
+    if (selectedBranch) {
+      setAdvisorSubject({
+        type: "branch",
+        name: selectedBranch.branch.name,
+        classification: selectedBranch.classification,
+        score: selectedBranch.finalScore,
+        branchEval: selectedBranch,
+      });
+    } else if (!selectedCandidate) {
+      setAdvisorSubject(null);
+    }
+  }, [selectedBranch]);
+
+  // Keep advisorSubject synchronized whenever a new candidate is selected
+  useEffect(() => {
+    if (selectedCandidate) {
+      setAdvisorSubject({
+        type: "candidate",
+        name: selectedCandidate.candidate.name,
+        classification: selectedCandidate.classification,
+        score: selectedCandidate.finalScore,
+        candidateEval: selectedCandidate,
+      });
+    } else if (!selectedBranch) {
+      setAdvisorSubject(null);
+    }
+  }, [selectedCandidate]);
 
   // AI Advisor Chat State
   const [advisorInput, setAdvisorInput] = useState("");
@@ -254,28 +304,31 @@ Ask any strategic question or choose a suggested inquiry below.`,
   // Automatically process initial prompt if passed
   useEffect(() => {
     if (initialAdvisorPrompt && activePanel === "advisor") {
-      // Set subject if not yet set
-      if (selectedBranch) {
-        setAdvisorSubject({
-          type: "branch",
-          name: selectedBranch.branch.name,
-          classification: selectedBranch.classification,
-          score: selectedBranch.finalScore,
-          branchEval: selectedBranch,
-        });
-      } else if (selectedCandidate) {
-        setAdvisorSubject({
-          type: "candidate",
-          name: selectedCandidate.candidate.name,
-          classification: selectedCandidate.classification,
-          score: selectedCandidate.finalScore,
-          candidateEval: selectedCandidate,
-        });
+      const subjectToUse = selectedBranch
+        ? {
+            type: "branch" as const,
+            name: selectedBranch.branch.name,
+            classification: selectedBranch.classification,
+            score: selectedBranch.finalScore,
+            branchEval: selectedBranch,
+          }
+        : selectedCandidate
+        ? {
+            type: "candidate" as const,
+            name: selectedCandidate.candidate.name,
+            classification: selectedCandidate.classification,
+            score: selectedCandidate.finalScore,
+            candidateEval: selectedCandidate,
+          }
+        : null;
+
+      if (subjectToUse) {
+        setAdvisorSubject(subjectToUse);
       }
-      handleSendAdvisor(initialAdvisorPrompt);
+      handleSendAdvisor(initialAdvisorPrompt, subjectToUse || undefined);
       onClearInitialAdvisorPrompt?.();
     }
-  }, [initialAdvisorPrompt, activePanel]);
+  }, [initialAdvisorPrompt, activePanel, selectedBranch, selectedCandidate]);
 
   // Scroll chat to bottom on new message
   useEffect(() => {
@@ -298,7 +351,7 @@ Ask any strategic question or choose a suggested inquiry below.`,
       case "data":
         return "Data sources & sync";
       case "dev":
-        return "Developer Documentation";
+        return "Documentation";
       case "branch":
         return selectedBranch
           ? selectedBranch.branch.name
@@ -330,7 +383,17 @@ Ask any strategic question or choose a suggested inquiry below.`,
   const isCandidateWeightSumValid = Math.abs(candidateWeightSum - 1.0) < 0.005;
 
   // Handle AI Advisor message send
-  const handleSendAdvisor = async (textToSend?: string) => {
+  const handleSendAdvisor = async (
+    textToSend?: string,
+    explicitSubject?: {
+      type: "branch" | "candidate";
+      name: string;
+      classification: string;
+      score: number;
+      branchEval?: BranchEvaluation;
+      candidateEval?: CandidateEvaluation;
+    }
+  ) => {
     const q = textToSend || advisorInput;
     if (!q.trim() || isAdvisorLoading) return;
 
@@ -344,19 +407,25 @@ Ask any strategic question or choose a suggested inquiry below.`,
     if (!textToSend) setAdvisorInput("");
     setIsAdvisorLoading(true);
 
-    const currentSubject = advisorSubject || (selectedBranch ? {
-      type: "branch" as const,
-      name: selectedBranch.branch.name,
-      classification: selectedBranch.classification,
-      score: selectedBranch.finalScore,
-      branchEval: selectedBranch,
-    } : selectedCandidate ? {
-      type: "candidate" as const,
-      name: selectedCandidate.candidate.name,
-      classification: selectedCandidate.classification,
-      score: selectedCandidate.finalScore,
-      candidateEval: selectedCandidate,
-    } : null);
+    const currentSubject =
+      explicitSubject ||
+      (selectedBranch
+        ? {
+            type: "branch" as const,
+            name: selectedBranch.branch.name,
+            classification: selectedBranch.classification,
+            score: selectedBranch.finalScore,
+            branchEval: selectedBranch,
+          }
+        : selectedCandidate
+        ? {
+            type: "candidate" as const,
+            name: selectedCandidate.candidate.name,
+            classification: selectedCandidate.classification,
+            score: selectedCandidate.finalScore,
+            candidateEval: selectedCandidate,
+          }
+        : advisorSubject);
 
     try {
       const res = await fetch("/api/ai/chat", {
@@ -1115,16 +1184,62 @@ Ask any strategic question or choose a suggested inquiry below.`,
                   </div>
                 )}
 
+                {/* Active Subject Context Badge */}
+                {advisorSubject && (
+                  <div className="p-2.5 rounded-lg bg-[#0A1424] border border-cyan-500/30 flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className={`w-2 h-2 rounded-full shrink-0 ${
+                          advisorSubject.classification === "PROTECT" || advisorSubject.classification === "GROW"
+                            ? "bg-emerald-400"
+                            : advisorSubject.classification === "HOLD" || advisorSubject.classification === "WATCH"
+                            ? "bg-amber-400"
+                            : "bg-rose-400"
+                        }`}
+                      />
+                      <div className="min-w-0 truncate">
+                        <span className="text-xs font-semibold text-white truncate block">
+                          Active: {advisorSubject.name}
+                        </span>
+                        <span className="text-[10px] text-[#8BA2C1]">
+                          {advisorSubject.type === "branch" ? "Branch Lounge" : "Growth Zone"} · {advisorSubject.classification} ({advisorSubject.score}/100)
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setAdvisorSubject(null)}
+                      className="text-[10px] text-cyan-400 hover:text-white px-2 py-0.5 rounded bg-[#0F1F35] border border-[#1D3452] hover:border-cyan-500/40 transition-colors cursor-pointer shrink-0 ml-2"
+                      title="Clear subject and query entire network"
+                    >
+                      Reset to Network
+                    </button>
+                  </div>
+                )}
+
                 {/* 3 Suggested Question Rows */}
                 <div className="space-y-1.5 pt-1">
                   <span className="text-[10px] font-bold text-[#8BA2C1] uppercase tracking-wider block">
                     Suggested Inquiries
                   </span>
-                  {[
-                    "Why is Al Wasl Jumeirah classified as SHRINK?",
-                    "Analyze cannibalization between West Yas & Noya Plaza",
-                    "What are the top 3 expansion zones for 2026?",
-                  ].map((prompt, idx) => (
+                  {(advisorSubject
+                    ? advisorSubject.type === "branch"
+                      ? [
+                          `Why is ${advisorSubject.name} classified as ${advisorSubject.classification} (${advisorSubject.score}/100)?`,
+                          `Detail cannibalization and sister proximity risks for ${advisorSubject.name}.`,
+                          `What concrete lease or operational actions are advised for ${advisorSubject.name}?`,
+                        ]
+                      : [
+                          `Why is ${advisorSubject.name} classified as ${advisorSubject.classification} (${advisorSubject.score}/100)?`,
+                          `Evaluate capital payback and unmet demand for ${advisorSubject.name}.`,
+                          `What are the retail gravity drivers for ${advisorSubject.name}?`,
+                        ]
+                    : [
+                        "Why is Al Wasl Jumeirah classified as SHRINK?",
+                        "Analyze cannibalization between West Yas & Noya Plaza",
+                        "What are the top 3 expansion zones for 2026?",
+                      ]
+                  ).map((prompt, idx) => (
                     <button
                       key={idx}
                       type="button"
@@ -1608,7 +1723,8 @@ Ask any strategic question or choose a suggested inquiry below.`,
                       type="button"
                       onClick={() => {
                         onOpenAdvisorWithPrompt(
-                          `Analyze branch ${selectedBranch.branch.name} (${selectedBranch.classification}, score ${selectedBranch.finalScore}). Detail its ${selectedBranch.branch.nearestSisterDistanceKm}km sister proximity and competitor pressure.`
+                          `Analyze branch ${selectedBranch.branch.name} (${selectedBranch.classification}, score ${selectedBranch.finalScore}). Detail its ${selectedBranch.branch.nearestSisterDistanceKm}km sister proximity and competitor pressure.`,
+                          selectedBranch
                         );
                       }}
                       className="w-full py-2 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center justify-between shadow-xs"
@@ -1667,7 +1783,9 @@ Ask any strategic question or choose a suggested inquiry below.`,
                       type="button"
                       onClick={() => {
                         onOpenAdvisorWithPrompt(
-                          `Analyze growth candidate ${selectedCandidate.candidate.name} (${selectedCandidate.candidate.emirate}, score ${selectedCandidate.finalScore}). Assess capital payback and unmet female demand.`
+                          `Analyze growth candidate ${selectedCandidate.candidate.name} (${selectedCandidate.candidate.emirate}, score ${selectedCandidate.finalScore}). Assess capital payback and unmet female demand.`,
+                          undefined,
+                          selectedCandidate
                         );
                       }}
                       className="w-full py-2 px-3 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center justify-between shadow-xs"

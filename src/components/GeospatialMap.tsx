@@ -17,7 +17,10 @@ interface GeospatialMapProps {
   branchEvals: BranchEvaluation[];
   candidateEvals: CandidateEvaluation[];
   onSelectBranch: (branchEval: BranchEvaluation) => void;
+  onInspectBranch?: (branchEval: BranchEvaluation) => void;
   onSelectCandidate: (candidateEval: CandidateEvaluation) => void;
+  onInspectCandidate?: (candidateEval: CandidateEvaluation) => void;
+  onOpenAdvisorWithPrompt?: (prompt: string, branch?: BranchEvaluation, candidate?: CandidateEvaluation) => void;
   focusedLocation?: { lat: number; lng: number } | null;
 }
 
@@ -25,7 +28,10 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   branchEvals,
   candidateEvals,
   onSelectBranch,
+  onInspectBranch,
   onSelectCandidate,
+  onInspectCandidate,
+  onOpenAdvisorWithPrompt,
   focusedLocation,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -408,27 +414,66 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
         }<br/>
             Local Salons: <strong style="color: #F8FAFC">${branch.competitorDensity3km}</strong>
           </div>
-          <button id="btn-inspect-${branch.id}" style="
-            margin-top: 8px;
-            width: 100%;
-            padding: 5px 8px;
-            background: #1E293B;
-            color: #F8FAFC;
-            font-size: 11px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid #475569;
-          ">
-            View Deep-Dive Audit
-          </button>
+          <div style="display: flex; gap: 6px; margin-top: 10px;">
+            <button id="btn-inspect-${branch.id}" style="
+              flex: 1;
+              padding: 6px 8px;
+              background: #1E293B;
+              color: #F8FAFC;
+              font-size: 11px;
+              font-weight: 600;
+              border-radius: 4px;
+              cursor: pointer;
+              border: 1px solid #475569;
+            ">
+              Deep-Dive Audit
+            </button>
+            <button id="btn-advisor-${branch.id}" style="
+              flex: 1;
+              padding: 6px 8px;
+              background: #0891B2;
+              color: #FFFFFF;
+              font-size: 11px;
+              font-weight: 600;
+              border-radius: 4px;
+              cursor: pointer;
+              border: 1px solid #06B6D4;
+            ">
+              Ask AI Advisor
+            </button>
+          </div>
         `;
+
+        marker.on("click", () => {
+          onSelectBranch(item);
+        });
 
         marker.bindPopup(popupContent);
         marker.on("popupopen", () => {
-          const btn = document.getElementById(`btn-inspect-${branch.id}`);
-          if (btn) {
-            btn.onclick = () => onSelectBranch(item);
+          // Immediately select this branch so context is active
+          onSelectBranch(item);
+
+          const btnInspect = document.getElementById(`btn-inspect-${branch.id}`);
+          if (btnInspect) {
+            btnInspect.onclick = () => {
+              onSelectBranch(item);
+              if (onInspectBranch) {
+                onInspectBranch(item);
+              }
+            };
+          }
+
+          const btnAdvisor = document.getElementById(`btn-advisor-${branch.id}`);
+          if (btnAdvisor) {
+            btnAdvisor.onclick = () => {
+              onSelectBranch(item);
+              if (onOpenAdvisorWithPrompt) {
+                onOpenAdvisorWithPrompt(
+                  `Analyze branch ${branch.name} (${classification}, score ${finalScore}/100). Detail its ${branch.nearestSisterDistanceKm}km sister proximity, ${branch.googleRating}★ rating, and competitor pressure.`,
+                  item
+                );
+              }
+            };
           }
         });
 
@@ -631,27 +676,66 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
             Retail Gravity: <strong style="color: #F8FAFC">${candidate.retailGravityScore}/100</strong><br/>
             Sister Distance: <strong style="color: #F8FAFC">${candidate.nearestBedashingDistanceKm} km</strong>
           </div>
-          <button id="btn-cand-${candidate.id}" style="
-            margin-top: 8px;
-            width: 100%;
-            padding: 5px 8px;
-            background: #1E293B;
-            color: #F8FAFC;
-            font-size: 11px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid #475569;
-          ">
-            Inspect Opportunity
-          </button>
+          <div style="display: flex; gap: 6px; margin-top: 10px;">
+            <button id="btn-cand-${candidate.id}" style="
+              flex: 1;
+              padding: 6px 8px;
+              background: #1E293B;
+              color: #F8FAFC;
+              font-size: 11px;
+              font-weight: 600;
+              border-radius: 4px;
+              cursor: pointer;
+              border: 1px solid #475569;
+            ">
+              Inspect Zone
+            </button>
+            <button id="btn-cand-advisor-${candidate.id}" style="
+              flex: 1;
+              padding: 6px 8px;
+              background: #0D9488;
+              color: #FFFFFF;
+              font-size: 11px;
+              font-weight: 600;
+              border-radius: 4px;
+              cursor: pointer;
+              border: 1px solid #14B8A6;
+            ">
+              Ask AI Advisor
+            </button>
+          </div>
         `;
+
+        marker.on("click", () => {
+          onSelectCandidate(item);
+        });
 
         marker.bindPopup(popupContent);
         marker.on("popupopen", () => {
-          const btn = document.getElementById(`btn-cand-${candidate.id}`);
-          if (btn) {
-            btn.onclick = () => onSelectCandidate(item);
+          onSelectCandidate(item);
+
+          const btnCand = document.getElementById(`btn-cand-${candidate.id}`);
+          if (btnCand) {
+            btnCand.onclick = () => {
+              onSelectCandidate(item);
+              if (onInspectCandidate) {
+                onInspectCandidate(item);
+              }
+            };
+          }
+
+          const btnCandAdvisor = document.getElementById(`btn-cand-advisor-${candidate.id}`);
+          if (btnCandAdvisor) {
+            btnCandAdvisor.onclick = () => {
+              onSelectCandidate(item);
+              if (onOpenAdvisorWithPrompt) {
+                onOpenAdvisorWithPrompt(
+                  `Analyze growth candidate ${candidate.name} (${candidate.emirate}, score ${finalScore}/100). Assess capital payback, retail gravity, and unmet female demand.`,
+                  undefined,
+                  item
+                );
+              }
+            };
           }
         });
 
@@ -773,7 +857,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
       className={
         isFullScreen
           ? "fixed inset-0 z-[9999] w-full h-full bg-[#08111E] ds-app flex flex-col overflow-hidden"
-          : "relative w-full h-[620px] rounded-lg border border-[#1D3452] shadow-sm bg-[#0F1F35] overflow-hidden flex flex-col"
+          : "relative w-full h-full flex-1 min-h-[480px] rounded-lg border border-[#1D3452] shadow-sm bg-[#0F1F35] overflow-hidden flex flex-col"
       }
     >
       {/* Top Banner when in Fullscreen Mode */}
@@ -819,11 +903,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
 
       {/* Map Canvas & Controls Wrapper */}
       <div
-        className="relative w-full flex-1 min-h-0 overflow-hidden"
-        style={{
-          height: isFullScreen ? "calc(100vh - 48px)" : "100%",
-          minHeight: isFullScreen ? "calc(100vh - 48px)" : "620px",
-        }}
+        className="relative w-full flex-1 min-h-0 h-full overflow-hidden"
       >
         {/* Leaflet Map Target Element */}
         <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
@@ -1028,7 +1108,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
                   className="rounded-xs text-orange-500 bg-[#0A1424] border-[#1D3452] focus:ring-0"
                 />
                 <span className="text-slate-300 flex items-center justify-between w-full pr-1">
-                  <span className="truncate">Thermal Saturation</span>
+                  <span className="truncate">Competition Saturation</span>
                   <span className="inline-block w-3.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-yellow-400 to-rose-500 shadow-xs ml-1 shrink-0"></span>
                 </span>
               </label>

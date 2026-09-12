@@ -15,7 +15,7 @@ The table below connects each scene of this demonstration to the foundational bu
 | Video Scene | Timeline | Core Application Features Shown | Business Requirement Grounding (`ai-case-study.docx`) |
 | :--- | :---: | :--- | :--- |
 | **Scene 1: Context & Shell** | `0:00 - 0:45` | 3-Zone Shell Architecture, 74px Left Nav Rail, 60px App Header with ⌘K Search, Live Portfolio Status | **FR-1**: Unified executive portfolio visibility across all 23 Bedashing UAE lounges; clear distinction between navigation ("Where am I") and action ("What can I do"). |
-| **Scene 2: Geospatial Engine** | `0:45 - 1:45` | CartoDB Dark Matter Basemap, 3km Catchments, &lt;4.0km Cannibalization Vectors, Thermal Saturation Heatmap, White Spaces, Center of Gravity Camera Navigation | **FR-2 & FR-7**: Spatial conflict detection (sister cannibalization dilution within 4.0km); competitor saturation mapping; identification of unserved prime trade corridors. |
+| **Scene 2: Geospatial Engine** | `0:45 - 1:45` | CartoDB Dark Matter Basemap, 3km Catchments, &lt;4.0km Cannibalization Vectors, Competition Saturation Heatmap, White Spaces, Center of Gravity Camera Navigation | **FR-2 & FR-7**: Spatial conflict detection (sister cannibalization dilution within 4.0km); competitor saturation mapping; identification of unserved prime trade corridors. |
 | **Scene 3: Portfolio Health** | `1:45 - 2:30` | Collapsible KPI Band, Decision Pills (`PROTECT`, `HOLD`, `SHRINK`), Branches Table, Density Controls, Right Audit Drawer | **FR-3**: Transparent deterministic scoring matrix; classifying existing branches into capital defense (`PROTECT ≥ 85`), maintenance (`HOLD 70–84`), and restructuring (`SHRINK < 70`). |
 | **Scene 4: Growth Pipeline** | `2:30 - 3:30` | Growth View, 10 Candidate Expansion Zones, Unmet Demand & Affluence Gauges, Overview Triage Dashboard | **FR-4 & FR-8**: Data-driven white-space growth; evaluating expansion zones into `GROW ≥ 80`, `WATCH 65–79`, and `SKIP < 65` without cannibalizing the sister network. |
 | **Scene 5: Model & AI Advisor** | `3:30 - 4:30` | Right Drawer `config` Sliders (Real-time sensitivity analysis), `advisor` (Gemini 3.8 Flash), Formal Board Memo Generator | **FR-5 & FR-9**: Dynamic what-if weighting; zero-hallucination AI advisory grounded strictly in mathematical metrics; automated C-Suite executive memorandums. |
@@ -58,7 +58,7 @@ SCENE 2: INTERACTIVE GEOSPATIAL INTELLIGENCE & CANNIBALIZATION (0:45 – 1:45)
 * **Camera / Screen:** Full view of the **Map** canvas powered by CartoDB Dark Matter.
 * **Action 1:** In the floating **Map Layers Panel** (236px width), presenter toggles the **3km Catchment Buffers** on. The 3,000-meter primary trade circles illuminate in cyan.
 * **Action 2:** Presenter toggles **Cannibalization Vectors (<4km)**. Red dashed lines connect nearby sister branches (e.g., Delma ↔ Khaleej Al Arabi at 1.9km, and Westyas ↔ Noya Plaza at 4.0km).
-* **Action 3:** Presenter clicks the **Thermal Saturation** checkbox. The screen transitions into a vivid thermal gradient—revealing blue monopolistic moats in Al Dhafra, shifting to fiery red hyper-saturated corridors along Jumeirah Beach Road and Downtown Dubai.
+* **Action 3:** Presenter clicks the **Competition Saturation** checkbox. The screen transitions into a vivid density gradient—revealing blue monopolistic moats in Al Dhafra, shifting to fiery red hyper-saturated corridors along Jumeirah Beach Road and Downtown Dubai.
 * **Action 4:** Presenter clicks the **DXB** chip, and the camera dynamically flies to the weighted Center of Gravity of Dubai, then clicks the **AD** chip to glide smoothly to Abu Dhabi.
 
 ### Audio Narration
@@ -66,7 +66,7 @@ SCENE 2: INTERACTIVE GEOSPATIAL INTELLIGENCE & CANNIBALIZATION (0:45 – 1:45)
 >
 > *Notice these red dashed connectors: our engine runs continuous spherical Haversine distance calculations ($R=6,371\text{ km}$) across the entire network. Any sister salons within 4 kilometers—such as Delma and Khaleej Al Arabi at just 1.9 kilometers apart—are immediately flagged for customer dilution and revenue cannibalization.*
 >
-> *When we activate the Thermal Saturation layer, the map reveals local competitor density within 3 kilometers: low-density moats in blue, transitioning to hyper-saturated zones in crimson where over 18 competing salons compress operating margins.*
+> *When we activate the Competition Saturation layer, the map reveals local competitor density within 3 kilometers: low-density moats in blue, transitioning to hyper-saturated zones in crimson where over 18 competing salons compress operating margins.*
 >
 > *Using the Center of Gravity camera controls, one click centers the viewport directly on the geographic centroid of Dubai, Abu Dhabi, or the Northern Emirates."*
 
@@ -171,9 +171,9 @@ Before recording or delivering the live 5-minute walkthrough, verify the followi
 1. **Window Resolution:** Set browser window to `1920x1080` (16:9 aspect ratio) with zoom set to `100%`.
 2. **Initial State:** 
    - View: `Map` view selected.
-   - KPI Band: Collapsed (default on map).
+   - KPI Band: Expanded (default on map).
    - Focus Emirate: `All` (UAE overview).
-   - Map Layers: `Existing Branches` checked; `Buffers`, `Cannibalization`, and `Thermal` ready to be toggled.
+   - Map Layers: `Existing Branches` checked; `Buffers`, `Cannibalization`, and `Competition Saturation` ready to be toggled.
    - Right Drawer: Closed (`activePanel: null`).
 3. **Pacing Milestones:**
    - `0:45`: Transition from Shell overview to Map layers.

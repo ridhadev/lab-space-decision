@@ -32,10 +32,10 @@ export const TOUR_STEPS: TourStep[] = [
     category: "Spatial Intelligence",
     targetViewLabel: "Map View",
     description:
-      "Interactive CartoDB Dark Matter map displaying all 24 Bedashing lounges and 8 greenfield expansion candidates across the UAE. Toggle 3km catchment radii, thermal competitor saturation, and automated sister cannibalization overlap detection.",
+      "Interactive CartoDB Dark Matter map displaying all 24 Bedashing lounges and 8 greenfield expansion candidates across the UAE. Toggle 3km catchment radii, competition saturation, and automated sister cannibalization overlap detection.",
     keyFeatures: [
       "24 Existing Lounges & 8 Candidate Growth Zones",
-      "Thermal Competitor Saturation Heatmap",
+      "Competition Saturation Heatmap",
       "Sister Cannibalization & 3km Catchment Buffers",
       "Emirate Centroid Camera Quick-Jump (AD, DXB, SHJ, etc.)",
     ],

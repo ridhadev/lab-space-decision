@@ -26,7 +26,7 @@
 ## 2. Core Capabilities & Features
 
 - **Interactive Geospatial Network Map**:
-  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, dynamic sister-proximity lines, a **Thermal Competition Density & Saturation Heatmap** (Blue-to-Red thermal gradient mapping local salon saturation from low-density moats to hyper-saturated retail corridors), a **Coverage Gap & "White Space" Analysis Layer** (cyan/teal opportunity auras and directional reach vectors highlighting unserved high-affluence trade pockets), and an **Expandable/Collapsible Map Layers Panel** with one-click hide/show controls and automated **Center of Gravity Camera Navigation** that centers and scales map viewports directly on the weighted geographic centroid of any selected emirate (`UAE`, `AD`, `DXB`, `SHJ`, `FUJ`, `RAK`).
+  Leaflet-powered map utilizing CartoDB Dark Matter basemaps. Displays all 23 Bedashing lounges, 10 candidate growth zones, 3 km primary catchment radii, dynamic sister-proximity lines, a **Competition Saturation Density Heatmap** (Blue-to-Red gradient mapping local salon density from low-competition moats to hyper-saturated retail corridors), a **Coverage Gap & "White Space" Analysis Layer** (cyan/teal opportunity auras and directional reach vectors highlighting unserved high-affluence trade pockets), and an **Expandable/Collapsible Map Layers Panel** with one-click hide/show controls and automated **Center of Gravity Camera Navigation** that centers and scales map viewports directly on the weighted geographic centroid of any selected emirate (`UAE`, `AD`, `DXB`, `SHJ`, `FUJ`, `RAK`).
 - **Market Saturation Metric in Summary Badges & Tables**:
   4-tier competitive saturation classification (`Monopolistic Moat 1–4`, `Balanced 5–9`, `Saturated 10–17`, `Hyper-Saturated 18+`). Integrated into the Executive Summary portfolio banner strip, interactive filter chips, and sortable table columns across all 23 branches and 10 candidate growth zones, with deep-dive audit tooltips and modal breakdowns.
 - **Deterministic Multi-Factor Scoring Engine & Live Simulation Switcher**:
@@ -175,7 +175,7 @@ decision-space/
         ├── OverviewView.tsx      # Strategic portfolio overview & pending decisions
         ├── GrowthView.tsx        # Expansion candidate cards & suitability rankings
         ├── BranchesView.tsx      # Comprehensive 23-lounge audit table with density controls
-        ├── GeospatialMap.tsx     # Leaflet map with 3km catchments, thermal saturation & white spaces
+        ├── GeospatialMap.tsx     # Leaflet map with 3km catchments, competition saturation & white spaces
         ├── BoardMemoModal.tsx    # Formal C-Suite & Board memo generator
         └── DriveSyncModal.tsx    # Google Drive real-time workspace sync modal
 \`\`\`
