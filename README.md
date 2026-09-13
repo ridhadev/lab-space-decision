@@ -86,7 +86,6 @@ decision-space/
 ├── server.ts               # Express backend (Gemini API proxy, static docs)
 ├── docs/                   # Technical & strategic documentation
 │   ├── index.html          # Standalone docs web page
-│   └── video_transcript... # Demo video transcript
 ├── public/                 # Static assets
 └── src/                    # React 19 Client
     ├── data/               # Branch & Candidate datasets
